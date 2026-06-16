@@ -2577,7 +2577,7 @@
   // CONFIG + STATE
   // ====================================================================
   const VERSION = "v1.38";
-  const BUILD = '1781640265'; // stamped by deploy-to-github.command at every deploy
+  const BUILD = '1781648920'; // stamped by deploy-to-github.command at every deploy
   const DATA_PATH = "data";
   const params = new URLSearchParams(window.location.search);
   const today = new Date().toISOString().split('T')[0];
@@ -4506,6 +4506,7 @@
     if(u==null) return null;
     let s=u.toString().trim().toLowerCase().replace(/\s+/g,' ').replace('½','.5').replace('¼','.25').replace('¾','.75').replace('⅓','.333').replace('⅔','.667');
     if(/gal(?:lon)?\.?\s*bag/.test(s) || s==='gallon') return {f:0.5, est:true};   // herb gallon bag ≈ ½ lb (estimate)
+    if(s==='bn'||s==='bunch'||s==='bunches') return {f:0.25, est:false};            // a bunch = 1/4 lb (Sam's rule)
     let m=s.match(/^([\d.\/]+)?\s*oz\.?$/); if(m) return {f:_psNum(m[1])*0.0625, est:false};
     m=s.match(/^([\d.\/]+)?\s*(?:lb|lbs|#|pound|pounds)\.?$/); if(m) return {f:_psNum(m[1]), est:false};
     return null;
