@@ -2575,7 +2575,7 @@
   // CONFIG + STATE
   // ====================================================================
   const VERSION = "v1.38";
-  const BUILD = '1781599175'; // stamped by deploy-to-github.command at every deploy
+  const BUILD = '1781600081'; // stamped by deploy-to-github.command at every deploy
   const DATA_PATH = "data";
   const params = new URLSearchParams(window.location.search);
   const today = new Date().toISOString().split('T')[0];
@@ -4488,6 +4488,19 @@
     return _priceFeed;
   }
   function _psNormUnit(u){ u=(u==null?'':u).toString().trim().toLowerCase(); return (u==='#'||u==='lb'||u==='lbs')?'lb':u; }
+  const _psWTL = {'lb':1,'#':1,'lbs':1,'pound':1,'oz':0.0625,'1/8#':0.125,'1/4#':0.25,'1/2#':0.5,'1/4-1/2#':0.375,'3/4#':0.75};
+  const _psCNT = {'dozen':12,'each':1,'ea':1,'ct':1};
+  // Express a feed price in the order line's unit. Returns {price, basis} or null.
+  function _psConvert(pe, ou){
+    const native=(pe.unit==null?'':pe.unit).toString().trim().toLowerCase();
+    const o=(ou==null?'':ou).toString().trim().toLowerCase();
+    if(_psNormUnit(native)===_psNormUnit(o)) return {price: pe.swan_price, basis:'exact'};          // same unit
+    if(pe.swan_per_lb!=null && Object.prototype.hasOwnProperty.call(_psWTL,o))                       // → weight
+      return {price: +(pe.swan_per_lb*_psWTL[o]).toFixed(2), basis: pe.per_lb_basis||'exact'};
+    if((native in _psCNT) && (o in _psCNT))                                                          // count ↔ count
+      return {price: +(pe.swan_price*(_psCNT[o]/_psCNT[native])).toFixed(2), basis:'exact'};
+    return null;
+  }
   function _psRecalc(){
     let tot=0, any=false;
     document.querySelectorAll('#print-sheet-body .ps-price').forEach(inp=>{
@@ -4511,8 +4524,11 @@
       if (pe && pe.swan_price != null) {
         const chk = pe.needs_check ? ` · <b style="color:#b00">CHECK</b>` : '';
         sub = `<div style="font-size:9px;color:#999">${escape(pe.source)} · ${escape(pe.freshness)}${chk}</div>`;
-        if (_psNormUnit(pe.unit) === _psNormUnit(l.unit)) {
-          priceVal = pe.swan_price;            // unit matches → prefill, amount auto-computes
+        const conv = _psConvert(pe, l.unit);
+        if (conv) {
+          priceVal = conv.price;               // prefill (exact or estimated conversion); amount auto-computes
+          if (conv.basis === 'estimate')
+            sub += `<div style="font-size:9px;color:#a60">≈ converted from $${pe.swan_price}/${escape(pe.unit)} (est. pack weight — confirm)</div>`;
         } else {
           sub += `<div style="font-size:9px;color:#a60">Remy: $${pe.swan_price}/${escape(pe.unit)} — set per ${escape(l.unit)}</div>`;
         }
