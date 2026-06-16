@@ -1,0 +1,416 @@
+{
+ "generated": "2026-06-16",
+ "premium_pct": 20,
+ "items": {
+  "Apples": {
+   "swan_price": 2.7,
+   "market": 2.25,
+   "unit": "lb",
+   "vendor": "Franks",
+   "date": "2026-01-24",
+   "freshness": "STALE",
+   "source": "invoice",
+   "needs_check": true
+  },
+  "Basil": {
+   "swan_price": 6.6,
+   "market": 5.5,
+   "unit": "1/2#",
+   "vendor": "Franks",
+   "date": "2026-06-08",
+   "freshness": "FRESH",
+   "source": "invoice",
+   "needs_check": false
+  },
+  "Beef Primals": {
+   "swan_price": 22.79,
+   "market": 18.99,
+   "unit": "lb",
+   "vendor": "Preservation Meats",
+   "date": "2026-05-19",
+   "freshness": "FRESH",
+   "source": "catalogue",
+   "needs_check": false
+  },
+  "Beef Shanks": {
+   "swan_price": 10.79,
+   "market": 8.99,
+   "unit": "lb",
+   "vendor": "Preservation Meats",
+   "date": "",
+   "freshness": "RESEARCH",
+   "source": "research (low) — Olivier's/Rosie's/White Oak/Skagit River Ranch, 2026",
+   "needs_check": true
+  },
+  "Beef Tenderloin": {
+   "swan_price": 31.19,
+   "market": 25.99,
+   "unit": "lb",
+   "vendor": "Preservation Meats",
+   "date": "2026-05-19",
+   "freshness": "FRESH",
+   "source": "catalogue",
+   "needs_check": false
+  },
+  "Bolo Meat": {
+   "swan_price": 5.99,
+   "market": 4.99,
+   "unit": "lb",
+   "vendor": "composite",
+   "date": "2026-05-19",
+   "freshness": "FRESH",
+   "source": "composite (derived)",
+   "needs_check": false
+  },
+  "Bronze Fennel": {
+   "swan_price": 54.0,
+   "market": 45.0,
+   "unit": "24CT CS",
+   "vendor": "Reference list",
+   "date": "2026-04-20",
+   "freshness": "AGING",
+   "source": "commodity",
+   "needs_check": false
+  },
+  "Cabbage": {
+   "swan_price": 1.8,
+   "market": 1.5,
+   "unit": "lb",
+   "vendor": "Franks",
+   "date": "2026-01-22",
+   "freshness": "STALE",
+   "source": "invoice",
+   "needs_check": true
+  },
+  "Cherry Tomatoes": {
+   "swan_price": 38.7,
+   "market": 32.25,
+   "unit": "CS",
+   "vendor": "Franks",
+   "date": "2025-11-28",
+   "freshness": "STALE",
+   "source": "invoice",
+   "needs_check": true
+  },
+  "Chicken Eggs": {
+   "swan_price": 10.0,
+   "market": 8.33,
+   "unit": "dozen",
+   "vendor": "Preservation Meats",
+   "date": "2026-05-19",
+   "freshness": "FRESH",
+   "source": "catalogue",
+   "needs_check": false
+  },
+  "Chives": {
+   "swan_price": 7.2,
+   "market": 6.0,
+   "unit": "1/4#",
+   "vendor": "Franks",
+   "date": "2026-04-20",
+   "freshness": "AGING",
+   "source": "invoice",
+   "needs_check": false
+  },
+  "Cilantro": {
+   "swan_price": 1.19,
+   "market": 0.99,
+   "unit": "bn",
+   "vendor": "Franks",
+   "date": "2026-06-10",
+   "freshness": "FRESH",
+   "source": "invoice",
+   "needs_check": false
+  },
+  "Cucumbers": {
+   "swan_price": 1.8,
+   "market": 1.5,
+   "unit": "each",
+   "vendor": "Franks",
+   "date": "2026-06-11",
+   "freshness": "FRESH",
+   "source": "invoice",
+   "needs_check": false
+  },
+  "Dill": {
+   "swan_price": 1.5,
+   "market": 1.25,
+   "unit": "bn",
+   "vendor": "Franks",
+   "date": "2026-06-08",
+   "freshness": "FRESH",
+   "source": "invoice",
+   "needs_check": false
+  },
+  "Duck Eggs": {
+   "swan_price": 10.8,
+   "market": 9.0,
+   "unit": "dozen",
+   "vendor": "Preservation Meats",
+   "date": "",
+   "freshness": "RESEARCH",
+   "source": "research (low) — ThePricer / Foraged, 2026",
+   "needs_check": true
+  },
+  "Fennel Fronds": {
+   "swan_price": 3.42,
+   "market": 2.85,
+   "unit": "each",
+   "vendor": "Franks",
+   "date": "2026-06-11",
+   "freshness": "FRESH",
+   "source": "invoice",
+   "needs_check": false
+  },
+  "Garlic Scapes": {
+   "swan_price": 7.2,
+   "market": 6.0,
+   "unit": "lb",
+   "vendor": "Franks",
+   "date": "",
+   "freshness": "RESEARCH",
+   "source": "research (low) — Stonebridge/Juniata/Purvey'd + farmers-market data",
+   "needs_check": true
+  },
+  "Ground Beef / Bolo Meat": {
+   "swan_price": 5.99,
+   "market": 4.99,
+   "unit": "lb",
+   "vendor": "composite",
+   "date": "2026-05-19",
+   "freshness": "FRESH",
+   "source": "composite (derived)",
+   "needs_check": false
+  },
+  "Heirloom Tomatoes": {
+   "swan_price": 62.4,
+   "market": 52.0,
+   "unit": "CS",
+   "vendor": "Franks",
+   "date": "2025-09-29",
+   "freshness": "STALE",
+   "source": "invoice",
+   "needs_check": true
+  },
+  "Kale": {
+   "swan_price": 57.6,
+   "market": 48.0,
+   "unit": "CS",
+   "vendor": "Franks",
+   "date": "2026-06-06",
+   "freshness": "FRESH",
+   "source": "invoice",
+   "needs_check": false
+  },
+  "Lamb Loin Chops": {
+   "swan_price": 26.34,
+   "market": 21.95,
+   "unit": "lb",
+   "vendor": "Key City",
+   "date": "2026-05-27",
+   "freshness": "FRESH",
+   "source": "catalogue",
+   "needs_check": false
+  },
+  "Lettuce": {
+   "swan_price": 28.8,
+   "market": 24.0,
+   "unit": "CS",
+   "vendor": "Franks",
+   "date": "2026-06-06",
+   "freshness": "FRESH",
+   "source": "invoice",
+   "needs_check": false
+  },
+  "Lovage": {
+   "swan_price": 29.4,
+   "market": 24.5,
+   "unit": "#",
+   "vendor": "Franks",
+   "date": "2026-06-11",
+   "freshness": "FRESH",
+   "source": "invoice",
+   "needs_check": false
+  },
+  "Mint": {
+   "swan_price": 4.5,
+   "market": 3.75,
+   "unit": "1/4#",
+   "vendor": "Franks",
+   "date": "2026-06-10",
+   "freshness": "FRESH",
+   "source": "invoice",
+   "needs_check": false
+  },
+  "Nettles": {
+   "swan_price": 11.4,
+   "market": 9.5,
+   "unit": "lb",
+   "vendor": "foraged_found",
+   "date": "2025-04-29",
+   "freshness": "PRIOR-YEAR",
+   "source": "invoice",
+   "needs_check": true
+  },
+  "Oregano": {
+   "swan_price": 4.79,
+   "market": 3.99,
+   "unit": "1/4#",
+   "vendor": "Franks",
+   "date": "2026-06-09",
+   "freshness": "FRESH",
+   "source": "invoice",
+   "needs_check": false
+  },
+  "Parsley": {
+   "swan_price": 1.19,
+   "market": 0.99,
+   "unit": "bn",
+   "vendor": "Franks",
+   "date": "2026-06-10",
+   "freshness": "FRESH",
+   "source": "invoice",
+   "needs_check": false
+  },
+  "Peppers": {
+   "swan_price": 3.0,
+   "market": 2.5,
+   "unit": "lb",
+   "vendor": "Franks",
+   "date": "2026-06-09",
+   "freshness": "FRESH",
+   "source": "invoice",
+   "needs_check": false
+  },
+  "Pork Belly": {
+   "swan_price": 6.95,
+   "market": 5.79,
+   "unit": "lb",
+   "vendor": "Preservation Meats",
+   "date": "2026-05-19",
+   "freshness": "FRESH",
+   "source": "catalogue",
+   "needs_check": false
+  },
+  "Pork Chops": {
+   "swan_price": 7.19,
+   "market": 5.99,
+   "unit": "lb",
+   "vendor": "Preservation Meats",
+   "date": "2026-05-19",
+   "freshness": "FRESH",
+   "source": "catalogue",
+   "needs_check": false
+  },
+  "Rhubarb": {
+   "swan_price": 4.79,
+   "market": 3.99,
+   "unit": "lb",
+   "vendor": "Franks",
+   "date": "2026-06-06",
+   "freshness": "FRESH",
+   "source": "invoice",
+   "needs_check": false
+  },
+  "Rosemary": {
+   "swan_price": 15.0,
+   "market": 12.5,
+   "unit": "#",
+   "vendor": "Franks",
+   "date": "2026-06-01",
+   "freshness": "FRESH",
+   "source": "invoice",
+   "needs_check": false
+  },
+  "Snap Peas": {
+   "swan_price": 6.94,
+   "market": 5.78,
+   "unit": "cs",
+   "vendor": "Franks",
+   "date": "2026-04-30",
+   "freshness": "AGING",
+   "source": "invoice",
+   "needs_check": false
+  },
+  "Snow Peas": {
+   "swan_price": 5.46,
+   "market": 4.55,
+   "unit": "cs",
+   "vendor": "Franks",
+   "date": "2026-06-04",
+   "freshness": "FRESH",
+   "source": "invoice",
+   "needs_check": false
+  },
+  "Sorrel (French)": {
+   "swan_price": 9.6,
+   "market": 8.0,
+   "unit": "lb",
+   "vendor": "Franks",
+   "date": "",
+   "freshness": "RESEARCH",
+   "source": "research (low) — Tridge / Webstaurant, 2025-26",
+   "needs_check": true
+  },
+  "Squash": {
+   "swan_price": 1.8,
+   "market": 1.5,
+   "unit": "lb",
+   "vendor": "Franks",
+   "date": "2026-02-11",
+   "freshness": "STALE",
+   "source": "invoice",
+   "needs_check": true
+  },
+  "Tarragon": {
+   "swan_price": 10.2,
+   "market": 8.5,
+   "unit": "1/4#",
+   "vendor": "Reference list",
+   "date": "2026-04-20",
+   "freshness": "AGING",
+   "source": "commodity",
+   "needs_check": false
+  },
+  "Thyme": {
+   "swan_price": 11.7,
+   "market": 9.75,
+   "unit": "1/2#",
+   "vendor": "Franks",
+   "date": "2026-06-04",
+   "freshness": "FRESH",
+   "source": "invoice",
+   "needs_check": false
+  },
+  "Tomatoes": {
+   "swan_price": 38.7,
+   "market": 32.25,
+   "unit": "CS",
+   "vendor": "Franks",
+   "date": "2025-11-28",
+   "freshness": "STALE",
+   "source": "invoice",
+   "needs_check": true
+  },
+  "Turnips": {
+   "swan_price": 3.3,
+   "market": 2.75,
+   "unit": "bn",
+   "vendor": "Franks",
+   "date": "2025-04-14",
+   "freshness": "PRIOR-YEAR",
+   "source": "invoice",
+   "needs_check": true
+  },
+  "Zucchini": {
+   "swan_price": 43.8,
+   "market": 36.5,
+   "unit": "CS",
+   "vendor": "Franks",
+   "date": "2025-10-10",
+   "freshness": "STALE",
+   "source": "invoice",
+   "needs_check": true
+  }
+ }
+}
