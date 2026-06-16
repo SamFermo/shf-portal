@@ -2575,7 +2575,7 @@
   // CONFIG + STATE
   // ====================================================================
   const VERSION = "v1.38";
-  const BUILD = '1781477732'; // stamped by deploy-to-github.command at every deploy
+  const BUILD = '1781599175'; // stamped by deploy-to-github.command at every deploy
   const DATA_PATH = "data";
   const params = new URLSearchParams(window.location.search);
   const today = new Date().toISOString().split('T')[0];
@@ -4474,14 +4474,57 @@
     }));
   }
 
-  // Printable harvest sheet — doubles as Tim's invoice draft (manual precursor
-  // of the Phase 2 auto-draft). Blank Packed/$-per-unit/Amount columns + TOTAL.
-  function ordersSheet(id) {
+  // Printable harvest sheet — doubles as Tim's invoice draft. Phase 2: auto-priced
+  // from Remy's price-reference.json feed (+Swan premium), editable, live total.
+  // Falls back to blank price columns if the feed is unavailable.
+  let _priceFeed = null, _priceFeedTried = false;
+  async function loadPriceFeed() {
+    if (_priceFeedTried) return _priceFeed;
+    _priceFeedTried = true;
+    try {
+      const r = await fetch('data/price-reference.json', { cache: 'no-store' });
+      if (r.ok) _priceFeed = await r.json();
+    } catch (e) { /* feed optional — sheet still works with blank price columns */ }
+    return _priceFeed;
+  }
+  function _psNormUnit(u){ u=(u==null?'':u).toString().trim().toLowerCase(); return (u==='#'||u==='lb'||u==='lbs')?'lb':u; }
+  function _psRecalc(){
+    let tot=0, any=false;
+    document.querySelectorAll('#print-sheet-body .ps-price').forEach(inp=>{
+      const qty=parseFloat(inp.dataset.qty)||0, p=parseFloat(inp.value);
+      const amtEl=document.getElementById('ps-amt-'+inp.dataset.idx);
+      if(!isNaN(p)){ const a=qty*p; amtEl.textContent='$'+a.toFixed(2); tot+=a; any=true; }
+      else { amtEl.textContent=''; }
+    });
+    const t=document.getElementById('ps-total-amt'); if(t) t.textContent = any ? '$'+tot.toFixed(2) : '';
+  }
+  async function ordersSheet(id) {
     const o = ordersData.find(x => x.order_id === id); if (!o) return;
+    const feed = await loadPriceFeed();
+    const items = (feed && feed.items) || {};
+    const prem = (feed && feed.premium_pct) || 20;
     const fmtL = (iso) => { try { return new Date(iso).toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'}); } catch(e){ return iso||''; } };
-    const rows = (o.lines||[]).map(l => `<tr>
-      <td>${escape(l.item)}${l.farm_status ? ` <span class="ps-flag">${l.farm_status.toUpperCase()}${l.farm_note?': '+escape(l.farm_note):''}</span>` : ''}</td>
-      <td>${escape(l.qty)} ${escape(l.unit)}</td><td></td><td></td><td></td></tr>`).join('');
+    const rows = (o.lines||[]).map((l, idx) => {
+      const pe = items[l.item];
+      const fs = l.farm_status ? ` <span class="ps-flag">${l.farm_status.toUpperCase()}${l.farm_note?': '+escape(l.farm_note):''}</span>` : '';
+      let priceVal = '', sub = '';
+      if (pe && pe.swan_price != null) {
+        const chk = pe.needs_check ? ` · <b style="color:#b00">CHECK</b>` : '';
+        sub = `<div style="font-size:9px;color:#999">${escape(pe.source)} · ${escape(pe.freshness)}${chk}</div>`;
+        if (_psNormUnit(pe.unit) === _psNormUnit(l.unit)) {
+          priceVal = pe.swan_price;            // unit matches → prefill, amount auto-computes
+        } else {
+          sub += `<div style="font-size:9px;color:#a60">Remy: $${pe.swan_price}/${escape(pe.unit)} — set per ${escape(l.unit)}</div>`;
+        }
+      } else {
+        sub = `<div style="font-size:9px;color:#a55">no market ref — set price</div>`;
+      }
+      return `<tr>
+        <td>${escape(l.item)}${fs}${sub}</td>
+        <td>${escape(l.qty)} ${escape(l.unit)}</td><td></td>
+        <td style="text-align:right">$<input class="ps-price" data-idx="${idx}" data-qty="${escape(l.qty)}" value="${priceVal}" inputmode="decimal" aria-label="price per unit" style="width:56px;text-align:right;border:1px solid #ccc;border-radius:3px;padding:1px 3px;font:inherit"></td>
+        <td class="ps-amt" id="ps-amt-${idx}" style="text-align:right"></td></tr>`;
+    }).join('');
     document.getElementById('print-sheet-body').innerHTML = `
       <div class="ps-farm">· SWAN HOUSE FARM ·</div>
       <div class="ps-title">Harvest Sheet &amp; Invoice Draft</div>
@@ -4489,11 +4532,13 @@
         Needed by: <b>${o.requested_date ? fmtL(o.requested_date+'T12:00:00') : '—'}</b> &nbsp;·&nbsp; <span class="ps-id">${escape(o.order_id)}</span></div>
       ${o.order_note ? `<div class="ps-note">Note: “${escape(o.order_note)}”</div>` : ''}
       <table class="ps-table"><thead>
-        <tr><th>Item</th><th>Ordered</th><th>Packed ✓</th><th>$ / unit</th><th>Amount</th></tr></thead>
+        <tr><th>Item</th><th>Ordered</th><th>Packed ✓</th><th>$ / unit (+${prem}%)</th><th>Amount</th></tr></thead>
         <tbody>${rows}
-        <tr class="ps-total"><td colspan="4">TOTAL</td><td></td></tr></tbody></table>
-      <div class="ps-foot">Tim: price each line and total — this sheet IS the invoice draft. The filed copy feeds the San Fermo ledger.</div>
+        <tr class="ps-total"><td colspan="4">TOTAL</td><td id="ps-total-amt" style="text-align:right"></td></tr></tbody></table>
+      <div class="ps-foot">${feed ? `Auto-priced from Remy market reference (+${prem}% Swan premium). Lines marked <b style="color:#b00">CHECK</b> use stale or researched comps — confirm before sending. Edit any price; total updates live.` : `Tim: price each line and total — this sheet IS the invoice draft. The filed copy feeds the San Fermo ledger.`}</div>
       <div class="ps-sign">Packed by ____________________&nbsp;&nbsp;Date __________&nbsp;&nbsp;&nbsp;&nbsp;Invoiced by ____________________&nbsp;&nbsp;Date __________</div>`;
+    document.querySelectorAll('#print-sheet-body .ps-price').forEach(inp => inp.addEventListener('input', _psRecalc));
+    _psRecalc();
     document.body.classList.add('print-sheet-open');
   }
   function ordersSheetClose() { document.body.classList.remove('print-sheet-open'); }
