@@ -2577,7 +2577,7 @@
   // CONFIG + STATE
   // ====================================================================
   const VERSION = "v1.38";
-  const BUILD = '1781601881'; // stamped by deploy-to-github.command at every deploy
+  const BUILD = '1781602646'; // stamped by deploy-to-github.command at every deploy
   const DATA_PATH = "data";
   const params = new URLSearchParams(window.location.search);
   const today = new Date().toISOString().split('T')[0];
@@ -4521,48 +4521,76 @@
       return {price:+(pe.swan_price*(_psCNT[o]/_psCNT[native])).toFixed(2), basis:'exact'};
     return null;
   }
+  // Spell an order unit out in full words (no abbreviations) for the Swan line.
+  function _psUnitWords(u){
+    const s=(u==null?'':u).toString().trim().toLowerCase();
+    const t=s.replace('½','1/2').replace('¼','1/4').replace('¾','3/4');
+    const map={'#':'pound','lb':'pound','lbs':'pound','pound':'pound','pounds':'pound',
+      '1/2#':'half pound','1/2 lb':'half pound','1/2lb':'half pound',
+      '1/4#':'quarter pound','1/4 lb':'quarter pound','1/4lb':'quarter pound',
+      '3/4#':'three-quarter pound','3/4 lb':'three-quarter pound',
+      'oz':'ounce','bn':'bunch','bunch':'bunch','bunches':'bunch','ea':'each','each':'each',
+      'dozen':'dozen','doz':'dozen','cs':'case','case':'case','pt':'pint','pint':'pint',
+      'qt':'quart','quart':'quart','cup':'cup','flat':'flat','pack':'pack',
+      'gal bag':'gallon bag','gallon bag':'gallon bag','gallon':'gallon'};
+    return map[s]||map[t]||s||'unit';
+  }
   function _psRecalc(){
     let tot=0, any=false;
     document.querySelectorAll('#print-sheet-body .ps-price').forEach(inp=>{
       const qty=parseFloat(inp.dataset.qty)||0, p=parseFloat(inp.value);
       const amtEl=document.getElementById('ps-amt-'+inp.dataset.idx);
-      if(!isNaN(p)){ const a=qty*p; amtEl.textContent='$'+a.toFixed(2); tot+=a; any=true; }
-      else { amtEl.textContent=''; }
+      const perEl=document.getElementById('ps-per-'+inp.dataset.idx);
+      if(!isNaN(p)){ const a=qty*p; amtEl.textContent='$'+a.toFixed(2); tot+=a; any=true;
+        if(perEl) perEl.textContent='$'+p.toFixed(2)+' per '+_psUnitWords(inp.dataset.unit); }
+      else { amtEl.textContent=''; if(perEl) perEl.textContent=''; }
     });
     const t=document.getElementById('ps-total-amt'); if(t) t.textContent = any ? '$'+tot.toFixed(2) : '';
   }
+  // Re-price every convertible line from its market reference at the chosen premium %.
+  function _psApplyPremium(){
+    const el=document.getElementById('ps-prem'); if(!el) return;
+    let p=parseFloat(el.value); if(isNaN(p)||p<0) p=0; _psPremium=p;
+    document.querySelectorAll('#print-sheet-body .ps-price').forEach(inp=>{
+      const mkt=parseFloat(inp.dataset.mkt);
+      if(!isNaN(mkt)) inp.value=(mkt*(1+p/100)).toFixed(2);
+    });
+    _psRecalc();
+  }
   // Two stages: a detailed REVIEW view (market ref + Swan premium + freshness +
   // flags, editable) → Tim finalizes → a clean PRINTOUT (the filed invoice).
-  let _psOrder = null, _psPrices = {};
+  let _psOrder = null, _psPrices = {}, _psPremium = null;
   function _psFmtL(iso){ try { return new Date(iso).toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'}); } catch(e){ return iso||''; } }
   const _PS_FC = {FRESH:'#3a7',AGING:'#b8860b',STALE:'#c0392b','PRIOR-YEAR':'#8e1b1b',RESEARCH:'#b8860b'};
 
   function _psRenderReview(){
     const o=_psOrder; if(!o) return;
-    const feed=_priceFeed, items=(feed&&feed.items)||{}, prem=(feed&&feed.premium_pct)||20;
+    const feed=_priceFeed, items=(feed&&feed.items)||{}, feedPrem=(feed&&feed.premium_pct)||20;
+    if(_psPremium==null) _psPremium=feedPrem;
+    const prem=_psPremium;
     const checks=[];
     const rows=(o.lines||[]).map((l,idx)=>{
       const pe=items[l.item];
       const fs=l.farm_status?` <span class="ps-flag">${l.farm_status.toUpperCase()}${l.farm_note?': '+escape(l.farm_note):''}</span>`:'';
-      let priceVal = (_psPrices[idx]!=null && _psPrices[idx]!=='') ? _psPrices[idx] : '';
-      let market='—', detail='', badge='';
+      let market='—', detail='', badge='', mktInUnit=null;
       if(pe && pe.swan_price!=null){
         const fc=_PS_FC[pe.freshness]||'#888';
         badge=` <span style="background:${fc};color:#fff;font-size:9px;padding:1px 6px;border-radius:3px">${escape(pe.freshness)}</span>`;
         market=`$${pe.market}/${escape(pe.unit)}`;
-        detail=`<div style="font-size:10px;color:#999">${escape(pe.source)}${pe.date?' · '+escape(pe.date):''}</div>`;
-        if(priceVal===''){
-          const conv=_psConvert(pe,l.unit);
-          if(conv){ priceVal=conv.price; if(conv.basis==='estimate') detail+=`<div style="font-size:10px;color:#a60">≈ est. conversion from ${escape(pe.unit)} — confirm</div>`; }
-          else detail+=`<div style="font-size:10px;color:#a60">set price per ${escape(l.unit)}</div>`;
-        }
+        detail=`<div style="font-size:10px;color:#999">${pe.vendor?'from <b>'+escape(pe.vendor)+'</b> · ':''}${escape(pe.source)}${pe.date?' · '+escape(pe.date):''}</div>`;
+        const conv=_psConvert(pe,l.unit);
+        if(conv){ mktInUnit=+(conv.price/(1+feedPrem/100)).toFixed(4); if(conv.basis==='estimate') detail+=`<div style="font-size:10px;color:#a60">≈ est. conversion from ${escape(pe.unit)} — confirm</div>`; }
+        else detail+=`<div style="font-size:10px;color:#a60">set price per ${escape(_psUnitWords(l.unit))}</div>`;
         if(pe.needs_check){ detail+=`<div style="font-size:10px;color:#b00;font-weight:700">CHECK — confirm price</div>`; checks.push(escape(l.item)); }
       } else { detail=`<div style="font-size:10px;color:#a55">no market ref — set price</div>`; }
+      const priceVal = (_psPrices[idx]!=null && _psPrices[idx]!=='') ? _psPrices[idx]
+                       : (mktInUnit!=null ? (mktInUnit*(1+prem/100)).toFixed(2) : '');
+      const mktAttr = mktInUnit!=null ? ` data-mkt="${mktInUnit}"` : '';
       return `<tr>
         <td><b>${escape(l.item)}</b>${fs}${badge}${detail}</td>
         <td>${escape(l.qty)} ${escape(l.unit)}</td>
         <td style="text-align:right;font-size:12px;color:#555">${market}</td>
-        <td style="text-align:right">$<input class="ps-price" data-idx="${idx}" data-qty="${escape(l.qty)}" value="${priceVal}" inputmode="decimal" aria-label="Swan price per unit" style="width:56px;text-align:right;border:1px solid #ccc;border-radius:3px;padding:1px 3px;font:inherit"></td>
+        <td style="text-align:right">$<input class="ps-price" data-idx="${idx}" data-qty="${escape(l.qty)}" data-unit="${escape(l.unit)}"${mktAttr} value="${priceVal}" inputmode="decimal" aria-label="Swan price per unit" style="width:56px;text-align:right;border:1px solid #ccc;border-radius:3px;padding:1px 3px;font:inherit"><div class="ps-per" id="ps-per-${idx}" style="font-size:10px;color:#777;margin-top:2px"></div></td>
         <td class="ps-amt" id="ps-amt-${idx}" style="text-align:right"></td></tr>`;
     }).join('');
     const checkBox = checks.length ? `<div style="background:#fcf3f2;border:1px solid #e3b9b3;border-radius:6px;padding:8px 12px;margin:10px 0;font-size:12px;color:#8e1b1b"><b>⚠ Confirm before finalizing:</b> ${checks.join(' · ')}</div>` : '';
@@ -4571,23 +4599,24 @@
       <div class="ps-title">Invoice Review</div>
       <div class="ps-meta">San Fermo order · placed ${_psFmtL(o.placed_at)} by ${escape(o.placed_by||'')}<br>
         Needed by: <b>${o.requested_date?_psFmtL(o.requested_date+'T12:00:00'):'—'}</b> &nbsp;·&nbsp; <span class="ps-id">${escape(o.order_id)}</span></div>
-      <div style="background:#f4efe6;border:1px solid #d8cbb3;border-radius:6px;padding:8px 12px;font-size:12px;margin:8px 0">Market reference + <b>${prem}% Swan premium</b>. Each line shows the underlying market price and its freshness; the editable column is the Swan price. Adjust anything, then finalize.</div>
+      <div style="background:#f4efe6;border:1px solid #d8cbb3;border-radius:6px;padding:8px 12px;font-size:12px;margin:8px 0">Market reference + <input id="ps-prem" type="number" min="0" step="1" value="${prem}" style="width:48px;text-align:right;border:1px solid #b9a77f;border-radius:4px;padding:1px 4px;font:inherit">% Swan premium. Each line names the vendor the price came from and spells out the converted Swan price per unit. Change the premium or any line, then finalize.</div>
       ${o.order_note?`<div class="ps-note">Note: “${escape(o.order_note)}”</div>`:''}
       ${checkBox}
       <table class="ps-table"><thead>
-        <tr><th>Item / freshness</th><th>Ordered</th><th>Market ref</th><th>Swan +${prem}%</th><th>Amount</th></tr></thead>
+        <tr><th>Item / freshness</th><th>Ordered</th><th>Market ref</th><th>Swan price</th><th>Amount</th></tr></thead>
         <tbody>${rows}
         <tr class="ps-total"><td colspan="4">TOTAL</td><td id="ps-total-amt" style="text-align:right"></td></tr></tbody></table>
       <div style="text-align:center;margin:18px 0"><button class="ps-btn" style="background:#2e4624;color:#fff;border-color:#2e4624" onclick="ordersFinalizePricing()">Finalize pricing →</button></div>
       <div class="ps-foot">Lines marked <b style="color:#b00">CHECK</b> use stale or researched comps. Nothing prints until you finalize.</div>`;
     document.querySelectorAll('#print-sheet-body .ps-price').forEach(inp=>inp.addEventListener('input',_psRecalc));
+    const pel=document.getElementById('ps-prem'); if(pel) pel.addEventListener('input',_psApplyPremium);
     _psRecalc();
     document.body.classList.add('ps-review');
   }
 
   async function ordersSheet(id){
     const o=ordersData.find(x=>x.order_id===id); if(!o) return;
-    _psOrder=o; _psPrices={};
+    _psOrder=o; _psPrices={}; _psPremium=null;
     await loadPriceFeed();
     _psRenderReview();
     document.body.classList.add('print-sheet-open');
