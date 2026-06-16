@@ -2575,7 +2575,7 @@
   // CONFIG + STATE
   // ====================================================================
   const VERSION = "v1.38";
-  const BUILD = '1781601323'; // stamped by deploy-to-github.command at every deploy
+  const BUILD = '1781601418'; // stamped by deploy-to-github.command at every deploy
   const DATA_PATH = "data";
   const params = new URLSearchParams(window.location.search);
   const today = new Date().toISOString().split('T')[0];
@@ -4487,7 +4487,15 @@
     } catch (e) { /* feed optional — sheet still works with blank price columns */ }
     return _priceFeed;
   }
-  function _psNormUnit(u){ u=(u==null?'':u).toString().trim().toLowerCase(); return (u==='#'||u==='lb'||u==='lbs')?'lb':u; }
+  function _psNormUnit(u){
+    u=(u==null?'':u).toString().trim().toLowerCase();
+    if(u==='#'||u==='lb'||u==='lbs'||u==='pound'||u==='pounds') return 'lb';
+    if(u==='bn'||u==='bunch'||u==='bunches') return 'bunch';
+    if(u==='ea'||u==='each') return 'each';
+    if(u==='cs'||u==='case'||u==='cases') return 'case';
+    if(u==='doz'||u==='dz'||u==='dozen') return 'dozen';
+    return u;
+  }
   const _psCNT = {'dozen':12,'each':1,'ea':1,'ct':1};
   function _psNum(x){ if(x==null||x==='') return 1; x=x.toString(); if(x.indexOf('/')>=0){const p=x.split('/'); return (parseFloat(p[0])||0)/(parseFloat(p[1])||1);} return parseFloat(x)||1; }
   // Parse an order unit into a pounds factor. Handles picker notations (½lb, ¼lb,
