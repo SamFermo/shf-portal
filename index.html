@@ -2577,7 +2577,7 @@
   // CONFIG + STATE
   // ====================================================================
   const VERSION = "v1.38";
-  const BUILD = '1781602646'; // stamped by deploy-to-github.command at every deploy
+  const BUILD = '1781640265'; // stamped by deploy-to-github.command at every deploy
   const DATA_PATH = "data";
   const params = new URLSearchParams(window.location.search);
   const today = new Date().toISOString().split('T')[0];
@@ -4484,7 +4484,7 @@
     if (_priceFeedTried) return _priceFeed;
     _priceFeedTried = true;
     try {
-      const r = await fetch('data/price-reference.json', { cache: 'no-store' });
+      const r = await fetch('https://samfermo.github.io/seasonal-tracker/price-reference.json', { cache: 'no-store' });
       if (r.ok) _priceFeed = await r.json();
     } catch (e) { /* feed optional — sheet still works with blank price columns */ }
     return _priceFeed;
@@ -4627,14 +4627,23 @@
   function ordersFinalizePricing(){
     document.querySelectorAll('#print-sheet-body .ps-price').forEach(inp=>{ _psPrices[inp.dataset.idx]=inp.value; });
     const o=_psOrder; if(!o) return;
-    let tot=0, any=false;
+    const feedItems=(_priceFeed&&_priceFeed.items)||{};
+    // Build the finalized invoice lines (also written back to Firestore for the ledger + farm-set learning).
+    const invLines=(o.lines||[]).map((l,idx)=>{
+      const p=parseFloat(_psPrices[idx]); const has=!isNaN(p);
+      const amt=has?+((parseFloat(l.qty)||0)*p).toFixed(2):null;
+      const fe=feedItems[l.item];
+      return {item:l.item, unit:l.unit, qty:l.qty, price:has?+p.toFixed(2):null, amount:amt,
+              source:(fe&&fe.source)||'manual', farm_set:!!(fe&&fe.farm_set)||!fe};
+    });
+    const tot=invLines.reduce((s,x)=>s+(x.amount||0),0);
+    const any=invLines.some(x=>x.amount!=null);
     const rows=(o.lines||[]).map((l,idx)=>{
       const fs=l.farm_status?` <span class="ps-flag">${l.farm_status.toUpperCase()}${l.farm_note?': '+escape(l.farm_note):''}</span>`:'';
-      const p=parseFloat(_psPrices[idx]); const has=!isNaN(p);
-      const amt=has?(parseFloat(l.qty)||0)*p:NaN; if(has){tot+=amt;any=true;}
+      const x=invLines[idx]; const has=x.price!=null;
       return `<tr><td>${escape(l.item)}${fs}</td><td>${escape(l.qty)} ${escape(l.unit)}</td><td></td>
-        <td style="text-align:right">${has?'$'+p.toFixed(2):''}</td>
-        <td style="text-align:right">${has?'$'+amt.toFixed(2):''}</td></tr>`;
+        <td style="text-align:right">${has?'$'+x.price.toFixed(2):''}</td>
+        <td style="text-align:right">${x.amount!=null?'$'+x.amount.toFixed(2):''}</td></tr>`;
     }).join('');
     document.getElementById('print-sheet-body').innerHTML = `
       <div class="ps-farm">· SWAN HOUSE FARM ·</div>
@@ -4650,6 +4659,10 @@
       <div class="ps-sign">Packed by ____________________&nbsp;&nbsp;Date __________&nbsp;&nbsp;&nbsp;&nbsp;Invoiced by ____________________&nbsp;&nbsp;Date __________</div>
       <div style="text-align:center;margin:14px 0"><button class="ps-btn" onclick="ordersEditPricing()">← Edit pricing</button></div>`;
     document.body.classList.remove('ps-review');
+    // Persist the finalized invoice to Firestore (proven ordersUpdate path; self-handles errors).
+    // The morning sweep ingests these into the ledger + farm-set price book. Fire-and-forget.
+    ordersUpdate(o.order_id, { invoice: { drafted:true, finalized_at:new Date().toISOString(),
+      premium_pct:_psPremium, total:+tot.toFixed(2), lines:invLines } });
   }
   function ordersSheetClose(){ document.body.classList.remove('print-sheet-open'); document.body.classList.remove('ps-review'); }
 
