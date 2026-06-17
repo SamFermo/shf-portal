@@ -2577,7 +2577,7 @@
   // CONFIG + STATE
   // ====================================================================
   const VERSION = "v1.38";
-  const BUILD = '1781730049'; // stamped by deploy-to-github.command at every deploy
+  const BUILD = '1781731021'; // stamped by deploy-to-github.command at every deploy
   const DATA_PATH = "data";
   const params = new URLSearchParams(window.location.search);
   const today = new Date().toISOString().split('T')[0];
@@ -4771,20 +4771,53 @@
 
   // Farm-dinner harvest invoicing — same engine as the restaurant invoice, but sourced
   // from the harvest weekend's items (no restaurant order). Works on past weekends too.
+  let _priceHistory=null, _priceHistoryTried=false;
+  async function loadPriceHistory(){
+    if(_priceHistoryTried) return _priceHistory;
+    _priceHistoryTried=true;
+    try{ const r=await fetch('https://samfermo.github.io/seasonal-tracker/swan-price-history.json',{cache:'no-store'}); if(r.ok) _priceHistory=await r.json(); }catch(e){}
+    return _priceHistory;
+  }
+  // Nearest-dated farm invoice rate for an item — used to price PAST harvest lists
+  // from what the farm actually charged around that dinner's date.
+  function _swanHistRate(name, date){
+    const h=_priceHistory&&_priceHistory.items; if(!h) return null;
+    const low=(name||'').toString().toLowerCase().trim();
+    let arr=h[low]||h[low.replace(/s$/,'')];
+    if(!arr){ for(const k in h){ if(k.length>3 && (low.includes(k)||k.includes(low))){ arr=h[k]; break; } } }
+    if(!arr||!arr.length) return null;
+    const t=new Date((date||new Date().toISOString().slice(0,10))+'T12:00:00').getTime();
+    let best=null,bd=Infinity;
+    arr.forEach(e=>{ const dd=Math.abs(new Date(e.date+'T12:00:00').getTime()-t); if(dd<bd){bd=dd;best=e;} });
+    return best?best.rate:null;
+  }
   function _psParseQty(s){
     s=(s==null?'':s).toString().trim();
-    const m=s.match(/^([\d.\/]+)\s*(.*)$/);
-    if(m) return {qty:_psNum(m[1]), unit:(m[2]||'each').trim()};
-    return {qty:1, unit:s||'each'};
+    const m=s.match(/(\d+(?:\.\d+)?(?:\/\d+)?)\s*([#a-z]+)?/i);   // first number + optional unit token (handles prose qtys)
+    if(m) return {qty:_psNum(m[1]), unit:(m[2]||'each').toLowerCase()};
+    return {qty:1, unit:'each'};
   }
   function harvestInvoice(){
     const w=harvestWeekend; if(!w) return;
-    const lines=(w.items||[]).map(it=>{ const q=_psParseQty(it.qty); return {item:it.name, qty:q.qty, unit:q.unit, farm_note:it.note||''}; });
-    _psOrder={ order_id:'farmdinner-'+(dinnerDate||'')+'-'+String(w.label||'').replace(/\s+/g,'-').toLowerCase(),
-               placed_at:new Date().toISOString(), placed_by:'Swan House Farm', requested_date:dinnerDate||'',
-               order_note:'Farm dinner harvest — '+(w.label||''), lines, _noWriteback:true };
-    _psPrices={}; _psPremium=null;
-    loadPriceFeed().then(()=>{ _psRenderReview(); document.body.classList.add('print-sheet-open'); });
+    Promise.all([loadPriceFeed(), loadPriceHistory()]).then(()=>{
+      const feedItems=(_priceFeed&&_priceFeed.items)||{};
+      const byLower={}; Object.keys(feedItems).forEach(k=>{ byLower[k.toLowerCase()]=k; byLower[k.toLowerCase().replace(' (farm)','')]=k; });
+      const today=new Date().toISOString().slice(0,10);
+      const isPast=(dinnerDate||'')<today;
+      const prices={};
+      const lines=(w.items||[]).map((it,idx)=>{
+        const q=_psParseQty(it.qty);
+        const low=(it.name||'').toLowerCase().trim();
+        const fk=byLower[low]||byLower[low.replace(/s$/,'')]||it.name;        // resolve to feed key (market ref column)
+        if(isPast){ const r=_swanHistRate(it.name, dinnerDate); if(r!=null) prices[idx]=(+r).toFixed(2); }  // PAST → historical farm rate
+        return {item:fk, qty:q.qty, unit:q.unit, farm_note:it.note||''};
+      });
+      _psOrder={ order_id:'farmdinner-'+(dinnerDate||'')+'-'+String(w.label||'').replace(/\s+/g,'-').toLowerCase(),
+                 placed_at:new Date().toISOString(), placed_by:'Swan House Farm', requested_date:dinnerDate||'',
+                 order_note:'Farm dinner harvest — '+(w.label||'')+(isPast?' · priced from Swan invoices near '+dinnerDate:''), lines, _noWriteback:true };
+      _psPrices=prices; _psPremium=null;
+      _psRenderReview(); document.body.classList.add('print-sheet-open');
+    });
   }
   function harvestHarvestSheet(){
     const w=harvestWeekend; if(!w) return;
