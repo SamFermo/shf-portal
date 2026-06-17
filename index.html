@@ -2577,7 +2577,7 @@
   // CONFIG + STATE
   // ====================================================================
   const VERSION = "v1.38";
-  const BUILD = '1781728469'; // stamped by deploy-to-github.command at every deploy
+  const BUILD = '1781730049'; // stamped by deploy-to-github.command at every deploy
   const DATA_PATH = "data";
   const params = new URLSearchParams(window.location.search);
   const today = new Date().toISOString().split('T')[0];
@@ -4742,7 +4742,6 @@
         <div class="hv-eyebrow">Harvest · ${escape(w.label || '')}</div>
         <div class="hv-title">${escape(dinnerData?.display_date || dinnerDate)}</div>
         <div class="hv-progress">${picked} of ${items.length} picked${isPast ? ' · past dinner (archived)' : ''}</div>
-        ${w.pdf ? `<a class="hv-pdf" href="${escape(w.pdf)}" target="_blank" rel="noopener">Printable PDF ⤓</a>` : ''}
         <div style="display:flex;gap:8px;margin-top:10px">
           <button class="ps-btn" style="padding:7px 14px;font-size:13px" onclick="harvestHarvestSheet()">🖨 Harvest list</button>
           <button class="ps-btn" style="padding:7px 14px;font-size:13px;background:#2e4624;color:#fff;border-color:#2e4624" onclick="harvestInvoice()">💲 Invoice → finalize</button>
