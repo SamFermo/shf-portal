@@ -2577,7 +2577,7 @@
   // CONFIG + STATE
   // ====================================================================
   const VERSION = "v1.38";
-  const BUILD = '1781731021'; // stamped by deploy-to-github.command at every deploy
+  const BUILD = '1781732252'; // stamped by deploy-to-github.command at every deploy
   const DATA_PATH = "data";
   const params = new URLSearchParams(window.location.search);
   const today = new Date().toISOString().split('T')[0];
@@ -4543,9 +4543,14 @@
   function _psRecalc(){
     let tot=0, any=false;
     document.querySelectorAll('#print-sheet-body .ps-price').forEach(inp=>{
+      const idx=inp.dataset.idx;
+      const incl=document.querySelector('#print-sheet-body .ps-incl[data-idx="'+idx+'"]');
+      const tr=inp.closest('tr'); const excluded = !!(incl && !incl.checked);
+      if(tr) tr.style.opacity = excluded ? '0.38' : '';
+      const amtEl=document.getElementById('ps-amt-'+idx);
+      const perEl=document.getElementById('ps-per-'+idx);
+      if(excluded){ if(amtEl) amtEl.textContent='—'; if(perEl) perEl.textContent='excluded'; return; }
       const qty=parseFloat(inp.dataset.qty)||0, p=parseFloat(inp.value);
-      const amtEl=document.getElementById('ps-amt-'+inp.dataset.idx);
-      const perEl=document.getElementById('ps-per-'+inp.dataset.idx);
       if(!isNaN(p)){ const a=qty*p; amtEl.textContent='$'+a.toFixed(2); tot+=a; any=true;
         if(perEl) perEl.textContent='$'+p.toFixed(2)+' per '+_psUnitWords(inp.dataset.unit); }
       else { amtEl.textContent=''; if(perEl) perEl.textContent=''; }
@@ -4611,7 +4616,7 @@
       // per-line premium input only where a market premium applies (not farm-set / no-comp)
       const linePrem = mktInUnit!=null ? `<div style="font-size:10px;color:#888;margin-top:2px">prem <input class="ps-lineprem" data-idx="${idx}" inputmode="decimal" placeholder="${prem}" title="per-line premium % (overrides the universal rate for this line)" style="width:30px;text-align:right;border:1px solid #ddd;border-radius:3px;font:inherit;font-size:11px">%</div>` : '';
       return `<tr>
-        <td><b>${escape(l.item)}</b>${fs}${badge}${detail}</td>
+        <td><label style="cursor:pointer"><input type="checkbox" class="ps-incl" data-idx="${idx}" checked title="uncheck to leave off the invoice" style="vertical-align:middle;margin-right:5px"><b>${escape(l.item)}</b></label>${fs}${badge}${detail}</td>
         <td>${escape(l.qty)} ${escape(l.unit)}</td>
         <td style="text-align:right;font-size:12px;color:#555">${market}</td>
         <td style="text-align:right">$<input class="ps-price" data-idx="${idx}" data-qty="${escape(l.qty)}" data-unit="${escape(l.unit)}"${mktAttr} value="${priceVal}" inputmode="decimal" aria-label="Swan price per unit" style="width:56px;text-align:right;border:1px solid #ccc;border-radius:3px;padding:1px 3px;font:inherit">${linePrem}<div class="ps-per" id="ps-per-${idx}" style="font-size:10px;color:#777;margin-top:2px"></div></td>
@@ -4633,6 +4638,7 @@
       <div style="text-align:center;margin:18px 0"><button class="ps-btn" style="background:#2e4624;color:#fff;border-color:#2e4624" onclick="ordersFinalizePricing()">Finalize pricing →</button></div>
       <div class="ps-foot">Lines marked <b style="color:#b00">CHECK</b> use stale or researched comps. Nothing prints until you finalize.</div>`;
     document.querySelectorAll('#print-sheet-body .ps-price').forEach(inp=>inp.addEventListener('input',_psRecalc));
+    document.querySelectorAll('#print-sheet-body .ps-incl').forEach(inp=>inp.addEventListener('change',_psRecalc));
     document.querySelectorAll('#print-sheet-body .ps-lineprem').forEach(inp=>inp.addEventListener('input',_psApplyLinePremium));
     const pel=document.getElementById('ps-prem'); if(pel) pel.addEventListener('input',_psApplyPremium);
     _psRecalc();
@@ -4651,22 +4657,26 @@
   // Finalize: lock the reviewed prices into the clean printout (the filed invoice).
   function ordersFinalizePricing(){
     document.querySelectorAll('#print-sheet-body .ps-price').forEach(inp=>{ _psPrices[inp.dataset.idx]=inp.value; });
+    const excluded=new Set(); document.querySelectorAll('#print-sheet-body .ps-incl').forEach(c=>{ if(!c.checked) excluded.add(String(c.dataset.idx)); });
     const o=_psOrder; if(!o) return;
     const feedItems=(_priceFeed&&_priceFeed.items)||{};
-    // Build the finalized invoice lines (also written back to Firestore for the ledger + farm-set learning).
+    // Build the finalized invoice lines. Deselected (unchecked) lines are dropped entirely —
+    // off the printout, out of the total, and out of the Firestore writeback.
     const invLines=(o.lines||[]).map((l,idx)=>{
+      if(excluded.has(String(idx))) return null;
       const p=parseFloat(_psPrices[idx]); const has=!isNaN(p);
       const amt=has?+((parseFloat(l.qty)||0)*p).toFixed(2):null;
       const fe=feedItems[l.item];
       return {item:l.item, unit:l.unit, qty:l.qty, price:has?+p.toFixed(2):null, amount:amt,
+              farm_status:l.farm_status||null, farm_note:l.farm_note||'',
               source:(fe&&fe.source)||'manual', farm_set:!!(fe&&fe.farm_set)||!fe};
-    });
+    }).filter(Boolean);
     const tot=invLines.reduce((s,x)=>s+(x.amount||0),0);
     const any=invLines.some(x=>x.amount!=null);
-    const rows=(o.lines||[]).map((l,idx)=>{
-      const fs=l.farm_status?` <span class="ps-flag">${l.farm_status.toUpperCase()}${l.farm_note?': '+escape(l.farm_note):''}</span>`:'';
-      const x=invLines[idx]; const has=x.price!=null;
-      return `<tr><td>${escape(l.item)}${fs}</td><td>${escape(l.qty)} ${escape(l.unit)}</td><td></td>
+    const rows=invLines.map(x=>{
+      const fs=x.farm_status?` <span class="ps-flag">${x.farm_status.toUpperCase()}${x.farm_note?': '+escape(x.farm_note):''}</span>`:'';
+      const has=x.price!=null;
+      return `<tr><td>${escape(x.item)}${fs}</td><td>${escape(x.qty)} ${escape(x.unit)}</td><td></td>
         <td style="text-align:right">${has?'$'+x.price.toFixed(2):''}</td>
         <td style="text-align:right">${x.amount!=null?'$'+x.amount.toFixed(2):''}</td></tr>`;
     }).join('');
