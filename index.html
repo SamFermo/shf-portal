@@ -2577,7 +2577,7 @@
   // CONFIG + STATE
   // ====================================================================
   const VERSION = "v1.38";
-  const BUILD = '1781728224'; // stamped by deploy-to-github.command at every deploy
+  const BUILD = '1781728469'; // stamped by deploy-to-github.command at every deploy
   const DATA_PATH = "data";
   const params = new URLSearchParams(window.location.search);
   const today = new Date().toISOString().split('T')[0];
@@ -4686,8 +4686,10 @@
     document.body.classList.remove('ps-review');
     // Persist the finalized invoice to Firestore (proven ordersUpdate path; self-handles errors).
     // The morning sweep ingests these into the ledger + farm-set price book. Fire-and-forget.
-    ordersUpdate(o.order_id, { invoice: { drafted:true, finalized_at:new Date().toISOString(),
-      premium_pct:_psPremium, total:+tot.toFixed(2), lines:invLines } });
+    // Farm-dinner harvests (_noWriteback) have no order doc — they just print/PDF, no writeback.
+    if(!o._noWriteback)
+      ordersUpdate(o.order_id, { invoice: { drafted:true, finalized_at:new Date().toISOString(),
+        premium_pct:_psPremium, total:+tot.toFixed(2), lines:invLines } });
   }
   function ordersSheetClose(){ document.body.classList.remove('print-sheet-open'); document.body.classList.remove('ps-review'); }
 
@@ -4741,6 +4743,10 @@
         <div class="hv-title">${escape(dinnerData?.display_date || dinnerDate)}</div>
         <div class="hv-progress">${picked} of ${items.length} picked${isPast ? ' · past dinner (archived)' : ''}</div>
         ${w.pdf ? `<a class="hv-pdf" href="${escape(w.pdf)}" target="_blank" rel="noopener">Printable PDF ⤓</a>` : ''}
+        <div style="display:flex;gap:8px;margin-top:10px">
+          <button class="ps-btn" style="padding:7px 14px;font-size:13px" onclick="harvestHarvestSheet()">🖨 Harvest list</button>
+          <button class="ps-btn" style="padding:7px 14px;font-size:13px;background:#2e4624;color:#fff;border-color:#2e4624" onclick="harvestInvoice()">💲 Invoice → finalize</button>
+        </div>
       </div>
       ${w.intro ? `<div class="hv-intro">${escape(w.intro)}</div>` : ''}
       <div class="hv-section">Pick fresh each morning</div>
@@ -4762,6 +4768,37 @@
         if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); }
       });
     });
+  }
+
+  // Farm-dinner harvest invoicing — same engine as the restaurant invoice, but sourced
+  // from the harvest weekend's items (no restaurant order). Works on past weekends too.
+  function _psParseQty(s){
+    s=(s==null?'':s).toString().trim();
+    const m=s.match(/^([\d.\/]+)\s*(.*)$/);
+    if(m) return {qty:_psNum(m[1]), unit:(m[2]||'each').trim()};
+    return {qty:1, unit:s||'each'};
+  }
+  function harvestInvoice(){
+    const w=harvestWeekend; if(!w) return;
+    const lines=(w.items||[]).map(it=>{ const q=_psParseQty(it.qty); return {item:it.name, qty:q.qty, unit:q.unit, farm_note:it.note||''}; });
+    _psOrder={ order_id:'farmdinner-'+(dinnerDate||'')+'-'+String(w.label||'').replace(/\s+/g,'-').toLowerCase(),
+               placed_at:new Date().toISOString(), placed_by:'Swan House Farm', requested_date:dinnerDate||'',
+               order_note:'Farm dinner harvest — '+(w.label||''), lines, _noWriteback:true };
+    _psPrices={}; _psPremium=null;
+    loadPriceFeed().then(()=>{ _psRenderReview(); document.body.classList.add('print-sheet-open'); });
+  }
+  function harvestHarvestSheet(){
+    const w=harvestWeekend; if(!w) return;
+    const rows=(w.items||[]).map(it=>`<tr><td>${escape(it.name)}${it.note?` <span class="ps-flag">${escape(it.note)}</span>`:''}</td><td>${escape(it.qty||'')}</td><td></td></tr>`).join('');
+    document.getElementById('print-sheet-body').innerHTML = `
+      <div class="ps-farm">· SWAN HOUSE FARM ·</div>
+      <div class="ps-title">Harvest / Packing List</div>
+      <div class="ps-meta">Farm dinner · ${escape(w.label||'')}<br><span class="ps-id">${escape((dinnerData&&dinnerData.display_date)||dinnerDate||'')}</span></div>
+      <table class="ps-table"><thead><tr><th>Item</th><th>Qty</th><th>Picked ✓</th></tr></thead><tbody>${rows}</tbody></table>
+      <div class="ps-foot">Harvest list for the farm dinner — use the Invoice button to price &amp; finalize.</div>
+      <div class="ps-sign">Packed by ____________________&nbsp;&nbsp;Date __________</div>`;
+    document.body.classList.remove('ps-review');
+    document.body.classList.add('print-sheet-open');
   }
 
   // Show/hide the Harvest vtab + portal card — needs dinnerData AND a
