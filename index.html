@@ -2577,7 +2577,7 @@
   // CONFIG + STATE
   // ====================================================================
   const VERSION = "v1.38";
-  const BUILD = '1781648920'; // stamped by deploy-to-github.command at every deploy
+  const BUILD = '1781728224'; // stamped by deploy-to-github.command at every deploy
   const DATA_PATH = "data";
   const params = new URLSearchParams(window.location.search);
   const today = new Date().toISOString().split('T')[0];
@@ -4422,7 +4422,8 @@
               ${st==='placed' ? `<button class="ord-btn ord-btn-ack" data-ack="${escape(o.order_id)}">Got it 👍</button>` : ''}
               ${st!=='delivered' && st!=='cancelled' ? `<button class="ord-btn ord-btn-deliv" data-deliv="${escape(o.order_id)}">Mark delivered</button>` : ''}
             </div>
-            <button class="ord-btn ord-btn-sheet" data-sheet="${escape(o.order_id)}">🖨 Harvest sheet / invoice draft</button>
+            <button class="ord-btn ord-btn-sheet" data-harvest="${escape(o.order_id)}">🖨 Harvest sheet</button>
+            <button class="ord-btn ord-btn-sheet" data-sheet="${escape(o.order_id)}">💲 Invoice</button>
           </div>` : ''}
       </div>`;
     };
@@ -4470,6 +4471,9 @@
       const id = el.dataset.deliv;
       const o = ordersData.find(x => x.order_id === id);
       await ordersUpdate(id, { status: 'delivered', delivered: { at: new Date().toISOString() }, confirmed_date: (o && o.confirmed_date) || new Date().toISOString().slice(0,10) });
+    }));
+    c.querySelectorAll('[data-harvest]').forEach(el => el.addEventListener('click', (ev) => {
+      ev.stopPropagation(); ordersHarvestSheet(el.dataset.harvest);
     }));
     c.querySelectorAll('[data-sheet]').forEach(el => el.addEventListener('click', (ev) => {
       ev.stopPropagation(); ordersSheet(el.dataset.sheet);
@@ -4548,14 +4552,27 @@
     });
     const t=document.getElementById('ps-total-amt'); if(t) t.textContent = any ? '$'+tot.toFixed(2) : '';
   }
-  // Re-price every convertible line from its market reference at the chosen premium %.
+  // Universal premium: re-price every convertible line from its market reference,
+  // EXCEPT lines with a per-line premium override (those keep their own rate).
   function _psApplyPremium(){
     const el=document.getElementById('ps-prem'); if(!el) return;
     let p=parseFloat(el.value); if(isNaN(p)||p<0) p=0; _psPremium=p;
     document.querySelectorAll('#print-sheet-body .ps-price').forEach(inp=>{
+      const lp=document.querySelector('#print-sheet-body .ps-lineprem[data-idx="'+inp.dataset.idx+'"]');
+      if(lp && lp.value.trim()!=='') return;                       // per-line override active → leave it
       const mkt=parseFloat(inp.dataset.mkt);
       if(!isNaN(mkt)) inp.value=(mkt*(1+p/100)).toFixed(2);
     });
+    _psRecalc();
+  }
+  // Per-line premium: override one line; blank reverts it to the universal rate.
+  function _psApplyLinePremium(ev){
+    const el=ev.target, idx=el.dataset.idx;
+    const price=document.querySelector('#print-sheet-body .ps-price[data-idx="'+idx+'"]'); if(!price) return;
+    const mkt=parseFloat(price.dataset.mkt); if(isNaN(mkt)){ return; }
+    const v=el.value.trim();
+    const pct = (v==='' || isNaN(parseFloat(v))) ? _psPremium : parseFloat(v);   // blank → universal
+    price.value=(mkt*(1+pct/100)).toFixed(2);
     _psRecalc();
   }
   // Two stages: a detailed REVIEW view (market ref + Swan premium + freshness +
@@ -4573,25 +4590,31 @@
     const rows=(o.lines||[]).map((l,idx)=>{
       const pe=items[l.item];
       const fs=l.farm_status?` <span class="ps-flag">${l.farm_status.toUpperCase()}${l.farm_note?': '+escape(l.farm_note):''}</span>`:'';
-      let market='—', detail='', badge='', mktInUnit=null;
+      let market='—', detail='', badge='', mktInUnit=null, directVal=null;
       if(pe && pe.swan_price!=null){
         const fc=_PS_FC[pe.freshness]||'#888';
         badge=` <span style="background:${fc};color:#fff;font-size:9px;padding:1px 6px;border-radius:3px">${escape(pe.freshness)}</span>`;
-        market=`$${pe.market}/${escape(pe.unit)}`;
+        // market reference always shown per pound when weight-convertible (Sam, 2026-06-17)
+        market = (pe.swan_per_lb!=null) ? `$${(pe.swan_per_lb/(1+feedPrem/100)).toFixed(2)}/lb` : `$${pe.market}/${escape(pe.unit)}`;
         detail=`<div style="font-size:10px;color:#999">${pe.vendor?'from <b>'+escape(pe.vendor)+'</b> · ':''}${escape(pe.source)}${pe.date?' · '+escape(pe.date):''}</div>`;
         const conv=_psConvert(pe,l.unit);
-        if(conv){ mktInUnit=+(conv.price/(1+feedPrem/100)).toFixed(4); if(conv.basis==='estimate') detail+=`<div style="font-size:10px;color:#a60">≈ est. conversion from ${escape(pe.unit)} — confirm</div>`; }
-        else detail+=`<div style="font-size:10px;color:#a60">set price per ${escape(_psUnitWords(l.unit))}</div>`;
+        if(conv){
+          if(pe.farm_set){ directVal=conv.price; }                                      // farm-set: price is as-is, no premium
+          else { mktInUnit=+(conv.price/(1+feedPrem/100)).toFixed(4); if(conv.basis==='estimate') detail+=`<div style="font-size:10px;color:#a60">≈ est. conversion from ${escape(pe.unit)} — confirm</div>`; }
+        } else detail+=`<div style="font-size:10px;color:#a60">set price per ${escape(_psUnitWords(l.unit))}</div>`;
+        if(pe.climb!=null && pe.climb>=15) detail+=`<div style="font-size:10px;color:#c0392b;font-weight:700">▲ up ${Math.round(pe.climb)}% since last check</div>`;
         if(pe.needs_check){ detail+=`<div style="font-size:10px;color:#b00;font-weight:700">CHECK — confirm price</div>`; checks.push(escape(l.item)); }
       } else { detail=`<div style="font-size:10px;color:#a55">no market ref — set price</div>`; }
       const priceVal = (_psPrices[idx]!=null && _psPrices[idx]!=='') ? _psPrices[idx]
-                       : (mktInUnit!=null ? (mktInUnit*(1+prem/100)).toFixed(2) : '');
+                       : (directVal!=null ? directVal.toFixed(2) : (mktInUnit!=null ? (mktInUnit*(1+prem/100)).toFixed(2) : ''));
       const mktAttr = mktInUnit!=null ? ` data-mkt="${mktInUnit}"` : '';
+      // per-line premium input only where a market premium applies (not farm-set / no-comp)
+      const linePrem = mktInUnit!=null ? `<div style="font-size:10px;color:#888;margin-top:2px">prem <input class="ps-lineprem" data-idx="${idx}" inputmode="decimal" placeholder="${prem}" title="per-line premium % (overrides the universal rate for this line)" style="width:30px;text-align:right;border:1px solid #ddd;border-radius:3px;font:inherit;font-size:11px">%</div>` : '';
       return `<tr>
         <td><b>${escape(l.item)}</b>${fs}${badge}${detail}</td>
         <td>${escape(l.qty)} ${escape(l.unit)}</td>
         <td style="text-align:right;font-size:12px;color:#555">${market}</td>
-        <td style="text-align:right">$<input class="ps-price" data-idx="${idx}" data-qty="${escape(l.qty)}" data-unit="${escape(l.unit)}"${mktAttr} value="${priceVal}" inputmode="decimal" aria-label="Swan price per unit" style="width:56px;text-align:right;border:1px solid #ccc;border-radius:3px;padding:1px 3px;font:inherit"><div class="ps-per" id="ps-per-${idx}" style="font-size:10px;color:#777;margin-top:2px"></div></td>
+        <td style="text-align:right">$<input class="ps-price" data-idx="${idx}" data-qty="${escape(l.qty)}" data-unit="${escape(l.unit)}"${mktAttr} value="${priceVal}" inputmode="decimal" aria-label="Swan price per unit" style="width:56px;text-align:right;border:1px solid #ccc;border-radius:3px;padding:1px 3px;font:inherit">${linePrem}<div class="ps-per" id="ps-per-${idx}" style="font-size:10px;color:#777;margin-top:2px"></div></td>
         <td class="ps-amt" id="ps-amt-${idx}" style="text-align:right"></td></tr>`;
     }).join('');
     const checkBox = checks.length ? `<div style="background:#fcf3f2;border:1px solid #e3b9b3;border-radius:6px;padding:8px 12px;margin:10px 0;font-size:12px;color:#8e1b1b"><b>⚠ Confirm before finalizing:</b> ${checks.join(' · ')}</div>` : '';
@@ -4610,6 +4633,7 @@
       <div style="text-align:center;margin:18px 0"><button class="ps-btn" style="background:#2e4624;color:#fff;border-color:#2e4624" onclick="ordersFinalizePricing()">Finalize pricing →</button></div>
       <div class="ps-foot">Lines marked <b style="color:#b00">CHECK</b> use stale or researched comps. Nothing prints until you finalize.</div>`;
     document.querySelectorAll('#print-sheet-body .ps-price').forEach(inp=>inp.addEventListener('input',_psRecalc));
+    document.querySelectorAll('#print-sheet-body .ps-lineprem').forEach(inp=>inp.addEventListener('input',_psApplyLinePremium));
     const pel=document.getElementById('ps-prem'); if(pel) pel.addEventListener('input',_psApplyPremium);
     _psRecalc();
     document.body.classList.add('ps-review');
@@ -4666,6 +4690,26 @@
       premium_pct:_psPremium, total:+tot.toFixed(2), lines:invLines } });
   }
   function ordersSheetClose(){ document.body.classList.remove('print-sheet-open'); document.body.classList.remove('ps-review'); }
+
+  // Clean printable packing/harvest list — no pricing (split out from the invoice per Kelly).
+  function ordersHarvestSheet(id){
+    const o=ordersData.find(x=>x.order_id===id); if(!o) return;
+    const rows=(o.lines||[]).map(l=>{
+      const fs=l.farm_status?` <span class="ps-flag">${l.farm_status.toUpperCase()}${l.farm_note?': '+escape(l.farm_note):''}</span>`:'';
+      return `<tr><td>${escape(l.item)}${fs}</td><td>${escape(l.qty)} ${escape(l.unit)}</td><td></td></tr>`;
+    }).join('');
+    document.getElementById('print-sheet-body').innerHTML = `
+      <div class="ps-farm">· SWAN HOUSE FARM ·</div>
+      <div class="ps-title">Harvest / Packing List</div>
+      <div class="ps-meta">San Fermo order · placed ${_psFmtL(o.placed_at)} by ${escape(o.placed_by||'')}<br>
+        Needed by: <b>${o.requested_date?_psFmtL(o.requested_date+'T12:00:00'):'—'}</b> &nbsp;·&nbsp; <span class="ps-id">${escape(o.order_id)}</span></div>
+      ${o.order_note?`<div class="ps-note">Note: “${escape(o.order_note)}”</div>`:''}
+      <table class="ps-table"><thead><tr><th>Item</th><th>Ordered</th><th>Packed ✓</th></tr></thead><tbody>${rows}</tbody></table>
+      <div class="ps-foot">Packing list only — no pricing. Use the Invoice button to price &amp; finalize.</div>
+      <div class="ps-sign">Packed by ____________________&nbsp;&nbsp;Date __________</div>`;
+    document.body.classList.remove('ps-review');     // not review mode → Print button available
+    document.body.classList.add('print-sheet-open');
+  }
 
   function renderHarvest() {
     const container = document.getElementById('harvest-content');
