@@ -2577,7 +2577,7 @@
   // CONFIG + STATE
   // ====================================================================
   const VERSION = "v1.38";
-  const BUILD = '1781732252'; // stamped by deploy-to-github.command at every deploy
+  const BUILD = '1781794440'; // stamped by deploy-to-github.command at every deploy
   const DATA_PATH = "data";
   const params = new URLSearchParams(window.location.search);
   const today = new Date().toISOString().split('T')[0];
@@ -4570,14 +4570,20 @@
     });
     _psRecalc();
   }
-  // Per-line premium: override one line; blank reverts it to the universal rate.
+  // Per-line input: market lines → premium override (blank = universal rate);
+  // baseline lines → scale the Swan baseline up (blank = baseline as-is, 0%).
   function _psApplyLinePremium(ev){
     const el=ev.target, idx=el.dataset.idx;
     const price=document.querySelector('#print-sheet-body .ps-price[data-idx="'+idx+'"]'); if(!price) return;
-    const mkt=parseFloat(price.dataset.mkt); if(isNaN(mkt)){ return; }
+    const base=parseFloat(price.dataset.base), mkt=parseFloat(price.dataset.mkt);
     const v=el.value.trim();
-    const pct = (v==='' || isNaN(parseFloat(v))) ? _psPremium : parseFloat(v);   // blank → universal
-    price.value=(mkt*(1+pct/100)).toFixed(2);
+    if(!isNaN(base)){                                                            // baseline scale
+      const pct=(v==='' || isNaN(parseFloat(v))) ? 0 : parseFloat(v);
+      price.value=(base*(1+pct/100)).toFixed(2);
+    } else if(!isNaN(mkt)){                                                       // market premium
+      const pct=(v==='' || isNaN(parseFloat(v))) ? _psPremium : parseFloat(v);
+      price.value=(mkt*(1+pct/100)).toFixed(2);
+    } else return;
     _psRecalc();
   }
   // Two stages: a detailed REVIEW view (market ref + Swan premium + freshness +
@@ -4595,8 +4601,26 @@
     const rows=(o.lines||[]).map((l,idx)=>{
       const pe=items[l.item];
       const fs=l.farm_status?` <span class="ps-flag">${l.farm_status.toUpperCase()}${l.farm_note?': '+escape(l.farm_note):''}</span>`:'';
-      let market='—', detail='', badge='', mktInUnit=null, directVal=null;
-      if(pe && pe.swan_price!=null){
+      let market='—', detail='', badge='', mktInUnit=null, directVal=null, baseInUnit=null;
+      if(pe && pe.baseline && pe.swan_price!=null){
+        // Swan protein baseline: the avg of prices charged IS the Swan price (NO premium).
+        // The market reference shows alongside for comparison, with its own freshness.
+        const fc=_PS_FC[pe.freshness]||'#888';
+        badge=` <span style="background:${fc};color:#fff;font-size:9px;padding:1px 6px;border-radius:3px">Swan ${escape(pe.freshness)}</span>`;
+        const conv=_psConvert(pe,l.unit);
+        if(conv){ directVal=conv.price; baseInUnit=conv.price; }
+        else detail+=`<div style="font-size:10px;color:#a60">set price per ${escape(_psUnitWords(l.unit))}</div>`;
+        detail=`<div style="font-size:10px;color:#999">Swan baseline · avg of ${pe.n}${pe.price_min!=null?` ($${(+pe.price_min).toFixed(2)}–$${(+pe.price_max).toFixed(2)})`:''}${pe.date?' · last '+escape(pe.date):''}</div>`+detail;
+        const mr=pe.market_ref;
+        if(mr && mr.price!=null){
+          market=`$${(+mr.price).toFixed(2)}/${escape(mr.unit||pe.unit)}`;
+          const mfc=_PS_FC[mr.freshness]||'#888';
+          badge+=` <span style="background:#fff;color:${mfc};border:1px solid ${mfc};font-size:9px;padding:0 5px;border-radius:3px">${escape(mr.vendor||'market')} ${escape(mr.freshness)}</span>`;
+          detail+=`<div style="font-size:10px;color:#999">market $${(+mr.price).toFixed(2)}/${escape(mr.unit||'lb')} from <b>${escape(mr.vendor||'')}</b>${mr.date?' · '+escape(mr.date):''}${mr.confidence?' ('+escape(mr.confidence)+')':''}</div>`;
+        } else { market='—'; detail+=`<div style="font-size:10px;color:#a55">no market comp</div>`; }
+        if(pe.note) detail+=`<div style="font-size:10px;color:#a60">${escape(pe.note)}</div>`;
+        if(pe.needs_check){ detail+=`<div style="font-size:10px;color:#b00;font-weight:700">CHECK — confirm price</div>`; checks.push(escape(l.item)); }
+      } else if(pe && pe.swan_price!=null){
         const fc=_PS_FC[pe.freshness]||'#888';
         badge=` <span style="background:${fc};color:#fff;font-size:9px;padding:1px 6px;border-radius:3px">${escape(pe.freshness)}</span>`;
         // market reference always shown per pound when weight-convertible (Sam, 2026-06-17)
@@ -4613,13 +4637,16 @@
       const priceVal = (_psPrices[idx]!=null && _psPrices[idx]!=='') ? _psPrices[idx]
                        : (directVal!=null ? directVal.toFixed(2) : (mktInUnit!=null ? (mktInUnit*(1+prem/100)).toFixed(2) : ''));
       const mktAttr = mktInUnit!=null ? ` data-mkt="${mktInUnit}"` : '';
-      // per-line premium input only where a market premium applies (not farm-set / no-comp)
-      const linePrem = mktInUnit!=null ? `<div style="font-size:10px;color:#888;margin-top:2px">prem <input class="ps-lineprem" data-idx="${idx}" inputmode="decimal" placeholder="${prem}" title="per-line premium % (overrides the universal rate for this line)" style="width:30px;text-align:right;border:1px solid #ddd;border-radius:3px;font:inherit;font-size:11px">%</div>` : '';
+      const baseAttr = baseInUnit!=null ? ` data-base="${baseInUnit}"` : '';
+      // market-priced lines get a per-line premium override; baseline lines get a scale-up input (blank = baseline as-is)
+      const linePrem = mktInUnit!=null
+        ? `<div style="font-size:10px;color:#888;margin-top:2px">prem <input class="ps-lineprem" data-idx="${idx}" inputmode="decimal" placeholder="${prem}" title="per-line premium % (overrides the universal rate for this line)" style="width:30px;text-align:right;border:1px solid #ddd;border-radius:3px;font:inherit;font-size:11px">%</div>`
+        : (baseInUnit!=null ? `<div style="font-size:10px;color:#888;margin-top:2px">scale <input class="ps-lineprem" data-idx="${idx}" inputmode="decimal" placeholder="0" title="scale the Swan baseline up by % (blank = baseline as-is)" style="width:30px;text-align:right;border:1px solid #ddd;border-radius:3px;font:inherit;font-size:11px">%</div>` : '');
       return `<tr>
         <td><label style="cursor:pointer"><input type="checkbox" class="ps-incl" data-idx="${idx}" checked title="uncheck to leave off the invoice" style="vertical-align:middle;margin-right:5px"><b>${escape(l.item)}</b></label>${fs}${badge}${detail}</td>
         <td>${escape(l.qty)} ${escape(l.unit)}</td>
         <td style="text-align:right;font-size:12px;color:#555">${market}</td>
-        <td style="text-align:right">$<input class="ps-price" data-idx="${idx}" data-qty="${escape(l.qty)}" data-unit="${escape(l.unit)}"${mktAttr} value="${priceVal}" inputmode="decimal" aria-label="Swan price per unit" style="width:56px;text-align:right;border:1px solid #ccc;border-radius:3px;padding:1px 3px;font:inherit">${linePrem}<div class="ps-per" id="ps-per-${idx}" style="font-size:10px;color:#777;margin-top:2px"></div></td>
+        <td style="text-align:right">$<input class="ps-price" data-idx="${idx}" data-qty="${escape(l.qty)}" data-unit="${escape(l.unit)}"${mktAttr}${baseAttr} value="${priceVal}" inputmode="decimal" aria-label="Swan price per unit" style="width:56px;text-align:right;border:1px solid #ccc;border-radius:3px;padding:1px 3px;font:inherit">${linePrem}<div class="ps-per" id="ps-per-${idx}" style="font-size:10px;color:#777;margin-top:2px"></div></td>
         <td class="ps-amt" id="ps-amt-${idx}" style="text-align:right"></td></tr>`;
     }).join('');
     const checkBox = checks.length ? `<div style="background:#fcf3f2;border:1px solid #e3b9b3;border-radius:6px;padding:8px 12px;margin:10px 0;font-size:12px;color:#8e1b1b"><b>⚠ Confirm before finalizing:</b> ${checks.join(' · ')}</div>` : '';
