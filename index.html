@@ -2548,6 +2548,18 @@
       window._firebase = { initializeApp, getFirestore, doc, getDoc, onSnapshot, setDoc, updateDoc, deleteField, serverTimestamp, collection, query, orderBy, limit, getAuth, signInAnonymously };
       const app = initializeApp(window.FIREBASE_CONFIG);
       window._firebase.app = app;
+      // App Check (2026-06-22 PII migration): attest this app with reCAPTCHA v3 so
+      // gated Firestore (rosters/, dinners/) only answers the real SHF Portal. Wrapped
+      // so an App Check hiccup never blocks Firebase init. Runs UNENFORCED (monitoring)
+      // until enforcement is flipped in the Firebase console.
+      try {
+        const { initializeAppCheck, ReCaptchaV3Provider } =
+          await import('https://www.gstatic.com/firebasejs/10.13.0/firebase-app-check.js');
+        initializeAppCheck(app, {
+          provider: new ReCaptchaV3Provider('6LfG7C8tAAAAAMVadtceT9OwpexLQ5OTKE7vpAjl'),
+          isTokenAutoRefreshEnabled: true,
+        });
+      } catch (e) { console.error('App Check init failed (non-blocking):', e); }
       window._firebase.db = getFirestore(app);
       const auth = getAuth(app);
       await signInAnonymously(auth);
@@ -2576,8 +2588,8 @@
   // ====================================================================
   // CONFIG + STATE
   // ====================================================================
-  const VERSION = "v1.40";
-  const BUILD = '1782160202'; // stamped by deploy-to-github.command at every deploy
+  const VERSION = "v1.41";
+  const BUILD = '1782223928'; // stamped by deploy-to-github.command at every deploy
   const DATA_PATH = "data";
   const params = new URLSearchParams(window.location.search);
   const today = new Date().toISOString().split('T')[0];
