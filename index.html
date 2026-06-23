@@ -2556,7 +2556,7 @@
         const { initializeAppCheck, ReCaptchaEnterpriseProvider } =
           await import('https://www.gstatic.com/firebasejs/10.13.0/firebase-app-check.js');
         initializeAppCheck(app, {
-          provider: new ReCaptchaEnterpriseProvider('6LfG7C8tAAAAAMVadtceT9OwpexLQ5OTKE7vpAjl'),
+          provider: new ReCaptchaEnterpriseProvider('6LeCgjAtAAAAABX8x9jbb3tkOXmmQ5UvNZD1RL2_'),
           isTokenAutoRefreshEnabled: true,
         });
       } catch (e) { console.error('App Check init failed (non-blocking):', e); }
@@ -2588,8 +2588,8 @@
   // ====================================================================
   // CONFIG + STATE
   // ====================================================================
-  const VERSION = "v1.42";
-  const BUILD = '1782247324'; // stamped by deploy-to-github.command at every deploy
+  const VERSION = "v1.43";
+  const BUILD = '1782247932'; // stamped by deploy-to-github.command at every deploy
   const DATA_PATH = "data";
   const params = new URLSearchParams(window.location.search);
   const today = new Date().toISOString().split('T')[0];
