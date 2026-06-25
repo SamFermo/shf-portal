@@ -2565,26 +2565,14 @@
       await signInAnonymously(auth);
       window._firebase.ready = true;
 
-      // Second app for remy-orders.
-      try {
-        const remyApp = initializeApp(window.REMY_ORDERS_CONFIG, 'remy');
-        // App Check for remy-orders (its OWN key — separate project from this app's). Needed so the
-        // orders-banner read survives remy-orders App Check enforcement. Non-blocking.
-        try {
-          const { initializeAppCheck, ReCaptchaEnterpriseProvider } =
-            await import('https://www.gstatic.com/firebasejs/10.13.0/firebase-app-check.js');
-          initializeAppCheck(remyApp, {
-            provider: new ReCaptchaEnterpriseProvider('6LcpDDMtAAAAANRyfWfGCd6uPgDsMlIsbFRBiozb'),
-            isTokenAutoRefreshEnabled: true,
-          });
-        } catch (eAC) { console.error('remy App Check init failed (non-blocking):', eAC); }
-        const remyAuth = getAuth(remyApp);
-        await signInAnonymously(remyAuth);
-        window._remy = { db: getFirestore(remyApp), doc, onSnapshot, setDoc, updateDoc,
-                         collection, query, orderBy, limit, serverTimestamp, ready: true };
-      } catch (e2) {
-        console.error('remy-orders init failed:', e2);
-      }
+      // FARM ORDERS REMOVED from this app (2026-06-24). Ordering now flows San Fermo portal → Remy
+      // (and later Remy restaurant side → Remy farm side), so the dinner app no longer connects to
+      // remy-orders at all. The order banner + "Orders" tab self-hide via the `!_remy || !_remy.ready`
+      // guards in updateOrdersBanner()/startOrdersSync(), and nothing here reads or writes
+      // remy-orders — so this app is entirely unaffected by remy-orders App Check enforcement, and
+      // a stale cached copy degrades to a hidden banner (no errors). The upcoming "pack the harvest,
+      // push to Remy for invoicing" feature will add a fresh, App-Check'd remy-orders connection
+      // scoped to that single write. window._remy is intentionally left unset.
     } catch (err) {
       console.error('Firebase init failed, falling back to localStorage:', err);
     }
@@ -2599,7 +2587,7 @@
   // CONFIG + STATE
   // ====================================================================
   const VERSION = "v1.43";
-  const BUILD = '1782357334'; // stamped by deploy-to-github.command at every deploy
+  const BUILD = '1782360073'; // stamped by deploy-to-github.command at every deploy
   const DATA_PATH = "data";
   const params = new URLSearchParams(window.location.search);
   const today = new Date().toISOString().split('T')[0];
