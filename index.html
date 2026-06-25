@@ -2568,6 +2568,16 @@
       // Second app for remy-orders.
       try {
         const remyApp = initializeApp(window.REMY_ORDERS_CONFIG, 'remy');
+        // App Check for remy-orders (its OWN key — separate project from this app's). Needed so the
+        // orders-banner read survives remy-orders App Check enforcement. Non-blocking.
+        try {
+          const { initializeAppCheck, ReCaptchaEnterpriseProvider } =
+            await import('https://www.gstatic.com/firebasejs/10.13.0/firebase-app-check.js');
+          initializeAppCheck(remyApp, {
+            provider: new ReCaptchaEnterpriseProvider('6LcpDDMtAAAAANRyfWfGCd6uPgDsMlIsbFRBiozb'),
+            isTokenAutoRefreshEnabled: true,
+          });
+        } catch (eAC) { console.error('remy App Check init failed (non-blocking):', eAC); }
         const remyAuth = getAuth(remyApp);
         await signInAnonymously(remyAuth);
         window._remy = { db: getFirestore(remyApp), doc, onSnapshot, setDoc, updateDoc,
@@ -2589,7 +2599,7 @@
   // CONFIG + STATE
   // ====================================================================
   const VERSION = "v1.43";
-  const BUILD = '1782326324'; // stamped by deploy-to-github.command at every deploy
+  const BUILD = '1782357334'; // stamped by deploy-to-github.command at every deploy
   const DATA_PATH = "data";
   const params = new URLSearchParams(window.location.search);
   const today = new Date().toISOString().split('T')[0];
