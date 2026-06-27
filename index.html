@@ -2598,9 +2598,10 @@
   // CONFIG + STATE
   // ====================================================================
   const VERSION = "v1.43";
-  const BUILD = '1782529274'; // stamped by deploy-to-github.command at every deploy
+  const BUILD = '1782590640'; // stamped by deploy-to-github.command at every deploy
   const DATA_PATH = "data";
   const params = new URLSearchParams(window.location.search);
+  const REMY_TEST = params.get('test') === '1' || params.has('remytest');  // harvest-feed test mode: sends marked test:true, isolated by ID, skipped by ledger ingest
   const today = new Date().toISOString().split('T')[0];
   const initialDateParam = params.get('date');   // explicit user request, may be null
   let dinnerDate = initialDateParam || today;    // refined after index.json loads
@@ -4840,8 +4841,9 @@
         <div class="hv-progress">${picked} of ${items.length} picked${isPast ? ' · past dinner (archived)' : ''}</div>
         <div style="display:flex;gap:8px;margin-top:10px">
           <button class="ps-btn" style="padding:7px 14px;font-size:13px" onclick="harvestHarvestSheet()">🖨 Harvest list</button>
-          <button class="ps-btn" style="padding:7px 14px;font-size:13px;background:#2e4624;color:#fff;border-color:#2e4624" onclick="harvestSendToRemy()">📤 Send to Remy</button>
+          <button class="ps-btn" style="padding:7px 14px;font-size:13px;background:${REMY_TEST?'#7a5a1e':'#2e4624'};color:#fff;border-color:${REMY_TEST?'#7a5a1e':'#2e4624'}" onclick="harvestSendToRemy()">📤 Send ${REMY_TEST?'TEST ':''}to Remy</button>
         </div>
+        ${REMY_TEST?`<div style="margin-top:8px;font-size:12px;color:#7a5a1e;background:#f6efdd;border:1px solid #e3d6ad;border-radius:7px;padding:7px 10px">🧪 Test mode — this send is marked test, isolated, and stays out of the cost ledger. Cancel it in Remy when done.</div>`:''}
       </div>
       ${w.intro ? `<div class="hv-intro">${escape(w.intro)}</div>` : ''}
       <div class="hv-section">Pick fresh each morning</div>
@@ -4961,17 +4963,18 @@
       return { item:it.name, qty:pq.qty, unit:pq.unit, packed:true, farm_note:it.note||'', planned_qty:it.qty||'' };
     });
     const labelSlug=String(w.label||'').replace(/\s+/g,'-').toLowerCase().replace(/[^a-z0-9-]/g,'');
-    const orderId='farmdinner-'+(dinnerDate||'')+'-'+labelSlug;
+    const orderId=(REMY_TEST?'TEST-':'')+'farmdinner-'+(dinnerDate||'')+'-'+labelSlug;
     const orderDoc={
       order_id:orderId, source:'farm_dinner', placed_by:'swan_house',
       placed_at:new Date().toISOString(), requested_date:dinnerDate||'', status:'placed',
-      order_note:'Farm dinner harvest — '+(w.label||''), series_label:w.label||'', dinner_date:dinnerDate||'',
+      order_note:(REMY_TEST?'[TEST] ':'')+'Farm dinner harvest — '+(w.label||''), series_label:w.label||'', dinner_date:dinnerDate||'',
       lines
     };
+    if(REMY_TEST) orderDoc.test=true;
     try{
       const fb=window._firebase;
       await fb.setDoc(fb.doc(window._remy.db,'orders',orderId), orderDoc);
-      alert('Sent to Remy ✓  '+lines.length+' item'+(lines.length===1?'':'s')+' — price & finalize it in Remy.');
+      alert((REMY_TEST?'TEST sent to Remy ✓ (marked test, stays out of the ledger)\n':'Sent to Remy ✓  ')+lines.length+' item'+(lines.length===1?'':'s')+' — price & finalize it in Remy.');
     }catch(e){ console.error('Send to Remy failed:', e); alert('Could not send to Remy — '+((e&&e.code)||'check your connection')+'. Try again.'); }
   }
 
