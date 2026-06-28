@@ -2598,7 +2598,7 @@
   // CONFIG + STATE
   // ====================================================================
   const VERSION = "v1.43";
-  const BUILD = '1782590686'; // stamped by deploy-to-github.command at every deploy
+  const BUILD = '1782605484'; // stamped by deploy-to-github.command at every deploy
   const DATA_PATH = "data";
   const params = new URLSearchParams(window.location.search);
   const REMY_TEST = params.get('test') === '1' || params.has('remytest');  // harvest-feed test mode: sends marked test:true, isolated by ID, skipped by ledger ingest
@@ -4904,11 +4904,21 @@
     arr.forEach(e=>{ const dd=Math.abs(new Date(e.date+'T12:00:00').getTime()-t); if(dd<bd){bd=dd;best=e;} });
     return best?best.rate:null;
   }
+  // Parse a packed-qty string into {qty, unit}. Robust to prose plans (2026-06-26): finds a real
+  // unit ANYWHERE in the phrase (so "3-4 lb per night" -> lb, not "each"; "about 35 per night" ->
+  // each, since "per" is filler not a unit), takes the lower value of a range ("3-4" -> 3, a safe
+  // default Kelly edits up), and handles fractions ("1/2") and the "5#" shorthand.
+  const _PS_UNITS=[['bunch','bunch'],['bunches','bunch'],['head','head'],['heads','head'],['dozen','doz'],['doz','doz'],['quart','qt'],['quarts','qt'],['qt','qt'],['pint','pt'],['pints','pt'],['pt','pt'],['flat','flat'],['flats','flat'],['case','case'],['cases','case'],['gallon','gal'],['gallons','gal'],['gal','gal'],['pound','lb'],['pounds','lb'],['lbs','lb'],['lb','lb'],['ounce','oz'],['ounces','oz'],['oz','oz'],['piece','each'],['pieces','each'],['pcs','each'],['each','each']];
   function _psParseQty(s){
-    s=(s==null?'':s).toString().trim();
-    const m=s.match(/(\d+(?:\.\d+)?(?:\/\d+)?)\s*([#a-z]+)?/i);   // first number + optional unit token (handles prose qtys)
-    if(m) return {qty:_psNum(m[1]), unit:(m[2]||'each').toLowerCase()};
-    return {qty:1, unit:'each'};
+    s=(s==null?'':s).toString().trim().toLowerCase();
+    if(!s) return {qty:1, unit:'each'};
+    let qty=1;
+    const m=s.match(/(\d+(?:\.\d+)?)(?:\s*\/\s*(\d+))?/);   // first number; supports fractions; a range "3-4" takes the lower value
+    if(m){ qty=parseFloat(m[1]); if(m[2]) qty=qty/parseFloat(m[2]); }
+    let unit='each';
+    for(let i=0;i<_PS_UNITS.length;i++){ if(new RegExp('\\b'+_PS_UNITS[i][0]+'\\b').test(s)){ unit=_PS_UNITS[i][1]; break; } }
+    if(unit==='each' && s.indexOf('#')>=0) unit='lb';   // "5#" shorthand
+    return {qty:qty, unit:unit};
   }
   function harvestInvoice(){
     const w=harvestWeekend; if(!w) return;
