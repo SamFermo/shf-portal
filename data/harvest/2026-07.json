@@ -1,5 +1,5 @@
 {
- "$comment": "Per-series harvest lists for the Harvest tab. One entry per weekend; the app resolves the weekend by dinner date. Checkbox state lives in the per-dinner Firestore doc (state.harvest). DRAFT 2026-06-22: menu-derived first pass for the July build-out. Quantities are estimates pending the R&D pass with Chris and the cover reconcile vs Tim's xlsx; confirm all with Kelly before printing her checklist.",
+ "$comment": "Per-series harvest lists for the Harvest tab. One entry per weekend; the app resolves the weekend by dinner date. Checkbox state lives in the per-dinner Firestore doc (state.harvest). Updated 2026-07-05 after Sam's portal order + the 'Farm Dinner Menu planning' thread: items coming down to the restaurant (green garlic, tomato leaves, lavender, lemon verbena, pasta-lamination herbs & flowers, guanciale, egg yolks) pulled off Kelly's fresh-pick list; only day-of farm picks remain.",
  "series": "2026-07",
  "weekends": [
   {
@@ -8,37 +8,37 @@
     "2026-07-11",
     "2026-07-12"
    ],
-   "intro": "DRAFT pick list, quantities pending R&D + cover reconcile. Pick fresh each morning. Sunday repeats Saturday.",
+   "intro": "Only what needs picking fresh at the farm this weekend. Everything for the restaurant already came down on Monday's delivery (see the note at the bottom). Sunday repeats Saturday.",
    "items": [
     {
      "id": "squash-blossoms",
      "name": "Squash blossoms",
      "qty": "about 35 per night",
-     "note": "stuffed-blossom bite · pick morning-of, they wilt fast · count covers the bite plus breakage; a few extra if pasta garnish runs"
+     "note": "stuffed-blossom bite · pick morning-of, they wilt fast · supplemental W1 from Snow Goose covers any shortfall (Kelly flagged low)"
     },
     {
      "id": "sweet-peppers",
      "name": "Sweet peppers",
      "qty": "3-4 lb per night",
-     "note": "marinated for the pepper toast bite + charred in Course 1"
+     "note": "Course 1 char (the bite peppers are marinated at SF) · supplemental W1 — Sam sourcing the balance if the farm is short"
     },
     {
      "id": "eggplant",
      "name": "Eggplant",
-     "qty": "3-4 lb per night",
-     "note": "Course 1 char"
+     "qty": "pick what's ready",
+     "note": "Course 1 char · W1: Kelly flagged full replacement, so pick only what's ready — Sam is sourcing the rest off-farm"
     },
     {
      "id": "summer-squash",
      "name": "Summer squash",
-     "qty": "3-4 lb per night",
-     "note": "Course 1 char"
+     "qty": "pick what's ready",
+     "note": "Course 1 char · W1: Kelly flagged full replacement, so pick only what's ready — Sam is sourcing the rest off-farm"
     },
     {
      "id": "cabbage",
      "name": "Cabbage",
      "qty": "2 heads per night",
-     "note": "Course 1 char"
+     "note": "Course 1 char (farm-picked · the cabbage on the portal order is for the restaurant pork chop, separate)"
     },
     {
      "id": "onions",
@@ -59,60 +59,36 @@
      "note": "Course 3 contorni · grilled"
     },
     {
-     "id": "green-garlic",
-     "name": "Green garlic",
-     "qty": "1 bunch per night",
-     "note": "the crust on the beef · replaces the spring scapes (gone by our dates)"
-    },
-    {
-     "id": "tomato-leaf",
-     "name": "Tomato leaves",
-     "qty": "a couple of handfuls for the weekend",
-     "note": "tomato-leaf oil for Course 1 · the one farm 'tomato' in July"
-    },
-    {
-     "id": "lemon-verbena",
-     "name": "Lemon verbena",
-     "qty": "small bunch per night",
-     "note": "dessert garnish · plus a bunch sent to SF ahead for the panna cotta steep"
-    },
-    {
-     "id": "lavender",
-     "name": "Lavender",
-     "qty": "small bunch for the weekend",
-     "note": "infuses the honey for the pepper toast (honey itself is bought, Kelly is out)"
-    },
-    {
      "id": "edible-flowers",
      "name": "Edible flowers",
-     "qty": "2 pints for the weekend",
-     "note": "pasta lamination, dessert scatter, bite garnish · lavender, rose, nasturtium, calendula"
+     "qty": "1 pint for the weekend",
+     "note": "farm-side GARNISH only (dessert scatter, bite + Course 1) · the pasta-lamination flowers are ordered and coming down to SF"
     },
     {
      "id": "soft-herbs",
-     "name": "Tender herbs (herb wall)",
-     "qty": "big handfuls per night",
-     "note": "thyme for the blossom bite + beef, mint for the pepper toast, herbs for Course 1 and the beef crust, soft herbs for the pasta lamination"
+     "name": "Tender herbs (garnish + bites)",
+     "qty": "handfuls per night",
+     "note": "farm-side finishing: thyme for the blossom bite, mint for the pepper toast, garnish herbs · the pasta-lamination herbs (nasturtium, parsley, dill) are ordered and coming down to SF"
     }
    ],
    "confirm": [
     {
      "id": "guanciale",
      "name": "Guanciale (Tim)",
-     "note": "PENDING count · may be short for two dinners · if short, the blossom filling leans goat cheese with guanciale as accent"
+     "note": "COMING DOWN to SF — sent tomorrow (Sam 7/5), cut, rendered, and folded into the goat cheese filling at the restaurant. Not a farm pick."
     },
     {
-     "id": "beef-cut",
-     "name": "Beef cut (Tim)",
-     "note": "PENDING · cut + freezer weights TBD (rib roast vs strip loin) · confirm the new steer landed before 7/11 · lamb loin chop is the fallback"
+     "id": "beef",
+     "name": "Beef (Tim)",
+     "note": "at SF — Sully brought 2 (~11 lb + ~9 lb). Leaning to roast the 11 lb for W1 dinner 1 plus a supplemental cut. Rubbed at SF, grilled over apple wood at the farm."
     },
     {
      "id": "eggs",
      "name": "Chicken + duck eggs",
-     "note": "already sent to SF ahead for the pasta dough and the cured-yolk cure (started end of June) · just confirm the count held"
+     "note": "already sent to SF for the pasta dough + the cured-yolk cure; just confirm the count held"
     }
    ],
-   "footnote": "DRAFT pending Kelly's confirm. Stracciatella, ricotta, goat cheese, parmesan, cultured butter, and stone fruit (Rainier cherries this weekend) come from SF / Franks. SF make-aheads (preserved lemon, cured egg yolk, panna cotta bases, laminated sheets, blossom filling) are built at the restaurant, not picked here."
+   "footnote": "Coming down to the restaurant on Monday's delivery, do NOT pick fresh: green garlic (1-2# for the beef rub), tomato leaves (oil), lavender (honey infusion), lemon verbena (cream infusion), the pasta-lamination herbs & flowers, guanciale, and egg yolks. Eggplant + squash are mostly sourced off-farm for W1 (Kelly flagged low); peppers + blossoms supplemental."
   },
   {
    "label": "July 18-19",
@@ -120,37 +96,37 @@
     "2026-07-18",
     "2026-07-19"
    ],
-   "intro": "DRAFT pick list, quantities pending R&D + cover reconcile. Pick fresh each morning. Sunday repeats Saturday. W2 evolves the char rotation and shifts the dessert fruit to apricots.",
+   "intro": "Only what needs picking fresh at the farm this weekend. Restaurant items came down with Monday's delivery (see the note at the bottom). W2 shifts the dessert fruit to apricots. Sunday repeats Saturday.",
    "items": [
     {
      "id": "squash-blossoms",
      "name": "Squash blossoms",
      "qty": "about 35 per night",
-     "note": "stuffed-blossom bite · pick morning-of, they wilt fast · count covers the bite plus breakage"
+     "note": "stuffed-blossom bite · pick morning-of, they wilt fast · W2 likely farm-covered (Kelly), Snow Goose backs up any shortfall"
     },
     {
      "id": "sweet-peppers",
      "name": "Sweet peppers",
      "qty": "3-4 lb per night",
-     "note": "marinated for the pepper toast bite + charred in Course 1"
+     "note": "Course 1 char (bite peppers marinated at SF) · W2 likely farm-covered (Kelly)"
     },
     {
      "id": "eggplant",
      "name": "Eggplant",
-     "qty": "3-4 lb per night",
-     "note": "Course 1 char"
+     "qty": "pick what's ready",
+     "note": "Course 1 char · W2: Kelly likely okay, light supplement if short"
     },
     {
      "id": "summer-squash",
      "name": "Summer squash",
-     "qty": "3-4 lb per night",
-     "note": "Course 1 char"
+     "qty": "pick what's ready",
+     "note": "Course 1 char · W2: Kelly likely okay, light supplement if short"
     },
     {
      "id": "cabbage",
      "name": "Cabbage",
      "qty": "2 heads per night",
-     "note": "Course 1 char"
+     "note": "Course 1 char (farm-picked)"
     },
     {
      "id": "onions",
@@ -171,60 +147,36 @@
      "note": "Course 3 contorni · grilled"
     },
     {
-     "id": "green-garlic",
-     "name": "Green garlic",
-     "qty": "1 bunch per night",
-     "note": "the crust on the beef"
-    },
-    {
-     "id": "tomato-leaf",
-     "name": "Tomato leaves",
-     "qty": "a couple of handfuls for the weekend",
-     "note": "tomato-leaf oil for Course 1"
-    },
-    {
-     "id": "lemon-verbena",
-     "name": "Lemon verbena",
-     "qty": "small bunch per night",
-     "note": "dessert garnish · plus a bunch sent to SF ahead for the panna cotta steep"
-    },
-    {
-     "id": "lavender",
-     "name": "Lavender",
-     "qty": "small bunch for the weekend",
-     "note": "infuses the honey for the pepper toast"
-    },
-    {
      "id": "edible-flowers",
      "name": "Edible flowers",
-     "qty": "2 pints for the weekend",
-     "note": "pasta lamination, dessert scatter, bite garnish"
+     "qty": "1 pint for the weekend",
+     "note": "farm-side GARNISH only (dessert scatter, bite + Course 1) · pasta-lamination flowers come down to SF"
     },
     {
      "id": "soft-herbs",
-     "name": "Tender herbs (herb wall)",
-     "qty": "big handfuls per night",
-     "note": "thyme, mint, and soft herbs for Course 1, the beef crust, and the pasta lamination"
+     "name": "Tender herbs (garnish + bites)",
+     "qty": "handfuls per night",
+     "note": "farm-side finishing: thyme (blossom bite), mint (pepper toast), garnish herbs · pasta-lamination herbs come down to SF"
     }
    ],
    "confirm": [
     {
      "id": "guanciale",
      "name": "Guanciale (Tim)",
-     "note": "PENDING count · if short, blossom filling leans goat cheese with guanciale as accent"
+     "note": "COMING DOWN to SF — cut, rendered, folded into the goat cheese filling at the restaurant. Not a farm pick."
     },
     {
-     "id": "beef-cut",
-     "name": "Beef cut (Tim)",
-     "note": "PENDING · confirm the cut + that supply held for the second weekend"
+     "id": "beef",
+     "name": "Beef (Tim)",
+     "note": "at SF, rubbed at SF, grilled over apple wood at the farm. Confirm the cut held for the second weekend."
     },
     {
      "id": "apricots",
-     "name": "Apricots (Franks/Farmstand)",
-     "note": "dessert fruit shifts to apricots for W2 · bought, not farm"
+     "name": "Apricots (bought)",
+     "note": "dessert fruit shifts to apricots for W2 · local apricots + cherries are good right now (Tim) · bought, not farm"
     }
    ],
-   "footnote": "DRAFT pending Kelly's confirm. SF make-aheads (preserved lemon, cured egg yolk, panna cotta bases, laminated sheets, blossom filling) are built at the restaurant identically to W1; the W1-to-W2 evolution lives in the char vegetables, the dessert stone fruit, and the garnish."
+   "footnote": "Coming down to the restaurant, do NOT pick fresh: green garlic (beef rub), tomato leaves (oil), lavender (honey), lemon verbena (cream), pasta-lamination herbs & flowers, guanciale, egg yolks. W2 farm coverage on peppers/blossoms/eggplant/squash is likely better than W1 per Kelly."
   }
  ]
 }
