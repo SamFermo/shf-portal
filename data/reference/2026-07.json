@@ -273,7 +273,7 @@
       "tagline": "a farm-garden gin cooler",
       "pour_notes": "Katie's summer cooler: Terramar gin and a Bianco vermouth infused with Swan House dill, lengthened with fresh-pressed cucumber, lime, and soda. Bright, herbal, and garden-green, finished with a nasturtium flower and a frond of dill.",
       "ingredients": [
-        { "name": "Terramar gin", "amount": "", "highlight": "Skagit local", "description": "Gin from Terramar, a Skagit Valley distillery just down the road — the local backbone of the drink." },
+        { "name": "Terramar gin", "amount": "", "highlight": "Skagit local", "description": "Gin from Terramar Brewstillery in Edison, just down the road — an award-winning brewery and distillery set in a former slaughterhouse on the old Edison Slough oxbow. They distill it grain-to-glass from Washington-grown, craft-malted barley (the same base as their beer) and are growing their own juniper and botanicals on the property. A true neighbor pour to open the cocktail." },
         { "name": "Dill-infused Bianco vermouth", "amount": "", "highlight": "Swan House", "description": "Bianco (sweet white) vermouth infused with dill grown at Swan House. Floral and lightly herbal, the dill ties the glass to the garden." },
         { "name": "Fresh-pressed cucumber", "amount": "", "description": "Pressed to order for a clean, cooling green note." },
         { "name": "Lime", "amount": "", "description": "Fresh lime for brightness and acid." },
