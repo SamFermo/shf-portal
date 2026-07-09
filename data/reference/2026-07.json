@@ -241,10 +241,10 @@
       "alcohol_pct": 12.5,
       "pour_notes": "The Vermentino we already pour by the glass at the restaurant, brought up to the farm. Organic fruit off poor, chalky 'Terra Bianca' soil in southeastern Sicily. Bright straw flecked green and gold; peach, citrus, and a saline snap with a whisper of vanilla on the finish. High-acid and textural, built to carry the herbs, the stracciatella, and the cultured-butter-and-cured-yolk pasta without getting buried.",
       "specs": [
-        { "label": "Body", "rating": 3, "low": "light", "high": "full" },
-        { "label": "Dryness", "rating": 5, "low": "off-dry", "high": "bone dry" },
-        { "label": "Acidity", "rating": 4, "low": "soft", "high": "bright" },
-        { "label": "Tannins", "rating": 1, "low": "none", "high": "grippy" }
+        { "label": "Body", "rating": 3, "low": "light", "high": "full", "lands": "medium-bodied" },
+        { "label": "Dryness", "rating": 5, "low": "off-dry", "high": "bone dry", "lands": "bone dry" },
+        { "label": "Acidity", "rating": 4, "low": "soft", "high": "bright", "lands": "crisp, high acid" },
+        { "label": "Tannins", "rating": 1, "low": "none", "high": "grippy", "lands": "no tannins" }
       ],
       "producer": "Valle dell'Acate is a historic family estate in the Acate valley of southeastern Sicily (province of Ragusa), in the Cerasuolo di Vittoria heartland. Thymbra comes from Contrada Biddine Soprana, a small upland plot at about 250 meters on 'Terra Bianca' — very poor but deep chalky-limestone soil. The vines struggle there and stay low in vigor, which concentrates the fruit, while steady ventilation keeps it from over-ripening.",
       "winemaking": "Organically farmed Vermentino, spur-cordon trained at 5,000 vines per hectare, hand-harvested in the last days of August. Fermented and aged in stainless steel about four months, then three months in bottle — no oak, so the fruit, salinity, and acid stay front and center. Serve cool, 10-12°C."
@@ -258,10 +258,10 @@
       "alcohol_pct": 13.0,
       "pour_notes": "Adrian's pick for its smoke affinity, poured with a slight chill for July. Nerello Mascalese off the eastern slope of Etna — ruby and lifted, red fruit with a spice edge of black pepper and clove, a mineral, saline core, and fine elegant tannins. Medium-bodied and high-acid, it plays off the apple-wood beef and the sweet-tart agrodolce without weighing the table down.",
       "specs": [
-        { "label": "Body", "rating": 3, "low": "light", "high": "full" },
-        { "label": "Dryness", "rating": 5, "low": "off-dry", "high": "bone dry" },
-        { "label": "Acidity", "rating": 5, "low": "soft", "high": "bright" },
-        { "label": "Tannins", "rating": 3, "low": "none", "high": "grippy" }
+        { "label": "Body", "rating": 3, "low": "light", "high": "full", "lands": "medium-bodied" },
+        { "label": "Dryness", "rating": 5, "low": "off-dry", "high": "bone dry", "lands": "bone dry" },
+        { "label": "Acidity", "rating": 5, "low": "soft", "high": "bright", "lands": "high, racy acid" },
+        { "label": "Tannins", "rating": 3, "low": "none", "high": "grippy", "lands": "fine, moderate tannins" }
       ],
       "producer": "Cantine Murgo has farmed the eastern flank of Mount Etna since 1860, based at Tenuta San Michele in Santa Venerina. The vineyards sit on volcanic soil where the microclimate is shaped by the nearby Ionian Sea, which lends the reds finesse and an elegant complexity. Murgo has bottled this Etna Rosso since the 1980 harvest.",
       "winemaking": "Nerello Mascalese with a little Nerello Cappuccio, espalier-trained at 4,500-5,000 plants per hectare on Etna's volcanic slopes, around 13% alcohol. A restrained, traditional vinification lets the site speak: ruby, sapid, and mineral, built around bright acidity and fine tannins rather than weight or oak. Best with a light chill in warm weather."
