@@ -928,12 +928,15 @@
     font-weight: 700;
     color: var(--wood);
   }
-  .ref-cocktail-ing-name::after {
-    content: ' ›';
+  .ref-cocktail-ing-head::after {
+    content: '›';
+    margin-left: auto;
+    padding-left: 12px;
     color: var(--gold);
     font-weight: 400;
     transition: transform 0.15s ease;
     display: inline-block;
+    flex: 0 0 auto;
   }
   .ref-cocktail-ing-highlight {
     display: inline-block;
@@ -958,7 +961,7 @@
     background: linear-gradient(to right, rgba(200, 214, 184, 0.18), transparent 60%);
     border-radius: 4px;
   }
-  .ref-cocktail-ingredient.expanded .ref-cocktail-ing-name::after {
+  .ref-cocktail-ingredient.expanded .ref-cocktail-ing-head::after {
     transform: rotate(90deg);
   }
   .ref-cocktail-ing-amount {
@@ -2598,7 +2601,7 @@
   // CONFIG + STATE
   // ====================================================================
   const VERSION = "v1.43";
-  const BUILD = '1783120219'; // stamped by deploy-to-github.command at every deploy
+  const BUILD = '1783621402'; // stamped by deploy-to-github.command at every deploy
   const DATA_PATH = "data";
   const params = new URLSearchParams(window.location.search);
   const REMY_TEST = params.get('test') === '1' || params.has('remytest');  // harvest-feed test mode: sends marked test:true, isolated by ID, skipped by ledger ingest
@@ -5089,7 +5092,7 @@
         <div class="ref-wine-spec">
           <div class="ref-wine-spec-label">${escape(s.label)}</div>
           <div class="ref-wine-dots">${dots}</div>
-          <div class="ref-wine-spec-range">${escape(s.low)} · ${escape(s.high)}</div>
+          <div class="ref-wine-spec-range">${escape(s.lands || (s.low + ' · ' + s.high))}</div>
         </div>
       `;
     }).join('');
