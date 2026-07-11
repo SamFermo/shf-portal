@@ -8,13 +8,13 @@
     "2026-07-11",
     "2026-07-12"
    ],
-   "intro": "Only what needs picking fresh at the farm this weekend. Squash blossoms + all the stone fruit are Snow Goose pickups (Tim) — see the confirm list. Sunday repeats Saturday.",
+   "intro": "Only what needs picking fresh at the farm this weekend. Squash blossoms + all the stone fruit (incl. cherries) are Snow Goose pickups (Tim) and on hand — see the confirm list. Greens are harvested; clean + spin. Sunday repeats Saturday.",
    "items": [
     {
      "id": "garden-greens",
      "name": "Mixed garden greens",
      "qty": "about 3 lb per night",
-     "note": "Course 1 — over the stracciatella with the stone fruit · whatever lettuce is at its peak (Kelly, beautiful right now) · clean + spin"
+     "note": "Course 1 — over the stracciatella with the stone fruit · whatever lettuce is at its peak · harvested, just clean + spin"
     },
     {
      "id": "walla-walla",
@@ -45,12 +45,12 @@
     {
      "id": "squash-blossoms",
      "name": "Squash blossoms — Snow Goose",
-     "note": "50 arranged from Snow Goose (Tim's local pickup) — NOT a farm pick. Set + fill for the blossom bite."
+     "note": "On hand — 50 from Snow Goose (Tim's pickup), not a farm pick. Set + fill for the blossom bite."
     },
     {
      "id": "stone-fruit",
      "name": "Stone fruit — Snow Goose",
-     "note": "Tim's pickup: apricots (Course 3 agrodolce), peach + nectarine + plum (Course 1), cherries (Course 4 dessert). Tim named apricot/peach/nectarine — CONFIRM cherries are in the pickup."
+     "note": "On hand (Snow Goose, Tim's pickup): apricots (Course 3 agrodolce), peach + nectarine + plum (Course 1), cherries (Course 4 dessert)."
     },
     {
      "id": "beef",
