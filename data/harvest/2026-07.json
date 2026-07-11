@@ -1,5 +1,5 @@
 {
- "$comment": "Per-series harvest lists for the Harvest tab. Checkbox state lives in the per-dinner Firestore doc (state.harvest). Updated 2026-07-05 for Sam's portal order (items coming down to SF pulled off). Updated 2026-07-09: Course 1 swapped from charred summer vegetables to Snow Goose stone fruit + Kelly's salanova, so the char veg (eggplant, squash, cabbage, onions, farm peppers) came off the pick list and mixed salanova greens went on. Stone fruit is bought from Snow Goose (Sam grabs), not a farm pick.",
+ "$comment": "Per-series harvest lists for the Harvest tab. Checkbox state lives in the per-dinner Firestore doc (state.harvest). Reconciled 2026-07-09 against Tim's local-pickup email + Sam's on-site walkthrough: squash blossoms are a SNOW GOOSE local pickup (Tim arranged 50), NOT a farm pick — moved to confirm. Course 1 stone fruit + dessert cherries + agrodolce apricots are all Snow Goose (Tim's pickup). Greens generalized to garden greens (may not be salanova). Actual farm morning-picks: garden greens, Walla Walla, kale, edible flowers, tender herbs.",
  "series": "2026-07",
  "weekends": [
   {
@@ -8,37 +8,89 @@
     "2026-07-11",
     "2026-07-12"
    ],
-   "intro": "Only what needs picking fresh at the farm this weekend. Course 1 swapped to Snow Goose stone fruit (7/9) — Sam grabs that. Everything for the restaurant already came down Monday. Sunday repeats Saturday.",
+   "intro": "Only what needs picking fresh at the farm this weekend. Squash blossoms + all the stone fruit are Snow Goose pickups (Tim) — see the confirm list. Sunday repeats Saturday.",
    "items": [
-    {
-     "id": "squash-blossoms",
-     "name": "Squash blossoms",
-     "qty": "about 35 per night",
-     "note": "stuffed-blossom bite · pick morning-of, they wilt fast · Snow Goose covers any shortfall"
-    },
     {
      "id": "garden-greens",
      "name": "Mixed garden greens",
      "qty": "about 3 lb per night",
-     "note": "Course 1 — over the stracciatella with the stone fruit · whatever lettuce is at its peak (Kelly, beautiful right now) (NEW 7/9)"
+     "note": "Course 1 — over the stracciatella with the stone fruit · whatever lettuce is at its peak (Kelly, beautiful right now) · clean + spin"
     },
     {
      "id": "walla-walla",
      "name": "Walla Walla onions",
      "qty": "about 10 per night",
-     "note": "Course 3 contorni · coal-roasted whole, shared family-style"
+     "note": "Course 3 contorni · pick + clean, then foil-pack w/ savory, salt, olive oil, pepper, bay leaf and roast"
     },
     {
      "id": "kale",
      "name": "Kale",
      "qty": "2 bunches per night",
-     "note": "Course 3 contorni · grilled"
+     "note": "Course 3 contorni · strip + julienne, grilled"
     },
     {
      "id": "edible-flowers",
      "name": "Edible flowers",
      "qty": "1 pint for the weekend",
-     "note": "farm-side garnish (Course 1, dessert scatter, bites) · pasta-lamination flowers came down to SF"
+     "note": "garnish — Course 1, the dessert scatter, the bites"
+    },
+    {
+     "id": "soft-herbs",
+     "name": "Tender herbs (garnish + bites)",
+     "qty": "handfuls per night",
+     "note": "thyme (blossom bite), mint (pepper toast, pick fresh), garnish herbs · pasta-lamination herbs came down to SF"
+    }
+   ],
+   "confirm": [
+    {
+     "id": "squash-blossoms",
+     "name": "Squash blossoms — Snow Goose",
+     "note": "50 arranged from Snow Goose (Tim's local pickup) — NOT a farm pick. Set + fill for the blossom bite."
+    },
+    {
+     "id": "stone-fruit",
+     "name": "Stone fruit — Snow Goose",
+     "note": "Tim's pickup: apricots (Course 3 agrodolce), peach + nectarine + plum (Course 1), cherries (Course 4 dessert). Tim named apricot/peach/nectarine — CONFIRM cherries are in the pickup."
+    },
+    {
+     "id": "beef",
+     "name": "Beef (at the farm)",
+     "note": "11 lb rib eye + 9 lb roast, slacked + rubbed. Reverse sear: oven then apple-wood egg finish."
+    }
+   ],
+   "footnote": "Coming down to the restaurant, do NOT pick fresh: green garlic (beef rub), tomato leaves (oil), lavender (honey), lemon verbena (cream), the pasta-lamination herbs & flowers, guanciale, and egg yolks. Squash blossoms + all stone fruit are Snow Goose local pickups (Tim), not farm picks."
+  },
+  {
+   "label": "July 18-19",
+   "dates": [
+    "2026-07-18",
+    "2026-07-19"
+   ],
+   "intro": "Only what needs picking fresh at the farm this weekend. Squash blossoms + stone fruit are Snow Goose pickups (Tim) — confirm the source closer to W2. Sunday repeats Saturday.",
+   "items": [
+    {
+     "id": "garden-greens",
+     "name": "Mixed garden greens",
+     "qty": "about 3 lb per night",
+     "note": "Course 1 — over the stracciatella with the stone fruit · whatever lettuce is at its peak · clean + spin"
+    },
+    {
+     "id": "walla-walla",
+     "name": "Walla Walla onions",
+     "qty": "about 10 per night",
+     "note": "Course 3 contorni · foil-pack w/ savory, salt, olive oil, pepper, bay leaf and roast"
+    },
+    {
+     "id": "kale",
+     "name": "Kale",
+     "qty": "2 bunches per night",
+     "note": "Course 3 contorni · strip + julienne, grilled"
+    },
+    {
+     "id": "edible-flowers",
+     "name": "Edible flowers",
+     "qty": "1 pint for the weekend",
+     "note": "garnish — Course 1, dessert scatter, bites"
     },
     {
      "id": "soft-herbs",
@@ -49,86 +101,22 @@
    ],
    "confirm": [
     {
-     "id": "guanciale",
-     "name": "Guanciale (Tim)",
-     "note": "coming down to SF — folded into the goat cheese filling at the restaurant. Not a farm pick."
-    },
-    {
-     "id": "beef",
-     "name": "Beef (Tim)",
-     "note": "at SF — Sully brought ~11 lb + ~9 lb. Rubbed at SF, grilled over apple wood at the farm."
-    },
-    {
-     "id": "eggs",
-     "name": "Chicken + duck eggs",
-     "note": "already sent to SF for the pasta dough + the cured-yolk cure; confirm the count held"
-    }
-   ],
-   "footnote": "Course 1 is now stone fruit (peach/nectarine/plum/apricot) from Snow Goose — Sam grabs it, not a farm pick (menu swap 7/9; the summer-veg mix wasn't going to be ready). Coming down to the restaurant, do NOT pick fresh: green garlic (beef rub), tomato leaves (oil), lavender (honey), lemon verbena (cream), the pasta-lamination herbs & flowers, guanciale, and egg yolks."
-  },
-  {
-   "label": "July 18-19",
-   "dates": [
-    "2026-07-18",
-    "2026-07-19"
-   ],
-   "intro": "Only what needs picking fresh at the farm this weekend. Course 1 is Snow Goose stone fruit (Sam grabs). W2 shifts the dessert fruit to apricots. Sunday repeats Saturday.",
-   "items": [
-    {
      "id": "squash-blossoms",
-     "name": "Squash blossoms",
-     "qty": "about 35 per night",
-     "note": "stuffed-blossom bite · pick morning-of, they wilt fast"
+     "name": "Squash blossoms — Snow Goose",
+     "note": "Snow Goose local pickup like W1 (Kelly may have her own by W2 — confirm the source). Set + fill for the blossom bite."
     },
     {
-     "id": "garden-greens",
-     "name": "Mixed garden greens",
-     "qty": "about 3 lb per night",
-     "note": "Course 1 — over the stracciatella with the stone fruit · whatever lettuce is at its peak"
-    },
-    {
-     "id": "walla-walla",
-     "name": "Walla Walla onions",
-     "qty": "about 10 per night",
-     "note": "Course 3 contorni · coal-roasted whole, shared family-style"
-    },
-    {
-     "id": "kale",
-     "name": "Kale",
-     "qty": "2 bunches per night",
-     "note": "Course 3 contorni · grilled"
-    },
-    {
-     "id": "edible-flowers",
-     "name": "Edible flowers",
-     "qty": "1 pint for the weekend",
-     "note": "farm-side garnish (Course 1, dessert scatter, bites) · pasta-lamination flowers come down to SF"
-    },
-    {
-     "id": "soft-herbs",
-     "name": "Tender herbs (garnish + bites)",
-     "qty": "handfuls per night",
-     "note": "thyme (blossom bite), mint (pepper toast), garnish herbs · pasta-lamination herbs come down to SF"
-    }
-   ],
-   "confirm": [
-    {
-     "id": "guanciale",
-     "name": "Guanciale (Tim)",
-     "note": "coming down to SF — folded into the goat cheese filling at the restaurant. Not a farm pick."
+     "id": "stone-fruit",
+     "name": "Stone fruit — Snow Goose",
+     "note": "Tim's pickup: apricots (agrodolce), peach/nectarine/plum (Course 1), cherries (dessert). Confirm cherries + ripeness for W2."
     },
     {
      "id": "beef",
-     "name": "Beef (Tim)",
-     "note": "at SF, rubbed at SF, grilled over apple wood at the farm. Confirm the cut held for the second weekend."
-    },
-    {
-     "id": "apricots",
-     "name": "Apricots (bought)",
-     "note": "dessert fruit shifts to apricots for W2 · bought, not farm"
+     "name": "Beef (at the farm)",
+     "note": "Confirm the cut held for the second weekend. Reverse sear: oven then apple-wood egg finish."
     }
    ],
-   "footnote": "Course 1 stone fruit is from Snow Goose (Sam grabs), not a farm pick. Coming down to the restaurant, do NOT pick fresh: green garlic (beef rub), tomato leaves (oil), lavender (honey), lemon verbena (cream), pasta-lamination herbs & flowers, guanciale, egg yolks."
+   "footnote": "Coming down to the restaurant, do NOT pick fresh: green garlic (beef rub), tomato leaves (oil), lavender (honey), lemon verbena (cream), pasta-lamination herbs & flowers, guanciale, egg yolks. Squash blossoms + all stone fruit are Snow Goose local pickups (Tim), not farm picks."
   }
  ]
 }
