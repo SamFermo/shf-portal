@@ -1,7 +1,7 @@
 {
   "series_id": "2026-07",
   "series_label": "July 2026 series",
-  "_pending": "Wines LANDED 2026-07-09 (Adrian): white = Valle dell'Acate Thymbra Vermentino; red = Murgo Etna Rosso 2023, poured with a slight chill. Cocktail + mocktail LANDED (Katie): Verdant Fields Forever (Terramar gin) + Stone Fruit & Honeysuckle Lemonade. Beef = Swan House primal roast (rib eye/porterhouse/t-bone); guanciale coming down to SF.",
+  "_pending": "Wines LANDED 2026-07-09 (Adrian): white = Valle dell'Acate Thymbra Vermentino; red = Murgo Etna Rosso 2023, poured with a slight chill. Cocktail + mocktail LANDED (Katie): Verdant Fields Forever (Terramar gin) + Stone Fruit & Honeysuckle Lemonade. Beef = two Swan House roasts, rib eye + top sirloin, reverse-seared; guanciale in the filling.",
   "header": {
     "title": "Swan House Farm",
     "subtitle": "High Summer",
@@ -80,12 +80,12 @@
           "name": "Summer Stone Fruit & Stracciatella",
           "pronunciation": null,
           "components": "grilled and fresh stone fruit, garden greens, stracciatella, tomato-leaf oil",
-          "story": "High-summer stone fruit from Snow Goose Produce just up the road — peach and nectarine leading, with a little plum — some grilled for a little smoke and caramel, some left fresh and bright, over a pillow of stracciatella with Kelly's garden greens and a finish of tomato-leaf oil. Juicy and lifted, it sets up the richer pasta behind it.",
+          "story": "High-summer stone fruit from Snow Goose Produce just up the road — peach, nectarine, and cherries — some grilled for a little smoke and caramel, some left fresh and bright, over a pillow of stracciatella with Kelly's garden greens and a finish of tomato-leaf oil. Juicy and lifted, it sets up the richer pasta behind it.",
           "ingredients": [
             {
               "term": "Stone fruit",
               "pronunciation": null,
-              "note": "peach and nectarine leading, with a little plum, from Snow Goose Produce nearby; a mix of grilled and fresh across the plate"
+              "note": "peach, nectarine, and cherries from Snow Goose Produce nearby; a mix of grilled and fresh across the plate"
             },
             {
               "term": "Garden greens",
@@ -154,13 +154,13 @@
         {
           "name": "Swan House Farm Primal Roast",
           "pronunciation": null,
-          "components": "rib eye, porterhouse & t-bone, green garlic crust, charred apricot agrodolce, Walla Walla onions, grilled kale",
-          "story": "Swan House Farm's primal roast: the prime middle of Tim's steer, the rib and short loin, rubbed in a green garlic and herb crust and grilled over apple wood on the Big Green Egg, rested, then carved into the rib eye, porterhouse, and t-bone and served family-style. A charred apricot agrodolce is passed alongside, sweet-tart against the apple-wood char, with coal-roasted Walla Walla onions and grilled kale finished with lemon and chili. This is the night's centerpiece, the move off June's plated belly to a shared carve.",
+          "components": "rib eye and top sirloin, green garlic crust, charred apricot agrodolce, Walla Walla onions, grilled kale",
+          "story": "Swan House Farm's primal roast: the prime middle of Tim's steer, the rib and short loin, rubbed in a green garlic and herb crust and grilled over apple wood on the Big Green Egg, rested, then carved into the rib eye and top sirloin and served family-style. A charred apricot agrodolce is passed alongside, sweet-tart against the apple-wood char, with coal-roasted Walla Walla onions and grilled kale finished with lemon and chili. This is the night's centerpiece, the move off June's plated belly to a shared carve.",
           "ingredients": [
             {
               "term": "Primal roast",
               "pronunciation": null,
-              "note": "instead of a steak per plate, we roast the whole rib-and-short-loin primal and carve it to share; it yields the rib eye (from the rib) and the porterhouse and t-bone (from the short loin, the porterhouse carrying more tenderloin)"
+              "note": "instead of a steak per plate, we roast two whole cuts of Tim's beef — a rib eye roast and a top sirloin — and carve them to share family-style"
             },
             {
               "term": "Apple wood",
