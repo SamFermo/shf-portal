@@ -61,7 +61,7 @@
       "display_date": "Saturday, July 11, 2026",
       "seated_covers": 26,
       "party_count": 10,
-      "is_past": false
+      "is_past": true
     },
     {
       "date": "2026-07-12",
@@ -73,15 +73,15 @@
     {
       "date": "2026-07-18",
       "display_date": "Saturday, July 18, 2026",
-      "seated_covers": 24,
-      "party_count": 8,
+      "seated_covers": 26,
+      "party_count": 9,
       "is_past": false
     },
     {
       "date": "2026-07-19",
       "display_date": "Sunday, July 19, 2026",
-      "seated_covers": 24,
-      "party_count": 7,
+      "seated_covers": 26,
+      "party_count": 8,
       "is_past": false
     },
     {
@@ -142,5 +142,5 @@
     }
   ],
   "generated_at": "2026-07-03T16:10:19",
-  "build": "1783804636"
+  "build": "1783882356"
 }
