@@ -242,6 +242,30 @@
     font-style: normal;
   }
 
+  /* Combine parties (runtime grouping at check-in) */
+  .combine-bar { padding: 8px 18px 0; display: flex; align-items: center; gap: 10px; background: var(--bg); }
+  .combine-btn {
+    padding: 6px 12px; border: 1px solid var(--border); border-radius: var(--radius);
+    background: var(--card); color: var(--accent-dark); font-size: 13px;
+    font-family: 'Caladea', Georgia, serif; cursor: pointer; -webkit-appearance: none; white-space: nowrap;
+  }
+  .combine-btn:active { background: var(--bg); }
+  .combine-hint { font-size: 12px; color: var(--text-mute); font-style: italic; line-height: 1.3; }
+  .guest-card.selectable { position: relative; padding-left: 42px; }
+  .guest-card.selectable::before {
+    content: '○'; position: absolute; left: 15px; top: 50%; transform: translateY(-50%);
+    color: var(--text-mute); font-size: 18px; line-height: 1;
+  }
+  .guest-card.selectable.selected::before { content: '●'; color: var(--selected-border); }
+  .combine-actionbar {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 40;
+    display: flex; gap: 10px; padding: 12px 18px calc(12px + env(safe-area-inset-bottom));
+    background: var(--card); border-top: 1px solid var(--border);
+    box-shadow: 0 -4px 16px rgba(0,0,0,0.10);
+  }
+  .combine-actionbar .btn { flex: 1; }
+  .btn:disabled { opacity: 0.45; pointer-events: none; }
+
   .list { padding: 12px 18px 80px; }
   .empty-state {
     text-align: center; color: var(--text-mute);
@@ -2439,8 +2463,16 @@
   <div class="filter-bar">
     <input type="text" class="filter-input" id="filter" placeholder="Filter by name or note…" autocomplete="off" autocorrect="off" autocapitalize="off">
   </div>
+  <div class="combine-bar">
+    <button class="combine-btn" id="combine-toggle">⊟ Combine parties</button>
+    <span class="combine-hint" id="combine-hint"></span>
+  </div>
   <div class="list" id="list">
     <div class="loading">Loading dinner data…</div>
+  </div>
+  <div class="combine-actionbar" id="combine-actionbar" style="display:none;">
+    <button class="btn btn-secondary" id="combine-cancel">Cancel</button>
+    <button class="btn btn-primary" id="combine-apply" disabled>Combine</button>
   </div>
 </div>
 
@@ -2601,7 +2633,7 @@
   // CONFIG + STATE
   // ====================================================================
   const VERSION = "v1.43";
-  const BUILD = '1783882356'; // stamped by deploy-to-github.command at every deploy
+  const BUILD = '1783883950'; // stamped by deploy-to-github.command at every deploy
   const DATA_PATH = "data";
   const params = new URLSearchParams(window.location.search);
   const REMY_TEST = params.get('test') === '1' || params.has('remytest');  // harvest-feed test mode: sends marked test:true, isolated by ID, skipped by ledger ingest
@@ -2625,8 +2657,11 @@
   let selectedGuestId = null;        // for seating mode
 
   // Unified state: { checkins: {gid: {...}}, seats: {seatId: gid}, endcaps: {seatId: true} }
-  let state = { checkins: {}, seats: {}, endcaps: {}, courseState: emptyCourseState(), harvest: {}, guest_names: {} };
+  let state = { checkins: {}, seats: {}, endcaps: {}, courseState: emptyCourseState(), harvest: {}, guest_names: {}, groups: {} };
   let stateBackend = 'localStorage';
+  // Combine-at-check-in: transient UI state (NOT persisted) for the multi-select flow.
+  let combineMode = false;
+  let combineSel = new Set();
   let unsubscribe = null;
 
   // ====================================================================
@@ -2734,6 +2769,7 @@
           courseState: parsed.courseState || emptyCourseState(),
           harvest: parsed.harvest || {},
           guest_names: parsed.guest_names || {},
+          groups: parsed.groups || {},
         };
       }
     } catch (e) { /* fresh state */ }
@@ -2758,6 +2794,7 @@
           courseState: data.courseState || emptyCourseState(),
           harvest: data.harvest || {},
           guest_names: data.guest_names || {},
+          groups: data.groups || {},
         };
       } else {
         // First time on this dinner — write our local state up
@@ -2944,13 +2981,18 @@
   // Shared-party groups (e.g. "Anderson Group"): several separate bookings Tim
   // tags as one party. The signal lives in the comma-separated notes field.
   function groupOf(g) {
+    // Runtime combine-at-check-in group (assigned live in the app when guests tell
+    // us they came together) wins over the notes-derived group. Stored in
+    // state.groups[guestId] as a display label; see combineParties()/ungroupParty().
+    const rg = g && state.groups && state.groups[g.id];
+    if (rg) return rg;
     const notes = g?.notes || '';
     const segs = notes.split(',');
     // Named group wins ("Anderson Group"), and each distinct name is its own group.
     for (const s of segs) { if (/\bgroup\b/i.test(s)) return s.trim(); }
     // Bare "together" (no named group) = one implicit group for the night.
     // Tim specifies a named group when there are multiple distinct groups.
-    // Typo-tolerant: Tim's xlsx has spelled it "togther" before (7/11), which
+    // Typo-tolerant: the xlsx has spelled it "togther" before (7/11), which
     // silently broke grouping. This matches that plus the plausible misspelling
     // family (togethr, togeter, togather, togethor...) without hitting unrelated
     // words. "altogether" is intentionally NOT matched (word-boundary anchored).
@@ -3044,9 +3086,17 @@
     }
 
     list.innerHTML = filtered.map(g => guestCardHTML(g)).join('');
-    list.querySelectorAll('.guest-card').forEach(el =>
-      el.addEventListener('click', () => openGuestModal(el.dataset.id))
-    );
+    list.querySelectorAll('.guest-card').forEach(el => {
+      if (combineMode) {
+        el.classList.add('selectable');
+        if (combineSel.has(el.dataset.id)) el.classList.add('selected');
+      }
+      el.addEventListener('click', () => {
+        if (combineMode) { if (el.dataset.id) toggleCombineSel(el.dataset.id); }
+        else openGuestModal(el.dataset.id);
+      });
+    });
+    renderCombineBar();
 
     if (activeTab === 'all' && dinnerData.cancelled?.length) {
       const cxHtml = dinnerData.cancelled.map(g => `
@@ -3410,6 +3460,16 @@
         <div class="gn-hint">Names autocomplete against the master guest list</div>
       </div>` : '';
 
+    // Runtime combine-group section (only when this party was combined live in-app).
+    const rgLabel = state.groups && state.groups[guestId];
+    const rgMates = runtimeGroupmates(guestId);
+    const groupSection = rgLabel ? `
+      <div class="modal-section">
+        <h4>Combined group · ${escape(groupShort(rgLabel))}</h4>
+        <div class="body">${rgMates.length ? 'With: ' + escape(rgMates.join(', ')) : 'This party only'}</div>
+        <button class="btn btn-secondary" id="ungroup-btn" style="width:100%; margin-top:8px;">⊟ Ungroup</button>
+      </div>` : '';
+
     const lateToggle = `
       <div class="modal-section">
         <button class="btn ${ci.running_late ? 'btn-late-on' : 'btn-secondary'}" id="late-btn" style="width:100%;">
@@ -3433,7 +3493,7 @@
     document.getElementById('modal').innerHTML = `
       <h2 class="modal-title">${escape(g.purchaser)}</h2>
       <p class="modal-sub">Party of ${g.party_size}${g.email ? ` · ${escape(g.email)}` : ''}</p>
-      ${returningSection}${allergenSection}${notesSection}${seatsSection}${guestNamesSection}${lateToggle}${noteInput}
+      ${returningSection}${allergenSection}${notesSection}${seatsSection}${guestNamesSection}${groupSection}${lateToggle}${noteInput}
       <div class="modal-actions">${actions}</div>
     `;
     document.getElementById('modal-backdrop').classList.add('open');
@@ -3441,6 +3501,8 @@
     document.getElementById('close-btn').onclick = closeModal;
     document.getElementById('savenote-btn').onclick = () => saveNoteOnly(guestId);
     document.getElementById('late-btn').onclick = () => toggleLate(guestId);
+    const ungroupBtn = document.getElementById('ungroup-btn');
+    if (ungroupBtn) ungroupBtn.onclick = () => ungroupParty(guestId);
     if (!isCheckedIn) {
       document.getElementById('checkin-btn').onclick = () => doCheckIn(guestId);
     } else {
@@ -3623,6 +3685,99 @@
   }
 
   // ====================================================================
+  // COMBINE PARTIES AT CHECK-IN (runtime groups)
+  // ====================================================================
+  // Live grouping for when parties arrive and say they came together. Stored in
+  // state.groups[guestId] = label (surname of the lead party) and synced via
+  // Firestore dinners/<date> like every other service-state field. groupOf()
+  // reads it first, so combined parties get the same color ring + chip that
+  // notes-derived groups already use, across check-in, seating, and Fresh Talk.
+
+  function lastName(name) {
+    const parts = (name || '').trim().split(/\s+/);
+    return parts.length ? parts[parts.length - 1] : (name || '');
+  }
+
+  // Drop any runtime group with fewer than 2 members left (orphans from a move or
+  // ungroup). A combine always creates >=2 same-label, so <2 is always a leftover.
+  function cleanupLoneGroups() {
+    const counts = {};
+    for (const lb of Object.values(state.groups || {})) counts[lb] = (counts[lb] || 0) + 1;
+    for (const [gid, lb] of Object.entries(state.groups || {})) {
+      if (counts[lb] < 2) delete state.groups[gid];
+    }
+  }
+
+  function enterCombineMode() { combineMode = true; combineSel = new Set(); renderCombineBar(); renderList(); }
+  function exitCombineMode() { combineMode = false; combineSel = new Set(); renderCombineBar(); renderList(); }
+
+  function toggleCombineSel(id) {
+    if (combineSel.has(id)) combineSel.delete(id); else combineSel.add(id);
+    const el = document.querySelector(`.guest-card[data-id="${id}"]`);
+    if (el) el.classList.toggle('selected', combineSel.has(id));
+    renderCombineBar();
+  }
+
+  // Reflect combine state into the toggle button, hint, and floating action bar.
+  function renderCombineBar() {
+    const toggle = document.getElementById('combine-toggle');
+    if (!toggle) return;
+    const hint = document.getElementById('combine-hint');
+    const bar = document.getElementById('combine-actionbar');
+    const apply = document.getElementById('combine-apply');
+    toggle.style.display = combineMode ? 'none' : '';
+    hint.textContent = combineMode ? 'Tap the parties that came together, then Combine.' : '';
+    bar.style.display = combineMode ? 'flex' : 'none';
+    const n = combineSel.size;
+    apply.textContent = n >= 2 ? `Combine ${n} parties` : 'Combine';
+    apply.disabled = n < 2;
+  }
+
+  async function combineParties() {
+    const ids = [...combineSel].filter(id => partyOf(id));
+    if (ids.length < 2) return;
+    state.groups = state.groups || {};
+    // Lead = selected party whose surname sorts first (stable, matches list order).
+    const lead = ids.map(partyOf).sort((a, b) =>
+      surname(a.purchaser).localeCompare(surname(b.purchaser)))[0];
+    const label = lastName(lead.purchaser);
+    // If any selected party is already in a runtime group, fold that whole group
+    // into the new label too — so combining across existing groups merges them.
+    const foldLabels = new Set(ids.map(id => state.groups[id]).filter(Boolean));
+    for (const [gid, lb] of Object.entries(state.groups)) {
+      if (foldLabels.has(lb)) state.groups[gid] = label;
+    }
+    for (const id of ids) state.groups[id] = label;
+    cleanupLoneGroups();
+    await pushState();
+    showToast(`Combined ${ids.length} parties as "${label}"`);
+    exitCombineMode();
+    refresh();
+  }
+
+  // Remove the whole runtime group this party belongs to (from the modal).
+  async function ungroupParty(guestId) {
+    const label = state.groups && state.groups[guestId];
+    if (!label) return;
+    for (const [gid, lb] of Object.entries(state.groups)) {
+      if (lb === label) delete state.groups[gid];
+    }
+    await pushState();
+    showToast('Ungrouped');
+    closeModal();
+    refresh();
+  }
+
+  // Purchaser names of the OTHER parties sharing a runtime group with this one.
+  function runtimeGroupmates(guestId) {
+    const label = state.groups && state.groups[guestId];
+    if (!label) return [];
+    return Object.entries(state.groups)
+      .filter(([gid, lb]) => lb === label && gid !== guestId)
+      .map(([gid]) => partyOf(gid)).filter(Boolean).map(g => g.purchaser);
+  }
+
+  // ====================================================================
   // TOAST
   // ====================================================================
   let toastTimer = null;
@@ -3765,6 +3920,11 @@
     filterText = e.target.value;
     renderList();
   });
+
+  // Combine-parties controls
+  document.getElementById('combine-toggle').addEventListener('click', enterCombineMode);
+  document.getElementById('combine-cancel').addEventListener('click', exitCombineMode);
+  document.getElementById('combine-apply').addEventListener('click', combineParties);
 
   // ====================================================================
   // REFRESH ENTRY
@@ -5272,7 +5432,7 @@
       unsubscribe = null;
     }
     dinnerDate = newDate;
-    state = { checkins: {}, seats: {}, endcaps: {}, courseState: emptyCourseState(), harvest: {} };
+    state = { checkins: {}, seats: {}, endcaps: {}, courseState: emptyCourseState(), harvest: {}, guest_names: {}, groups: {} };
     selectedGuestId = null;
     updateUrlDate(newDate);
 
