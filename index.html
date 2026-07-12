@@ -2601,7 +2601,7 @@
   // CONFIG + STATE
   // ====================================================================
   const VERSION = "v1.43";
-  const BUILD = '1783804636'; // stamped by deploy-to-github.command at every deploy
+  const BUILD = '1783882356'; // stamped by deploy-to-github.command at every deploy
   const DATA_PATH = "data";
   const params = new URLSearchParams(window.location.search);
   const REMY_TEST = params.get('test') === '1' || params.has('remytest');  // harvest-feed test mode: sends marked test:true, isolated by ID, skipped by ledger ingest
@@ -2950,7 +2950,11 @@
     for (const s of segs) { if (/\bgroup\b/i.test(s)) return s.trim(); }
     // Bare "together" (no named group) = one implicit group for the night.
     // Tim specifies a named group when there are multiple distinct groups.
-    if (/\btogether\b/i.test(notes)) return 'Together';
+    // Typo-tolerant: Tim's xlsx has spelled it "togther" before (7/11), which
+    // silently broke grouping. This matches that plus the plausible misspelling
+    // family (togethr, togeter, togather, togethor...) without hitting unrelated
+    // words. "altogether" is intentionally NOT matched (word-boundary anchored).
+    if (/\btog[eao]?th?[eao]?r\b/i.test(notes)) return 'Together';
     return null;
   }
   // Map each distinct group name -> stable color index 1..6 (by first appearance).
