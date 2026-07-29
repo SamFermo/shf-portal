@@ -1,0 +1,191 @@
+{
+  "series_id": "2026-08",
+  "series_label": "August 2026 series",
+  "_pending": "Published 2026-07-29 ahead of full lock. WINES pending Adrian; COCKTAIL + MOCKTAIL pending Katie — both render the 'being finalized' placeholder until they land. COURSE 3 IS DELIBERATELY UNSPECIFIC: the lamb is locked, the cuts and the cooking are still in test (leg/shoulder roll trial with Tim). Guest copy names the farm, the salmoriglio, the agrodolce and the cabbage only — all stable across every route under consideration. Tighten this course once the test settles. Crab is locked as a menu item; source (friend's catch vs Key City) still being confirmed.",
+  "header": {
+    "title": "Swan House Farm",
+    "subtitle": "Peak Summer",
+    "tagline": "thank you so much for joining us on this humble journey through everything skagit and swan house has to offer"
+  },
+  "courses": [
+    {
+      "label": "Antipasti",
+      "subtitle": "passed welcome bites at sit-down",
+      "plateware": "Two bites passed together at sit-down. Per setting: 8\" bread plate and fork only. Cutlery is staggered course-by-course, not all preset at once. Crab held on iced trays at the pass and passed fast.",
+      "dishes": [
+        {
+          "name": "Squash Panelle",
+          "pronunciation": "pah-NEL-leh",
+          "components": "chickpea and farm squash, ricotta salata, lemon, chili",
+          "story": "Panelle are Palermo street food: chickpea flour cooked down into a thick batter, set firm, cut, and fried. Ours are folded with grated Swan House squash and oregano and mint off the herb wall, set in trays at San Fermo, then cut and fried here at the farm so they hit the tray crisp. Shaved ricotta salata, lemon zest, a little chili. Naturally gluten free.",
+          "ingredients": [
+            {
+              "term": "Panelle",
+              "pronunciation": "pah-NEL-leh",
+              "note": "Sicilian chickpea fritters, a Palermo street-food staple usually eaten in a roll; crisp outside and almost custardy in the middle"
+            },
+            {
+              "term": "Ricotta salata",
+              "pronunciation": "ree-KOT-tah sah-LAH-tah",
+              "note": "ricotta that has been pressed, salted and aged until firm enough to shave; dry, milky and salty rather than creamy"
+            },
+            {
+              "term": "Summer squash",
+              "pronunciation": null,
+              "note": "Kelly's squash, picked young; grated into the batter so it steams from the inside as the panelle fries"
+            }
+          ]
+        },
+        {
+          "name": "Chilled Dungeness Crab",
+          "pronunciation": null,
+          "components": "lemon, Calabrian chili, mint, on a cucumber round",
+          "story": "Dungeness crab, cooked and picked at the farm the day of your dinner, dressed simply with lemon, a whisper of Calabrian chili and torn mint, and served cold on a round of Kelly's cucumber. Nothing gets wasted: the shells go straight into a roasting pan and become the brodo the risotto cooks in two courses later. The first time shellfish has appeared at one of these dinners.",
+          "ingredients": [
+            {
+              "term": "Dungeness crab",
+              "pronunciation": null,
+              "note": "the Pacific Northwest's own crab, sweet and clean; cooked whole and picked by hand here rather than bought as picked meat"
+            },
+            {
+              "term": "Calabrian chili",
+              "pronunciation": null,
+              "note": "a fruity, moderately hot southern Italian chili packed in oil; used here as a whisper, not a heat move"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "Insalata",
+      "subtitle": "course one",
+      "plateware": "Plated cold, farm-side build. Salad plate + fork.",
+      "dishes": [
+        {
+          "name": "Summer Squash, Two Ways",
+          "pronunciation": null,
+          "components": "raw ribbons and charred scapece, sweet peppers, sunflower gremolata, herbs and flowers",
+          "story": "The crop the farm gives most generously in August, read two ways on one plate. Half is shaved raw into ribbons with lemon, olive oil and mint. Half is charred over live fire and marinated scapece-style in vinegar, chili and more mint. Kelly's sweet peppers get the same char-and-marinate treatment, there is a toasted sunflower-seed gremolata for crunch, and the herb wall and edible flowers go over the top. Squash blossoms are torn in when the morning's picking allows, and if the heirloom tomatoes have finally colored up by your weekend they fill in around the edges. Vegan and gluten free as written.",
+          "ingredients": [
+            {
+              "term": "Scapece",
+              "pronunciation": "skah-PEH-cheh",
+              "note": "a southern Italian method of cooking vegetables and then steeping them in vinegar, mint and chili; sharp, cool and a little sweet"
+            },
+            {
+              "term": "Gremolata",
+              "pronunciation": "greh-moh-LAH-tah",
+              "note": "traditionally lemon zest, garlic and parsley chopped together as a finishing condiment; ours is built on toasted sunflower seeds for texture"
+            },
+            {
+              "term": "Squash blossom",
+              "pronunciation": null,
+              "note": "the edible golden flower of the squash plant, delicate and faintly sweet; picked the morning of service, garnish scale only"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "Primi",
+      "subtitle": "course two",
+      "plateware": "Warm bowl. Finished in batches at the pass — banquet method, par-cooked and finished to order in service.",
+      "dishes": [
+        {
+          "name": "Crab Brodo Risotto",
+          "pronunciation": null,
+          "components": "spicy crab brodo, sweet corn crema, charred corn, basil, lemon",
+          "story": "The other half of the crab. The shells from the welcome bite are roasted with aromatics and Calabrian chili into a deep, gently spicy brodo, and the rice cooks in it. Where a risotto usually finishes with a lot of cold butter beaten in, this one finishes with a crema of peak Skagit sweet corn instead, so the sweetness and the body come from the corn and the depth and the warmth come from the crab. Charred kernels, torn basil, lemon zest. There is chili oil at the pass if you want more heat. Naturally gluten free.",
+          "ingredients": [
+            {
+              "term": "Brodo",
+              "pronunciation": "BROH-doh",
+              "note": "Italian for broth; here the crab shells roasted hard with aromatics and chili, then simmered down until it tastes like the whole crab rather than just the meat"
+            },
+            {
+              "term": "Mantecatura",
+              "pronunciation": "mahn-teh-kah-TOO-rah",
+              "note": "the final beating of fat into a risotto off the heat that makes it creamy; ours is sweet corn crema in place of the usual butter"
+            },
+            {
+              "term": "Sweet corn",
+              "pronunciation": null,
+              "note": "bi-color corn at its short August peak, from the valley; half becomes the crema, half is charred and folded through"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "Secondi",
+      "subtitle": "course three",
+      "plateware": "Kitchen-finished and batch-fired. Nothing is carved in the room. Plated vs plattered decided at R&D.",
+      "dishes": [
+        {
+          "name": "Swan House Farm Lamb",
+          "pronunciation": null,
+          "components": "charred onion agrodolce, salmoriglio, grilled cabbage in lamb jus",
+          "story": "The first time the farm's own lamb has been the center of one of these dinners. Tim raises the flock here at Swan House, and the whole course is built around it: herbs and lemon worked through and over the meat, slow heat and live fire to get it where it needs to go, and everything sliced and finished in the kitchen so it reaches the table hot rather than carved in front of you. Salmoriglio goes over the top, a sweet-tart agrodolce of Kelly's charred farm onions goes alongside, and grilled cabbage wedges are finished in the lamb's own jus. We settle the final cuts and the cooking with Tim in the last weeks before your dinner, around what the flock and the season actually give us.",
+          "ingredients": [
+            {
+              "term": "Salmoriglio",
+              "pronunciation": "sahl-moh-REE-lyoh",
+              "note": "a Sicilian sauce of lemon, olive oil, oregano and garlic emulsified warm; sharp and herbal, the traditional partner to grilled lamb"
+            },
+            {
+              "term": "Agrodolce",
+              "pronunciation": "ah-groh-DOHL-cheh",
+              "note": "Italian sweet-and-sour; here farm onions charred and cooked down with vinegar and honey until glossy, to cut the richness"
+            },
+            {
+              "term": "Swan House lamb",
+              "pronunciation": null,
+              "note": "raised on the farm you are sitting on, a few hundred yards from the pergola; the reason this course exists at all"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "Dolce",
+      "subtitle": "course four",
+      "plateware": "Dessert plate + fork. Cakes baked at SF and travel; berries macerated farm-side.",
+      "dishes": [
+        {
+          "name": "Olive Oil Cake",
+          "pronunciation": null,
+          "components": "macerated berries, honey mascarpone, mint and farm flowers",
+          "story": "Olive oil in place of butter makes a cake that is tender, faintly fruity and less sweet than you expect, which is the point at the end of a long evening. Kelly's loganberries lead the berries, macerated in their own syrup, with blackberries underneath for depth and huckleberries joining as they come in later in the month. Honey-whipped mascarpone, torn mint, and a scatter of farm flowers.",
+          "ingredients": [
+            {
+              "term": "Loganberry",
+              "pronunciation": null,
+              "note": "a raspberry-blackberry cross that grows beautifully in the Skagit Valley; darker and more tart than a raspberry, from Kelly's canes"
+            },
+            {
+              "term": "Mascarpone",
+              "pronunciation": "mah-skar-POH-neh",
+              "note": "the soft, barely sweet Italian cream cheese behind tiramisu; whipped here with honey and left loose"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "Caffé",
+      "subtitle": "to close",
+      "plateware": "Cups and saucers, poured tableside as dessert lands.",
+      "dishes": [
+        {
+          "name": "Cafe Umbria",
+          "pronunciation": null,
+          "components": null,
+          "story": "Locally roasted coffee from Seattle's Cafe Umbria, served to close the meal.",
+          "ingredients": []
+        }
+      ]
+    }
+  ],
+  "wines": [],
+  "cocktails": []
+}
