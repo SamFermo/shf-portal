@@ -68,21 +68,21 @@
       "display_date": "Sunday, July 12, 2026",
       "seated_covers": 26,
       "party_count": 12,
-      "is_past": false
+      "is_past": true
     },
     {
       "date": "2026-07-18",
       "display_date": "Saturday, July 18, 2026",
       "seated_covers": 26,
       "party_count": 9,
-      "is_past": false
+      "is_past": true
     },
     {
       "date": "2026-07-19",
       "display_date": "Sunday, July 19, 2026",
       "seated_covers": 26,
       "party_count": 8,
-      "is_past": false
+      "is_past": true
     },
     {
       "date": "2026-08-08",
@@ -115,15 +115,15 @@
     {
       "date": "2026-09-05",
       "display_date": "Saturday, September 5, 2026",
-      "seated_covers": 18,
-      "party_count": 8,
+      "seated_covers": 22,
+      "party_count": 10,
       "is_past": false
     },
     {
       "date": "2026-09-06",
       "display_date": "Sunday, September 6, 2026",
-      "seated_covers": 8,
-      "party_count": 4,
+      "seated_covers": 16,
+      "party_count": 8,
       "is_past": false
     },
     {
@@ -141,6 +141,6 @@
       "is_past": false
     }
   ],
-  "generated_at": "2026-07-03T16:10:19",
-  "build": "1783883950"
+  "generated_at": "2026-07-29T15:35:34",
+  "build": "1785364534"
 }

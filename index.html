@@ -266,6 +266,22 @@
   .combine-actionbar .btn { flex: 1; }
   .btn:disabled { opacity: 0.45; pointer-events: none; }
 
+  /* Live-note kitchen acknowledgement: unacked notes glow the card + show an Ack button */
+  @keyframes noteGlow {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(74,106,58,0); }
+    50%      { box-shadow: 0 0 0 4px rgba(74,106,58,0.32); }
+  }
+  .guest-card.note-glow { animation: noteGlow 1.5s ease-in-out infinite; border-color: var(--accent); }
+  .state-note { display: flex; align-items: center; flex-wrap: wrap; gap: 2px 6px; }
+  .note-ack-btn {
+    margin-left: 6px; padding: 2px 12px; font-size: 12px; line-height: 1.5;
+    border: 1px solid var(--accent); border-radius: 12px;
+    background: var(--card); color: var(--accent-dark); cursor: pointer;
+    font-family: 'Caladea', Georgia, serif; -webkit-appearance: none;
+  }
+  .note-ack-btn:active { background: var(--selected-bg); }
+  .note-acked { margin-left: 6px; font-size: 12px; color: var(--text-mute); }
+
   .list { padding: 12px 18px 80px; }
   .empty-state {
     text-align: center; color: var(--text-mute);
@@ -2371,7 +2387,6 @@
     <button class="vtab" data-view="freshtalk" id="vtab-freshtalk" hidden>Fresh talk</button>
     <button class="vtab" data-view="service" id="vtab-service" hidden>Service</button>
     <button class="vtab" data-view="harvest" id="vtab-harvest" hidden>Harvest</button>
-    <button class="vtab" data-view="orders" id="vtab-orders" hidden>Orders</button>
     <button class="vtab" data-view="setup-breakdown">Setup &amp; Breakdown</button>
   </div>
 </div>
@@ -2632,8 +2647,8 @@
   // ====================================================================
   // CONFIG + STATE
   // ====================================================================
-  const VERSION = "v1.43";
-  const BUILD = '1783883950'; // stamped by deploy-to-github.command at every deploy
+  const VERSION = "v1.45";
+  const BUILD = '1785364534'; // stamped by deploy-to-github.command at every deploy
   const DATA_PATH = "data";
   const params = new URLSearchParams(window.location.search);
   const REMY_TEST = params.get('test') === '1' || params.has('remytest');  // harvest-feed test mode: sends marked test:true, isolated by ID, skipped by ledger ingest
@@ -3096,6 +3111,10 @@
         else openGuestModal(el.dataset.id);
       });
     });
+    // Inline "Ack" on a glowing note — stop the click from opening the modal.
+    list.querySelectorAll('.note-ack-btn').forEach(btn =>
+      btn.addEventListener('click', (e) => { e.stopPropagation(); ackNote(btn.dataset.ack); })
+    );
     renderCombineBar();
 
     if (activeTab === 'all' && dinnerData.cancelled?.length) {
@@ -3142,7 +3161,15 @@
     }
 
     const noteHTML = g.notes ? `<div class="guest-notes">${escape(g.notes)}</div>` : '';
-    const stateNote = ci.note ? `<div class="guest-notes" style="color:var(--accent-dark);">📝 ${escape(ci.note)}</div>` : '';
+    // Live service note + kitchen-ack: an unacknowledged note glows the card and
+    // shows an "Ack" button so the kitchen can clear it at a glance; once acked it
+    // shows "✓ seen" and stops glowing.
+    const noteUnacked = !!(ci.note && !ci.note_ack);
+    const stateNote = ci.note ? `<div class="guest-notes state-note" style="color:var(--accent-dark);">📝 ${escape(ci.note)}${
+        noteUnacked
+          ? `<button class="note-ack-btn" data-ack="${g.id}" type="button">Ack</button>`
+          : `<span class="note-acked">✓ seen</span>`
+      }</div>` : '';
     const gn = state.guest_names[g.id] || [];
     const namedGuests = gn.filter((n, i) => i > 0 && n).join(', ');
     const gnHTML = namedGuests ? `<div class="guest-notes" style="color:var(--wood-soft); font-size:12px;">+${escape(namedGuests)}</div>` : '';
@@ -3150,7 +3177,7 @@
     const partyClass = isFull ? 'full' : (isPartial ? 'partial' : '');
 
     return `
-      <div class="guest-card ${isCheckedIn ? 'checked-in' : ''}" data-id="${g.id}">
+      <div class="guest-card ${isCheckedIn ? 'checked-in' : ''}${noteUnacked ? ' note-glow' : ''}" data-id="${g.id}">
         <div class="guest-row1">
           <h3 class="guest-name">${escape(g.purchaser)}</h3>
           <span class="party-badge ${partyClass}">${g.party_size} cx</span>
@@ -3477,6 +3504,14 @@
         </button>
       </div>`;
 
+    // Kitchen acknowledgement for a live note (only shown when a note exists).
+    const noteAckSection = ci.note ? `
+      <div class="modal-section ${ci.note_ack ? '' : 'note-ack-open'}">
+        <h4>Kitchen acknowledgement</h4>
+        <div class="body">${ci.note_ack ? '✓ This note has been acknowledged by the kitchen.' : 'Not acknowledged yet — the party glows on the check-in list until someone acks it.'}</div>
+        ${ci.note_ack ? '' : `<button class="btn btn-secondary" id="ackNote-btn" style="width:100%; margin-top:8px;">✓ Acknowledge note</button>`}
+      </div>` : '';
+
     const noteInput = `
       <div class="modal-section">
         <h4>Add a quick note (optional)</h4>
@@ -3493,7 +3528,7 @@
     document.getElementById('modal').innerHTML = `
       <h2 class="modal-title">${escape(g.purchaser)}</h2>
       <p class="modal-sub">Party of ${g.party_size}${g.email ? ` · ${escape(g.email)}` : ''}</p>
-      ${returningSection}${allergenSection}${notesSection}${seatsSection}${guestNamesSection}${groupSection}${lateToggle}${noteInput}
+      ${returningSection}${allergenSection}${notesSection}${seatsSection}${guestNamesSection}${groupSection}${noteAckSection}${lateToggle}${noteInput}
       <div class="modal-actions">${actions}</div>
     `;
     document.getElementById('modal-backdrop').classList.add('open');
@@ -3503,6 +3538,8 @@
     document.getElementById('late-btn').onclick = () => toggleLate(guestId);
     const ungroupBtn = document.getElementById('ungroup-btn');
     if (ungroupBtn) ungroupBtn.onclick = () => ungroupParty(guestId);
+    const ackNoteBtn = document.getElementById('ackNote-btn');
+    if (ackNoteBtn) ackNoteBtn.onclick = () => ackNote(guestId);
     if (!isCheckedIn) {
       document.getElementById('checkin-btn').onclick = () => doCheckIn(guestId);
     } else {
@@ -3623,12 +3660,36 @@
     if (ci && !ci.checked_in_at && !ci.note && !ci.running_late) delete state.checkins[guestId];
   }
 
+  // Write a live note onto a check-in record and manage the kitchen-ack glow.
+  // A NEW or CHANGED note re-arms the glow (note_ack=false); clearing the note
+  // drops the flag; an unchanged note keeps whatever ack state it already had.
+  // (note_ack rides on the checkins record, so it syncs to every iPad in realtime.)
+  function setPartyNote(ci, newNote) {
+    const nn = (newNote || '').trim() || null;
+    const old = ci.note || null;
+    ci.note = nn;
+    if (!nn) delete ci.note_ack;
+    else if (nn !== old) ci.note_ack = false;
+  }
+
+  // Kitchen acknowledges a party's live note — clears the glow. Runtime state,
+  // synced like check-ins. A later edit to the note re-arms it (see setPartyNote).
+  async function ackNote(guestId) {
+    const ci = state.checkins[guestId];
+    if (!ci || !ci.note) return;
+    ci.note_ack = true;
+    await pushState();
+    showToast('✓ Note acknowledged');
+    if (document.getElementById('modal-backdrop').classList.contains('open')) openGuestModal(guestId);
+    refresh();
+  }
+
   // Toggle "running late" without checking the party in. Persists immediately.
   async function toggleLate(guestId) {
     const ci = state.checkins[guestId] || {};
     ci.running_late = !ci.running_late;
     const noteEl = document.getElementById('note-input');
-    if (noteEl) ci.note = noteEl.value.trim() || ci.note || null;
+    if (noteEl) setPartyNote(ci, noteEl.value.trim() || ci.note || '');
     state.checkins[guestId] = ci;
     cleanupCheckin(guestId);
     await pushState();
@@ -3642,7 +3703,7 @@
     const noteEl = document.getElementById('note-input');
     const note = noteEl ? noteEl.value.trim() : '';
     const ci = state.checkins[guestId] || {};
-    ci.note = note || null;
+    setPartyNote(ci, note);
     state.checkins[guestId] = ci;
     cleanupCheckin(guestId);
     await pushState();
@@ -3653,11 +3714,11 @@
 
   async function doCheckIn(guestId) {
     const note = document.getElementById('note-input').value.trim();
-    state.checkins[guestId] = {
-      checked_in_at: new Date().toISOString(),
-      note: note || null,
-      running_late: false,
-    };
+    const prev = state.checkins[guestId] || {};
+    const ci = { checked_in_at: new Date().toISOString(), note: prev.note || null, running_late: false };
+    if (prev.note_ack !== undefined) ci.note_ack = prev.note_ack;  // carry a prior ack
+    setPartyNote(ci, note);  // re-arms the glow only if the note text actually changed
+    state.checkins[guestId] = ci;
     // Persist any guest names entered in the modal
     const section = document.querySelector('.guest-names-section');
     if (section) {
@@ -3674,7 +3735,10 @@
     const note = document.getElementById('note-input').value.trim();
     const prev = state.checkins[guestId] || {};
     if (note || prev.running_late) {
-      state.checkins[guestId] = { note: note || null, running_late: prev.running_late || false };
+      const ci = { note: prev.note || null, running_late: prev.running_late || false };
+      if (prev.note_ack !== undefined) ci.note_ack = prev.note_ack;  // undo check-in, keep note + its ack
+      setPartyNote(ci, note);  // re-arm only if the note changed
+      state.checkins[guestId] = ci;
     } else {
       delete state.checkins[guestId];
     }
@@ -3821,7 +3885,7 @@
     // Photo background on body whenever we've left the portal.
     document.body.classList.toggle('in-dinner-view', !onPortal);
     // Mark the active vtab if we're in any view that has a tab in the bar.
-    const tabbedViews = ['list','seating','freshtalk','service','setup-breakdown','harvest','orders'];
+    const tabbedViews = ['list','seating','freshtalk','service','setup-breakdown','harvest'];
     document.querySelectorAll('.vtab').forEach(b => b.classList.remove('active'));
     if (tabbedViews.includes(viewName)) {
       const btn = document.querySelector(`.vtab[data-view="${viewName}"]`);
@@ -4105,6 +4169,24 @@
   const COURSE_STATES = ['plates_walking', 'clearing', 'cleared', 'fired'];
   const STATE_LABELS = { plates_walking: 'Plates walking', clearing: 'Clearing', cleared: 'Cleared', fired: 'Fired' };
 
+  // Courses that Service does NOT pace (2026-07-29). Caffe is poured tableside
+  // alongside the dolce rather than fired as its own course, so counting it made
+  // Service claim one more course than the room actually runs and left a phantom
+  // "fire next course" step at the end of every dinner. It still appears in
+  // Fresh-talk and on the guest page, which are reference surfaces, not pacing.
+  // Matched on the label, accent-insensitive, so 'Caffe' and 'Caffe\u0301' both hit.
+  const NON_FIRED_COURSE_RE = /^(caff|coffee)/i;
+  function isFiredCourse(c) {
+    const label = (c && c.label ? c.label : '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
+    return !NON_FIRED_COURSE_RE.test(label);
+  }
+  // The fired-course list. Non-fired courses sit at the END of every series
+  // (caffe closes the menu), so filtering does not shift the indices already
+  // written into state.courseState.history — old pacing logs stay readable.
+  function servicePacedCourses() {
+    return (referenceData && referenceData.courses ? referenceData.courses : []).filter(isFiredCourse);
+  }
+
   function courseStateOrEmpty() {
     return state.courseState || emptyCourseState();
   }
@@ -4125,7 +4207,7 @@
   async function fireNextCourse() {
     if (!state.courseState) state.courseState = emptyCourseState();
     const cs = state.courseState;
-    const courses = referenceData?.courses || [];
+    const courses = servicePacedCourses();
     const now = new Date().toISOString();
     if (cs.current_index === null) {
       cs.history.push({ course_index: 0, state: 'plates_walking', at: now });
@@ -4186,7 +4268,7 @@
       container.innerHTML = `<div class="loading">Service view needs reference content for this series.</div>`;
       return;
     }
-    const courses = referenceData.courses || [];
+    const courses = servicePacedCourses();
     const cs = courseStateOrEmpty();
     const idx = cs.current_index;
     const cur = cs.current_state;
@@ -4554,17 +4636,18 @@
   }
 
   function startOrdersSync() {
+    // The Orders vtab was removed from the slider (2026-07-29). Order review
+    // lives in Remy; the tab only ever forwarded there, so it was a dead pill
+    // taking width in a bar that already overflows on a phone. The snapshot below
+    // still runs to drive the portal banner's "N new" badge, which is the one
+    // entry point Kelly actually uses.
     const R = window._remy;
-    const btn = document.getElementById('vtab-orders');
-    if (!R || !R.ready) { if (btn) btn.hidden = true; updateOrdersBanner(); return; }
-    if (btn) btn.hidden = false;
+    if (!R || !R.ready) { updateOrdersBanner(); return; }
     if (ordersUnsub) { updateOrdersBanner(); return; }
     try {
       const q = R.query(R.collection(R.db, 'orders'), R.orderBy('placed_at', 'desc'), R.limit(40));
       ordersUnsub = R.onSnapshot(q, (snap) => {
         ordersData = snap.docs.map(d => d.data());
-        const openCount = ordersData.filter(o => (o.status || 'placed') === 'placed').length;
-        if (btn) btn.textContent = openCount ? `Orders (${openCount})` : 'Orders';
         updateOrdersBanner();
         if (activeView === 'orders') renderOrdersView();
         updateVtabPill();
