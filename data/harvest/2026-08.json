@@ -1,0 +1,170 @@
+{
+  "$comment": "Per-series harvest lists for the Harvest tab. Checkbox state lives in the per-dinner Firestore doc (state.harvest). Built 2026-07-29 off the 7/24 Kelly call + the August sourcing table. Farm morning-picks: summer squash, sweet peppers, cucumbers, cabbage, tender herbs, edible flowers, squash blossoms, farm berries. Onions for the agrodolce come down to SF ahead (one cook for the whole series). Corn, blackberries and huckleberries are bought-in. Tomatoes are UPSIDE ONLY — the Course 1 plate is complete without them, do not force them.",
+  "series": "2026-08",
+  "weekends": [
+    {
+      "label": "August 8-9",
+      "dates": [
+        "2026-08-08",
+        "2026-08-09"
+      ],
+      "intro": "Only what needs picking fresh at the farm this weekend. Corn and blackberries are bought-in and arrive with the load. The agrodolce onions already came down to SF. Lamb and crab are both handled at the farm — see the confirm list. Sunday repeats Saturday.",
+      "items": [
+        {
+          "id": "summer-squash",
+          "name": "Summer squash",
+          "qty": "about 25 lb for the weekend",
+          "note": "Course 1 both ways — raw ribbons + charred scapece · pick young and firm, nothing seedy · the panelle squash already went into the trays at SF"
+        },
+        {
+          "id": "sweet-peppers",
+          "name": "Sweet peppers",
+          "qty": "about 4 lb per night",
+          "note": "Course 1 · charred on the Egg then marinated — replaced the beans, Kelly has these in volume"
+        },
+        {
+          "id": "cucumbers",
+          "name": "Cucumbers",
+          "qty": "about 8 per night",
+          "note": "Crab bite vessel · sliced into rounds, pick + chill early, they hold better cold"
+        },
+        {
+          "id": "cabbage",
+          "name": "Cabbage",
+          "qty": "about 8 heads per night",
+          "note": "Course 3 contorni · cut into wedges, grilled, finished in the lamb jus · Kelly holding 50 lb, claim 30-40 for the series"
+        },
+        {
+          "id": "soft-herbs",
+          "name": "Tender herbs (oregano, mint, basil)",
+          "qty": "handfuls per night",
+          "note": "oregano → salmoriglio · mint → scapece, the crab bite, the dessert · basil → the risotto, pick last and keep it out of the cold"
+        },
+        {
+          "id": "edible-flowers",
+          "name": "Edible flowers",
+          "qty": "1 pint for the weekend",
+          "note": "garnish — Course 1 and the dessert scatter · nasturtium, calendula, borage all at peak"
+        },
+        {
+          "id": "squash-blossoms",
+          "name": "Squash blossoms",
+          "qty": "garnish scale, whatever the morning gives",
+          "note": "torn over Course 1 · nice to have, the plate is finished without them"
+        },
+        {
+          "id": "farm-berries",
+          "name": "Loganberries (+ red currants if holding)",
+          "qty": "whatever is ripe",
+          "note": "Course 4 · farm berries lead the maceration, bought-in blackberries are the volume layer underneath"
+        },
+        {
+          "id": "tomatoes",
+          "name": "Heirloom tomatoes — UPSIDE ONLY",
+          "qty": "only if they have colored up",
+          "note": "Course 1 · marinated, fills in around the edges. Do NOT force it — the plate is complete without them and there is no hedge order."
+        }
+      ],
+      "confirm": [
+        {
+          "id": "lamb",
+          "name": "Lamb (at the farm)",
+          "note": "Legs + shoulders for the weekend, defrosted and allocated. CUTS AND METHOD STILL IN TEST — confirm the final spec with Sam before Thursday of prep week."
+        },
+        {
+          "id": "crab",
+          "name": "Dungeness crab (at the farm)",
+          "note": "3-4 crabs per night. Tim cooks and picks on site Thu/Fri; picked meat goes to the bite, shells get roasted into the risotto brodo. No prior-weekend freeze needed unless the catch runs long."
+        },
+        {
+          "id": "agrodolce-onions",
+          "name": "Onions — already sent to SF",
+          "note": "Farm onions, agrodolce cooked in one batch at SF for the whole series. Confirm the count went down; nothing to pick this weekend."
+        }
+      ],
+      "footnote": "Coming down from the restaurant, do NOT pick fresh: the set panelle trays, the par-cooked rice, the braise and its jus, the olive oil cakes, ricotta salata, mascarpone, honey, chickpea flour, and the agrodolce. Bought-in and arriving with the load: sweet corn, blackberries. No bread this series — there is no Breadfarm order."
+    },
+    {
+      "label": "August 15-16",
+      "dates": [
+        "2026-08-15",
+        "2026-08-16"
+      ],
+      "intro": "Same picks as W1, one week further into the season. Huckleberries join the dessert this weekend (F&F, ordered ahead). Tomatoes are more plausible now but still upside only. Sunday repeats Saturday.",
+      "items": [
+        {
+          "id": "summer-squash",
+          "name": "Summer squash",
+          "qty": "about 25 lb for the weekend",
+          "note": "Course 1 both ways · still picking young and firm — plants are further along, be choosier"
+        },
+        {
+          "id": "sweet-peppers",
+          "name": "Sweet peppers",
+          "qty": "about 4 lb per night",
+          "note": "Course 1 · charred then marinated · riper peppers this week, expect more sweetness and less time on the fire"
+        },
+        {
+          "id": "cucumbers",
+          "name": "Cucumbers",
+          "qty": "about 8 per night",
+          "note": "Crab bite vessel · rounds, pick + chill early"
+        },
+        {
+          "id": "cabbage",
+          "name": "Cabbage",
+          "qty": "about 8 heads per night",
+          "note": "Course 3 contorni · wedges, grilled, finished in lamb jus"
+        },
+        {
+          "id": "soft-herbs",
+          "name": "Tender herbs (oregano, mint, basil)",
+          "qty": "handfuls per night",
+          "note": "oregano → salmoriglio · mint → scapece, crab bite, dessert · basil → risotto, picked last"
+        },
+        {
+          "id": "edible-flowers",
+          "name": "Edible flowers",
+          "qty": "1 pint for the weekend",
+          "note": "garnish — Course 1 and the dessert scatter"
+        },
+        {
+          "id": "squash-blossoms",
+          "name": "Squash blossoms",
+          "qty": "garnish scale, whatever the morning gives",
+          "note": "torn over Course 1 · optional"
+        },
+        {
+          "id": "farm-berries",
+          "name": "Loganberries (+ red currants if holding)",
+          "qty": "whatever is ripe",
+          "note": "Course 4 · farm berries lead · huckleberries (bought, F&F) join this weekend, blackberries still the base"
+        },
+        {
+          "id": "tomatoes",
+          "name": "Heirloom tomatoes — UPSIDE ONLY",
+          "qty": "only if they have colored up",
+          "note": "Course 1 · more likely this weekend than W1, but still no hedge order. Marinated, fills in."
+        }
+      ],
+      "confirm": [
+        {
+          "id": "lamb",
+          "name": "Lamb (at the farm)",
+          "note": "Second weekend's legs + shoulders defrosted and allocated. Adjust the count off what night 1 of W1 actually yielded."
+        },
+        {
+          "id": "crab",
+          "name": "Dungeness crab (at the farm)",
+          "note": "3-4 crabs per night, this week's catch. Tim cooks, picks, and builds the brodo on site."
+        },
+        {
+          "id": "huckleberries",
+          "name": "Huckleberries — F&F, ordered ahead",
+          "note": "W2 dessert evolution. Fresh, early and limited — confirm the order landed before Friday."
+        }
+      ],
+      "footnote": "Coming down from the restaurant, do NOT pick fresh: the set panelle trays, the par-cooked rice, the braise and its jus, the olive oil cakes, ricotta salata, mascarpone, honey, chickpea flour, and the agrodolce. Bought-in and arriving with the load: sweet corn, blackberries, huckleberries. No bread this series."
+    }
+  ]
+}
