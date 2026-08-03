@@ -2324,6 +2324,43 @@
   .portal-orders .po-sub { font-size: 12px; color: var(--text-soft); }
   .portal-orders .po-badge { background: var(--rust); color: #fff; font-size: 12px; font-weight: 800; padding: 5px 12px; border-radius: 999px; animation: po-pulse 2s ease-in-out infinite; }
   @keyframes po-pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.08); } }
+
+  /* ── AVAILABILITY (2026-08-03) ────────────────────────────────────────────
+     The season's dinner dates. Tim/Kelly toggle open/sold plus a short note and
+     hit Publish; swanhousefarm.com reads availability/current and renders the
+     schedule from it. Public read by design — "August 8 has 2 seats" is exactly
+     what we want the world to see. Write is anon-auth + App Check, gated in this
+     UI by the host PIN. Touches NO roster data. ─────────────────────────────── */
+  .portal-availability { display: flex; align-items: center; gap: 12px; max-width: 560px; margin: 12px auto 0; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 13px 16px; cursor: pointer; box-shadow: 0 2px 8px rgba(58,42,22,.22); transition: box-shadow .15s, transform .15s; }
+  .portal-availability:active { transform: scale(.985); }
+  .portal-availability .pa-icon { font-size: 20px; color: var(--accent-dark); }
+  .portal-availability .pa-body { flex: 1; display: flex; flex-direction: column; }
+  .portal-availability .pa-title { font-weight: 700; color: var(--text); font-size: 15px; font-family: 'Playfair Display', Georgia, serif; }
+  .portal-availability .pa-sub { font-size: 12px; color: var(--text-soft); }
+
+  .av-wrap { max-width: 640px; margin: 0 auto; padding: 14px 14px 44px; }
+  .av-head { text-align: center; padding: 8px 0 2px; }
+  .av-eyebrow { font-size: 11px; text-transform: uppercase; letter-spacing: 1.4px; color: var(--accent); font-weight: 600; }
+  .av-title { font-family: Caladea, Cambria, Georgia, serif; font-size: 22px; color: var(--text); margin-top: 2px; }
+  .av-sub { font-size: 12.5px; color: var(--text-soft); font-style: italic; margin-top: 3px; }
+  .av-state { font-size: 12px; color: var(--text-mute); margin-top: 9px; line-height: 1.35; }
+  .av-month { font-family: Caladea, Cambria, Georgia, serif; font-size: 15px; color: var(--accent-dark); margin: 18px 0 6px; border-bottom: 1px solid var(--border-soft); padding-bottom: 3px; }
+  .av-row { display: flex; align-items: center; gap: 10px; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 10px 12px; margin-bottom: 6px; }
+  .av-row.past { opacity: .5; }
+  .av-date { flex: 1; font-size: 15px; font-weight: 600; line-height: 1.15; }
+  .av-date .av-dow { display: block; font-weight: 400; color: var(--text-soft); font-size: 12px; }
+  .av-pill { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .6px; padding: 5px 11px; border-radius: 999px; border: 1px solid; white-space: nowrap; }
+  .av-pill.open { background: var(--accent-soft); border-color: var(--accent); color: var(--accent-dark); }
+  .av-pill.sold { background: var(--cancel-bg); border-color: var(--cancel-border); color: var(--text-soft); }
+  .av-toggle { font: inherit; font-size: 12px; font-weight: 700; padding: 7px 13px; border-radius: var(--radius); border: 1px solid var(--accent); background: var(--card); color: var(--accent-dark); cursor: pointer; white-space: nowrap; }
+  .av-toggle:active { transform: scale(.97); }
+  .av-note-in { font: inherit; font-size: 13px; width: 92px; padding: 6px 8px; border: 1px solid var(--border); border-radius: var(--radius); background: #fff; }
+  .av-note-ro { font-size: 12.5px; color: var(--text-soft); font-style: italic; white-space: nowrap; }
+  .av-actions { display: flex; gap: 10px; justify-content: center; margin-top: 20px; flex-wrap: wrap; }
+  .av-btn { font: inherit; font-size: 14px; font-weight: 700; padding: 11px 20px; border-radius: var(--radius); cursor: pointer; border: 1px solid var(--accent); background: var(--card); color: var(--accent-dark); }
+  .av-btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .av-btn.primary:disabled { opacity: .4; cursor: default; }
+  .av-warn { max-width: 640px; margin: 14px auto 0; background: var(--rust-soft); border: 1px solid var(--rust); border-radius: var(--radius); padding: 10px 13px; font-size: 12.5px; line-height: 1.4; }
   .hv-header { text-align: center; padding: 10px 0 4px; }
   .hv-eyebrow { font-size: 11px; text-transform: uppercase; letter-spacing: 1.4px; color: var(--accent); font-weight: 600; }
   .hv-title { font-family: Caladea, Cambria, Georgia, serif; font-size: 22px; color: var(--text); margin-top: 2px; }
@@ -2433,6 +2470,10 @@
     <span class="po-body"><span class="po-title">Farm Orders</span><span class="po-sub" id="po-sub">from San Fermo</span></span>
     <span class="po-badge" id="po-badge" style="display:none"></span>
   </div>
+  <div class="portal-availability" id="portal-availability" role="button" tabindex="0" aria-label="Dinner dates and availability">
+    <span class="pa-icon">◷</span>
+    <span class="pa-body"><span class="pa-title">Dinner Dates</span><span class="pa-sub" id="pa-sub">what the website shows</span></span>
+  </div>
 </div>
 
 <div id="map-modal" class="map-modal" aria-hidden="true">
@@ -2466,6 +2507,20 @@
   <div class="training-page" id="standards-content">
     <div class="tp-title">Standards</div>
     <div class="tp-subtitle">Loading…</div>
+  </div>
+</div>
+
+<div id="availability-view" style="display:none;">
+  <div class="av-wrap">
+    <div class="av-head">
+      <div class="av-eyebrow">Swan House Farm</div>
+      <div class="av-title">2026 Dinner Dates</div>
+      <div class="av-sub">What swanhousefarm.com shows the public</div>
+      <div class="av-state" id="av-state">Loading…</div>
+    </div>
+    <div class="av-warn" id="av-warn" style="display:none"></div>
+    <div id="av-list"></div>
+    <div class="av-actions" id="av-actions"></div>
   </div>
 </div>
 
@@ -2647,8 +2702,8 @@
   // ====================================================================
   // CONFIG + STATE
   // ====================================================================
-  const VERSION = "v1.45";
-  const BUILD = '1785364534'; // stamped by deploy-to-github.command at every deploy
+  const VERSION = "v1.46";
+  const BUILD = '1785729330'; // stamped by deploy-to-github.command at every deploy
   const DATA_PATH = "data";
   const params = new URLSearchParams(window.location.search);
   const REMY_TEST = params.get('test') === '1' || params.has('remytest');  // harvest-feed test mode: sends marked test:true, isolated by ID, skipped by ledger ingest
@@ -3842,6 +3897,261 @@
   }
 
   // ====================================================================
+  // AVAILABILITY  (v1.46, 2026-08-03)
+  // --------------------------------------------------------------------
+  // The season's dinner dates, and the one place they get changed. Tim or Kelly
+  // opens this screen, toggles a date open/sold, optionally adds a short note
+  // like "2 seats", and hits Publish. That writes availability/current, and
+  // swanhousefarm.com renders its schedule from that doc on the next page load.
+  //
+  // Before this existed, the dates were a hardcoded SEASON array in the farm
+  // site's HTML, editable only by running a .command script on Sam's Mac. Tim
+  // could not update his own dinner dates. This replaces that script.
+  //
+  // Security posture, deliberately different from the roster work: availability
+  // is PUBLIC information. Read is open, write is anon-auth + App Check, and the
+  // PIN below is a UI guard against a mis-tap, not a secret. Worst case of a bad
+  // write is a wrong sold-out flag — visible instantly, fixed in seconds, and no
+  // guest data is exposed. This screen never touches rosters/.
+  // ====================================================================
+  const AV_PIN = "1936";           // the host PIN Tim & Kelly already use for the guest portal
+
+  // Fallback only. Mirrors the SEASON array baked into the farm site so that if
+  // Firestore is unreachable the screen still shows something true rather than a
+  // blank list. Publishing is disabled whenever we are running off this.
+  const AV_SEED = [
+    { date: '2026-05-16', status: 'sold', note: '' }, { date: '2026-05-17', status: 'sold', note: '' },
+    { date: '2026-05-23', status: 'sold', note: '' }, { date: '2026-05-24', status: 'sold', note: '' },
+    { date: '2026-06-06', status: 'sold', note: '' }, { date: '2026-06-07', status: 'sold', note: '' },
+    { date: '2026-06-13', status: 'sold', note: '' }, { date: '2026-06-14', status: 'sold', note: '' },
+    { date: '2026-07-11', status: 'sold', note: '' }, { date: '2026-07-12', status: 'sold', note: '' },
+    { date: '2026-07-18', status: 'sold', note: '' }, { date: '2026-07-19', status: 'sold', note: '' },
+    { date: '2026-08-08', status: 'open', note: '2 seats' }, { date: '2026-08-09', status: 'sold', note: '' },
+    { date: '2026-08-15', status: 'sold', note: '' }, { date: '2026-08-16', status: 'sold', note: '' },
+    { date: '2026-09-05', status: 'sold', note: '' }, { date: '2026-09-06', status: 'sold', note: '' },
+    { date: '2026-09-12', status: 'sold', note: '' }, { date: '2026-09-13', status: 'sold', note: '' },
+  ];
+
+  const AV_MONTHS = ['January','February','March','April','May','June','July',
+                     'August','September','October','November','December'];
+  const AV_DOWS = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+
+  let avDates = null;        // working copy, [{date,status,note}]
+  let avBaseline = null;     // JSON of what is currently published, for the dirty check
+  let avEditing = false;
+  let avOffline = false;     // true = we are on AV_SEED; publishing must stay off
+  let avLoaded = false;
+  let avBusy = false;
+
+  // Parse YYYY-MM-DD by hand. new Date('2026-08-08') is parsed as UTC midnight,
+  // which in Seattle renders as August 7. Every date on this screen is a wall
+  // date, never an instant.
+  function avParts(iso) {
+    const p = String(iso).split('-');
+    return { y: +p[0], m: +p[1], d: +p[2] };
+  }
+  function avDow(iso) {
+    const p = avParts(iso);
+    return AV_DOWS[new Date(p.y, p.m - 1, p.d).getDay()];
+  }
+  function avIsPast(iso) {
+    const now = new Date();
+    const todayIso = now.getFullYear() + '-' +
+      String(now.getMonth() + 1).padStart(2, '0') + '-' +
+      String(now.getDate()).padStart(2, '0');
+    return iso < todayIso;
+  }
+  function avEsc(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+  function avDirty() {
+    return avBaseline === null || JSON.stringify(avDates) !== avBaseline;
+  }
+
+  async function avLoad(force) {
+    if (avLoaded && !force) { renderAvailability(); return; }
+    const stateEl = document.getElementById('av-state');
+    stateEl.textContent = 'Loading…';
+    try {
+      const fb = window._firebase;
+      if (!fb || !fb.ready) throw new Error('firebase not ready');
+      const snap = await fb.getDoc(fb.doc(fb.db, 'availability', 'current'));
+      if (snap.exists()) {
+        const d = snap.data() || {};
+        avDates = (d.dates || []).map(x => ({
+          date: x.date,
+          status: x.status === 'open' ? 'open' : 'sold',
+          note: x.note || ''
+        }));
+        avBaseline = JSON.stringify(avDates);
+        avOffline = false;
+        avLoaded = true;
+        let when = d.publishedAt ? new Date(d.publishedAt) : null;
+        stateEl.textContent = 'Live on the website.' +
+          (when && !isNaN(when) ? ' Last published ' + when.toLocaleDateString(undefined,
+            { month: 'short', day: 'numeric' }) + ' at ' +
+            when.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' }) : '') +
+          (d.publishedBy ? ' by ' + d.publishedBy + '.' : '');
+      } else {
+        // Nothing published yet. Offer the seed as a starting point and let the
+        // first Publish create the doc.
+        avDates = AV_SEED.map(x => Object.assign({}, x));
+        avBaseline = null;
+        avOffline = false;
+        avLoaded = true;
+        stateEl.textContent = 'Nothing published yet. These are the dates currently baked into the website — publish to take over.';
+      }
+    } catch (e) {
+      avDates = AV_SEED.map(x => Object.assign({}, x));
+      avBaseline = null;
+      avOffline = true;
+      avLoaded = false;   // retry on next open
+      stateEl.textContent = "Couldn't reach the database, so these are the dates baked into the website, not the live ones. Publishing is off until the connection is back.";
+      console.error('availability load failed:', e);
+    }
+    renderAvailability();
+  }
+
+  function renderAvailability() {
+    const list = document.getElementById('av-list');
+    const actions = document.getElementById('av-actions');
+    const warn = document.getElementById('av-warn');
+    if (!list || !avDates) return;
+
+    // Group by month, preserving date order.
+    const sorted = avDates.map((x, i) => ({ x, i })).sort((a, b) => a.x.date < b.x.date ? -1 : 1);
+    let html = '', lastMonth = '';
+    sorted.forEach(({ x, i }) => {
+      const p = avParts(x.date);
+      const monthKey = p.y + '-' + p.m;
+      if (monthKey !== lastMonth) {
+        html += '<div class="av-month">' + AV_MONTHS[p.m - 1] + ' ' + p.y + '</div>';
+        lastMonth = monthKey;
+      }
+      const past = avIsPast(x.date);
+      html += '<div class="av-row' + (past ? ' past' : '') + '">' +
+                '<span class="av-date">' + AV_MONTHS[p.m - 1] + ' ' + p.d +
+                  '<span class="av-dow">' + avDow(x.date) + (past ? ' · past' : '') + '</span>' +
+                '</span>';
+      if (avEditing && !past) {
+        html += '<input class="av-note-in" data-av-note="' + i + '" type="text" ' +
+                  'placeholder="note" maxlength="24" value="' + avEsc(x.note) + '">' +
+                '<button class="av-toggle" data-av-toggle="' + i + '" type="button">' +
+                  (x.status === 'open' ? 'Mark sold out' : 'Mark open') + '</button>';
+      } else if (x.note) {
+        html += '<span class="av-note-ro">' + avEsc(x.note) + '</span>';
+      }
+      html += '<span class="av-pill ' + x.status + '">' +
+                (x.status === 'open' ? 'Open' : 'Sold out') + '</span></div>';
+    });
+    list.innerHTML = html;
+
+    // Actions
+    if (avOffline) {
+      actions.innerHTML = '<button class="av-btn" id="av-retry" type="button">Try again</button>';
+    } else if (!avEditing) {
+      actions.innerHTML = '<button class="av-btn" id="av-edit" type="button">Edit dates</button>';
+    } else {
+      actions.innerHTML =
+        '<button class="av-btn" id="av-cancel" type="button">Cancel</button>' +
+        '<button class="av-btn primary" id="av-publish" type="button"' +
+          (avDirty() && !avBusy ? '' : ' disabled') + '>' +
+          (avBusy ? 'Publishing…' : (avDirty() ? 'Publish to website' : 'No changes')) + '</button>';
+    }
+
+    // Warning strip: only while editing, and only when something is actually open.
+    const openCount = avDates.filter(x => x.status === 'open' && !avIsPast(x.date)).length;
+    if (avEditing && openCount > 0) {
+      warn.style.display = '';
+      warn.innerHTML = '<strong>' + openCount + ' date' + (openCount === 1 ? '' : 's') +
+        ' will show as open.</strong> The ticket form accepts any date and bookings are ' +
+        'final once payment clears, so a date left open here can be sold past capacity.';
+    } else {
+      warn.style.display = 'none';
+    }
+    avWire();
+  }
+
+  function avWire() {
+    const on = (id, fn) => { const el = document.getElementById(id); if (el) el.onclick = fn; };
+    on('av-retry', () => avLoad(true));
+    on('av-edit', avEnterEdit);
+    on('av-cancel', () => { avEditing = false; avLoad(true); });
+    on('av-publish', avPublish);
+    document.querySelectorAll('[data-av-toggle]').forEach(btn => {
+      btn.onclick = () => {
+        const i = +btn.dataset.avToggle;
+        avDates[i].status = avDates[i].status === 'open' ? 'sold' : 'open';
+        // A sold-out date has nothing to say; drop a stale "2 seats".
+        if (avDates[i].status === 'sold') avDates[i].note = '';
+        renderAvailability();
+      };
+    });
+    document.querySelectorAll('[data-av-note]').forEach(inp => {
+      inp.oninput = () => {
+        avDates[+inp.dataset.avNote].note = inp.value;
+        // Repaint only the Publish button so the field keeps focus and caret.
+        const btn = document.getElementById('av-publish');
+        if (btn) {
+          btn.disabled = !avDirty() || avBusy;
+          btn.textContent = avBusy ? 'Publishing…' : (avDirty() ? 'Publish to website' : 'No changes');
+        }
+      };
+    });
+  }
+
+  function avEnterEdit() {
+    const pin = prompt('Host PIN:');
+    if (pin === null) return;
+    if (pin.trim() !== AV_PIN) { alert("That's not it."); return; }
+    avEditing = true;
+    renderAvailability();
+  }
+
+  async function avPublish() {
+    if (avOffline || avBusy || !avDirty()) return;
+    if (!avDates || !avDates.length) return;
+    // No user accounts in this app, so ask once and remember. An imperfect audit
+    // trail beats "changed by nobody" when a seat count later looks wrong.
+    let who = '';
+    try { who = localStorage.getItem('shf_av_publisher') || ''; } catch (e) {}
+    if (!who) {
+      who = (prompt('Your name, for the record:') || '').trim();
+      if (!who) return;
+      try { localStorage.setItem('shf_av_publisher', who); } catch (e) {}
+    }
+    avBusy = true; renderAvailability();
+    try {
+      const fb = window._firebase;
+      if (!fb || !fb.ready) throw new Error('firebase not ready');
+      // Write in date order. The screen and the website both sort on read, so
+      // this is cosmetic — but the doc gets read by humans in the Firestore
+      // console too, and an out-of-order season list is confusing there.
+      const ordered = avDates.slice().sort((a, b) => a.date < b.date ? -1 : 1);
+      // Season = earliest year present, not whatever landed at index 0.
+      const years = ordered.map(x => avParts(x.date).y).filter(y => y);
+      const payload = {
+        season: years.length ? Math.min.apply(null, years) : new Date().getFullYear(),
+        dates: ordered.map(x => ({ date: x.date, status: x.status, note: (x.note || '').trim() })),
+        publishedAt: new Date().toISOString(),
+        publishedBy: who
+      };
+      await fb.setDoc(fb.doc(fb.db, 'availability', 'current'), payload);
+      avBusy = false;
+      avEditing = false;
+      showToast('Published — the website will show this on its next load.');
+      await avLoad(true);
+    } catch (e) {
+      avBusy = false;
+      console.error('availability publish failed:', e);
+      alert("Couldn't publish (" + (e.code || e.message) + "). The website still shows the last published dates. Try again, or text Sam.");
+      renderAvailability();
+    }
+  }
+
+  // ====================================================================
   // TOAST
   // ====================================================================
   let toastTimer = null;
@@ -3871,7 +4181,7 @@
     // brings Kelly here; tapping it now opens Remy. Harvest AUTHORING stays in this app.
     if (viewName === 'orders') { window.location.href = 'https://samfermo.github.io/remy/?view=orders'; return; }
     activeView = viewName;
-    const allViews = ['portal','list','seating','freshtalk','service','setup-breakdown','standards','harvest','orders'];
+    const allViews = ['portal','list','seating','freshtalk','service','setup-breakdown','standards','harvest','orders','availability'];
     allViews.forEach(v => {
       const el = document.getElementById(v + '-view');
       if (el) el.style.display = (v === viewName) ? '' : 'none';
@@ -3892,6 +4202,7 @@
       if (btn) btn.classList.add('active');
     }
     if (viewName === 'orders') renderOrdersView();
+    if (viewName === 'availability') avLoad();
     // Position the sliding pill under the active tab.
     updateVtabPill();
     refresh();
@@ -3933,6 +4244,17 @@
       if (target) switchView(target);
     });
   });
+
+  // Dinner Dates strip → the season availability screen
+  (function () {
+    const strip = document.getElementById('portal-availability');
+    if (!strip) return;
+    const go = () => switchView('availability');
+    strip.addEventListener('click', go);
+    strip.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); }
+    });
+  })();
 
   // Home button → back to portal
   document.getElementById('home-button').addEventListener('click', () => switchView('portal'));
