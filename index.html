@@ -1790,7 +1790,8 @@
   body.in-dinner-view #setup-breakdown-view,
   body.in-dinner-view #harvest-view,
   body.in-dinner-view #standards-view,
-  body.in-dinner-view #availability-view {
+  body.in-dinner-view #availability-view,
+  body.in-dinner-view #farmstand-view {
     background: rgba(251, 246, 234, 0.95);
     max-width: 760px;
     margin: 8px auto 24px;
@@ -2362,6 +2363,20 @@
   .av-btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
   .av-btn.primary:disabled { opacity: .4; cursor: default; }
   .av-warn { max-width: 640px; margin: 14px auto 0; background: var(--rust-soft); border: 1px solid var(--rust); border-radius: var(--radius); padding: 10px 13px; font-size: 12.5px; line-height: 1.4; }
+
+  /* ── FARM STAND (v1.47, 2026-08-05) ───────────────────────────────────── */
+  .fs-wrap { max-width: 560px; margin: 0 auto; padding: 14px 14px 44px; }
+  .fs-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; margin-bottom: 12px; }
+  .fs-card h3 { margin: 0 0 4px; font-family: Caladea, Cambria, Georgia, serif; font-size: 15px; color: var(--accent-dark); font-weight: 600; }
+  .fs-card .fs-hint { font-size: 12px; color: var(--text-soft); margin-bottom: 10px; line-height: 1.4; }
+  .fs-seg { display: flex; gap: 8px; }
+  .fs-seg button { flex: 1; font: inherit; font-size: 13px; font-weight: 700; padding: 10px; border-radius: var(--radius); border: 1px solid var(--border); background: #fff; color: var(--text-soft); cursor: pointer; }
+  .fs-seg button.on { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .fs-row { display: flex; gap: 10px; align-items: center; margin-top: 8px; }
+  .fs-row label { font-size: 12px; color: var(--text-soft); width: 74px; flex: none; }
+  .fs-row input { flex: 1; font: inherit; font-size: 14px; padding: 8px 10px; border: 1px solid var(--border); border-radius: var(--radius); background: #fff; }
+  .fs-preview { background: var(--gold-soft); border: 1px solid var(--gold); border-radius: var(--radius); padding: 11px 13px; font-size: 13.5px; line-height: 1.45; }
+  .fs-preview .fs-pre-label { font-size: 10.5px; text-transform: uppercase; letter-spacing: 1.2px; color: var(--text-mute); display: block; margin-bottom: 4px; }
   .hv-header { text-align: center; padding: 10px 0 4px; }
   .hv-eyebrow { font-size: 11px; text-transform: uppercase; letter-spacing: 1.4px; color: var(--accent); font-weight: 600; }
   .hv-title { font-family: Caladea, Cambria, Georgia, serif; font-size: 22px; color: var(--text); margin-top: 2px; }
@@ -2475,6 +2490,10 @@
     <span class="pa-icon">◷</span>
     <span class="pa-body"><span class="pa-title">Dinner Dates</span><span class="pa-sub" id="pa-sub">what the website shows</span></span>
   </div>
+  <div class="portal-availability" id="portal-farmstand" role="button" tabindex="0" aria-label="Farm stand hours">
+    <span class="pa-icon">✻</span>
+    <span class="pa-body"><span class="pa-title">Farm Stand</span><span class="pa-sub" id="fs-sub">open, closed, or hours</span></span>
+  </div>
 </div>
 
 <div id="map-modal" class="map-modal" aria-hidden="true">
@@ -2508,6 +2527,19 @@
   <div class="training-page" id="standards-content">
     <div class="tp-title">Standards</div>
     <div class="tp-subtitle">Loading…</div>
+  </div>
+</div>
+
+<div id="farmstand-view" style="display:none;">
+  <div class="fs-wrap">
+    <div class="av-head">
+      <div class="av-eyebrow">Swan House Farm</div>
+      <div class="av-title">Farm Stand</div>
+      <div class="av-sub">What swanhousefarm.com tells visitors</div>
+      <div class="av-state" id="fs-state">Loading…</div>
+    </div>
+    <div id="fs-body"></div>
+    <div class="av-actions" id="fs-actions"></div>
   </div>
 </div>
 
@@ -2703,8 +2735,8 @@
   // ====================================================================
   // CONFIG + STATE
   // ====================================================================
-  const VERSION = "v1.46";
-  const BUILD = '1785729473'; // stamped by deploy-to-github.command at every deploy
+  const VERSION = "v1.47";
+  const BUILD = '1785892051'; // stamped by deploy-to-github.command at every deploy
   const DATA_PATH = "data";
   const params = new URLSearchParams(window.location.search);
   const REMY_TEST = params.get('test') === '1' || params.has('remytest');  // harvest-feed test mode: sends marked test:true, isolated by ID, skipped by ledger ingest
@@ -4153,6 +4185,193 @@
   }
 
   // ====================================================================
+  // FARM STAND  (v1.47, 2026-08-05)
+  // --------------------------------------------------------------------
+  // Three things, in the order they matter to a visitor deciding whether to drive
+  // out here: is the stand running this season, is it shut this week, and what are
+  // the hours.
+  //
+  // The temporary closure is the point of this screen. It carries an END DATE, and
+  // the website compares today against that date on every page load — so the stand
+  // re-opens by itself the morning after. Kelly can close it for a long weekend
+  // without having to remember to undo it, which is exactly the failure this is
+  // designed around. Nothing here is a recurring schedule; it is one date.
+  // ====================================================================
+  let fsDoc = null, fsBaseline = null, fsEditing = false, fsOffline = false, fsBusy = false, fsLoaded = false;
+
+  const FS_DEFAULT = { season: 'open', days: 'Wednesday–Sunday', hours: '12–5pm',
+                       note: '', closedUntil: '', closureNote: '' };
+
+  function fsTodayIso() {
+    const n = new Date();
+    return n.getFullYear() + '-' + String(n.getMonth()+1).padStart(2,'0') + '-' + String(n.getDate()).padStart(2,'0');
+  }
+  function fsPretty(iso) {
+    if (!iso) return '';
+    const p = String(iso).split('-');
+    return new Date(+p[0], +p[1]-1, +p[2]).toLocaleDateString(undefined, { weekday:'long', month:'long', day:'numeric' });
+  }
+  function fsClosureActive(d) {
+    return !!(d.closedUntil && String(d.closedUntil) >= fsTodayIso());
+  }
+  function fsDirty() { return fsBaseline === null || JSON.stringify(fsDoc) !== fsBaseline; }
+
+  // Word-for-word what the website will render. Keep in step with the reader in
+  // deploy/SwanHouse/index.html — if one changes, change the other.
+  function fsPreviewText() {
+    const d = fsDoc;
+    if (d.season !== 'open') return 'The farm stand is closed for the season.' + (d.note ? ' ' + d.note : '');
+    if (fsClosureActive(d)) return 'Temporarily closed. Back open ' + fsPretty(d.closedUntil) + '.' + (d.closureNote ? ' ' + d.closureNote : '');
+    return 'Open ' + (d.days || '') + (d.hours ? ', ' + d.hours : '') + '.' + (d.note ? ' ' + d.note : '');
+  }
+
+  async function fsLoad(force) {
+    if (fsLoaded && !force) { renderFarmstand(); return; }
+    const st = document.getElementById('fs-state');
+    st.textContent = 'Loading…';
+    try {
+      const fb = window._firebase;
+      if (!fb || !fb.ready) throw new Error('firebase not ready');
+      const snap = await fb.getDoc(fb.doc(fb.db, 'farmstand', 'current'));
+      const d = snap.exists() ? (snap.data() || {}) : {};
+      fsDoc = Object.assign({}, FS_DEFAULT, {
+        season: d.season === 'closed' ? 'closed' : 'open',
+        days: d.days || FS_DEFAULT.days, hours: d.hours || FS_DEFAULT.hours,
+        note: d.note || '', closedUntil: d.closedUntil || '', closureNote: d.closureNote || ''
+      });
+      fsBaseline = JSON.stringify(fsDoc); fsOffline = false; fsLoaded = true;
+      const when = d.publishedAt ? new Date(d.publishedAt) : null;
+      st.textContent = 'Live on the website.' +
+        (when && !isNaN(when) ? ' Last updated ' + when.toLocaleDateString(undefined,{month:'short',day:'numeric'}) : '') +
+        (d.publishedBy ? ' by ' + d.publishedBy + '.' : '');
+    } catch (e) {
+      fsDoc = Object.assign({}, FS_DEFAULT); fsBaseline = null; fsOffline = true; fsLoaded = false;
+      st.textContent = "Couldn't reach the database, so this is not the live setting. Publishing is off until the connection is back.";
+      console.error('farmstand load failed:', e);
+    }
+    renderFarmstand();
+  }
+
+  function renderFarmstand() {
+    const body = document.getElementById('fs-body');
+    const actions = document.getElementById('fs-actions');
+    if (!body || !fsDoc) return;
+    const d = fsDoc, ed = fsEditing, esc = avEsc;
+
+    let h = '<div class="fs-card"><span class="fs-pre-label">What the website says right now</span>' +
+            '<div class="fs-preview">' + esc(fsPreviewText()) + '</div></div>';
+
+    h += '<div class="fs-card"><h3>This season</h3>' +
+         '<div class="fs-hint">Turn this off over winter. It overrides everything below.</div>' +
+         '<div class="fs-seg">' +
+         '<button type="button" data-fs-season="open"' + (d.season === 'open' ? ' class="on"' : '') + (ed ? '' : ' disabled') + '>Open for the season</button>' +
+         '<button type="button" data-fs-season="closed"' + (d.season === 'closed' ? ' class="on"' : '') + (ed ? '' : ' disabled') + '>Closed for the season</button>' +
+         '</div></div>';
+
+    if (d.season === 'open') {
+      h += '<div class="fs-card"><h3>Hours</h3>' +
+           '<div class="fs-hint">Written exactly as visitors will read it.</div>' +
+           '<div class="fs-row"><label>Days</label><input data-fs="days" type="text" maxlength="40" value="' + esc(d.days) + '"' + (ed ? '' : ' disabled') + '></div>' +
+           '<div class="fs-row"><label>Hours</label><input data-fs="hours" type="text" maxlength="30" value="' + esc(d.hours) + '"' + (ed ? '' : ' disabled') + '></div>' +
+           '</div>';
+
+      const active = fsClosureActive(d);
+      h += '<div class="fs-card"><h3>Away for a few days?</h3>' +
+           '<div class="fs-hint">Set the date you are <strong>back open</strong>. The website re-opens the stand by itself that morning — you do not have to come back and undo it.</div>' +
+           '<div class="fs-row"><label>Back open</label><input data-fs="closedUntil" type="date" value="' + esc(d.closedUntil) + '"' + (ed ? '' : ' disabled') + '></div>' +
+           '<div class="fs-row"><label>Note</label><input data-fs="closureNote" type="text" maxlength="60" placeholder="optional" value="' + esc(d.closureNote) + '"' + (ed ? '' : ' disabled') + '></div>';
+      if (d.closedUntil && !active) {
+        h += '<div class="fs-hint" style="margin-top:8px;color:var(--accent-dark);">That date has passed, so the stand is showing as open again. Clear it when you get a chance.</div>';
+      }
+      if (ed && d.closedUntil) {
+        h += '<div style="margin-top:10px;"><button class="av-btn" id="fs-clear" type="button">Clear closure</button></div>';
+      }
+      h += '</div>';
+    }
+
+    h += '<div class="fs-card"><h3>Extra note</h3>' +
+         '<div class="fs-hint">Shown after the hours. Leave empty most of the time.</div>' +
+         '<div class="fs-row"><label>Note</label><input data-fs="note" type="text" maxlength="80" placeholder="optional" value="' + esc(d.note) + '"' + (ed ? '' : ' disabled') + '></div></div>';
+
+    body.innerHTML = h;
+
+    if (fsOffline) {
+      actions.innerHTML = '<button class="av-btn" id="fs-retry" type="button">Try again</button>';
+    } else if (!ed) {
+      actions.innerHTML = '<button class="av-btn" id="fs-edit" type="button">Edit</button>';
+    } else {
+      actions.innerHTML = '<button class="av-btn" id="fs-cancel" type="button">Cancel</button>' +
+        '<button class="av-btn primary" id="fs-publish" type="button"' + (fsDirty() && !fsBusy ? '' : ' disabled') + '>' +
+        (fsBusy ? 'Publishing…' : (fsDirty() ? 'Publish to website' : 'No changes')) + '</button>';
+    }
+    fsWire();
+  }
+
+  function fsWire() {
+    const on = (id, fn) => { const el = document.getElementById(id); if (el) el.onclick = fn; };
+    on('fs-retry', () => fsLoad(true));
+    on('fs-edit', () => {
+      const pin = prompt('Host PIN:');
+      if (pin === null) return;
+      if (pin.trim() !== AV_PIN) { alert("That's not it."); return; }
+      fsEditing = true; renderFarmstand();
+    });
+    on('fs-cancel', () => { fsEditing = false; fsLoad(true); });
+    on('fs-publish', fsPublish);
+    on('fs-clear', () => { fsDoc.closedUntil = ''; fsDoc.closureNote = ''; renderFarmstand(); });
+    document.querySelectorAll('[data-fs-season]').forEach(b => {
+      b.onclick = () => { fsDoc.season = b.dataset.fsSeason; renderFarmstand(); };
+    });
+    document.querySelectorAll('[data-fs]').forEach(inp => {
+      inp.oninput = () => {
+        fsDoc[inp.dataset.fs] = inp.value;
+        // Repaint only the preview and the button so typing keeps focus and caret.
+        const pv = document.querySelector('.fs-preview');
+        if (pv) pv.textContent = fsPreviewText();
+        const btn = document.getElementById('fs-publish');
+        if (btn) {
+          btn.disabled = !fsDirty() || fsBusy;
+          btn.textContent = fsBusy ? 'Publishing…' : (fsDirty() ? 'Publish to website' : 'No changes');
+        }
+      };
+    });
+  }
+
+  async function fsPublish() {
+    if (fsOffline || fsBusy || !fsDirty()) return;
+    let who = '';
+    try { who = localStorage.getItem('shf_av_publisher') || ''; } catch (e) {}
+    if (!who) {
+      who = (prompt('Your name, for the record:') || '').trim();
+      if (!who) return;
+      try { localStorage.setItem('shf_av_publisher', who); } catch (e) {}
+    }
+    fsBusy = true; renderFarmstand();
+    try {
+      const fb = window._firebase;
+      if (!fb || !fb.ready) throw new Error('firebase not ready');
+      await fb.setDoc(fb.doc(fb.db, 'farmstand', 'current'), {
+        season: fsDoc.season,
+        days: (fsDoc.days || '').trim(),
+        hours: (fsDoc.hours || '').trim(),
+        note: (fsDoc.note || '').trim(),
+        closedUntil: (fsDoc.closedUntil || '').trim(),
+        closureNote: (fsDoc.closureNote || '').trim(),
+        publishedAt: new Date().toISOString(),
+        publishedBy: who
+      });
+      fsBusy = false; fsEditing = false;
+      showToast('Published — the website will show this on its next load.');
+      await fsLoad(true);
+    } catch (e) {
+      fsBusy = false;
+      console.error('farmstand publish failed:', e);
+      alert("Couldn't publish (" + (e.code || e.message) + "). The website still shows the last saved setting. Try again, or text Sam.");
+      renderFarmstand();
+    }
+  }
+
+  // ====================================================================
   // TOAST
   // ====================================================================
   let toastTimer = null;
@@ -4182,7 +4401,7 @@
     // brings Kelly here; tapping it now opens Remy. Harvest AUTHORING stays in this app.
     if (viewName === 'orders') { window.location.href = 'https://samfermo.github.io/remy/?view=orders'; return; }
     activeView = viewName;
-    const allViews = ['portal','list','seating','freshtalk','service','setup-breakdown','standards','harvest','orders','availability'];
+    const allViews = ['portal','list','seating','freshtalk','service','setup-breakdown','standards','harvest','orders','availability','farmstand'];
     allViews.forEach(v => {
       const el = document.getElementById(v + '-view');
       if (el) el.style.display = (v === viewName) ? '' : 'none';
@@ -4204,6 +4423,7 @@
     }
     if (viewName === 'orders') renderOrdersView();
     if (viewName === 'availability') avLoad();
+    if (viewName === 'farmstand') fsLoad();
     // Position the sliding pill under the active tab.
     updateVtabPill();
     refresh();
@@ -4245,6 +4465,17 @@
       if (target) switchView(target);
     });
   });
+
+  // Farm Stand strip → hours / closure screen
+  (function () {
+    const strip = document.getElementById('portal-farmstand');
+    if (!strip) return;
+    const go = () => switchView('farmstand');
+    strip.addEventListener('click', go);
+    strip.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); }
+    });
+  })();
 
   // Dinner Dates strip → the season availability screen
   (function () {
