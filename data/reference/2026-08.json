@@ -1,7 +1,7 @@
 {
   "series_id": "2026-08",
   "series_label": "August 2026 series",
-  "_pending": "Updated 2026-08-10. SIX WINES. The FOUR ALCOHOLIC pours are all confirmed off the bottles and are all unoaked / stainless (that through-line covers those four only, not the two NA wines, whose vessel is unconfirmed): Bellenda ‘San Fermo’ Valdobbiadene Prosecco Superiore DOCG 2024 Millesimato Brut, Schiopetto Sauvignon ‘del Pompiere’ 2024, La Spinetta ‘Il Rosé di Casanova’ 2025 rosato, Fabrizio Pratesi ‘Locorosso’ 2023. The prosecco and the rosé carry over from the July series but were never written to any surface, so this is their first appearance. TWO NON-ALCOHOLIC POURS RESTORED 2026-08-10, ported verbatim from the May series: Les Marées Non-Alcoholic Sparkling Blanc de Blancs and Cantina Zaccagnini Alcohol-Removed White. Sam confirmed both are poured and have been carried continuously; they simply stopped being written to any surface after May, while the guest-portal FAQ kept promising non-alcoholic wine. Their pour_notes are wine-general, not menu-specific. COCKTAIL + MOCKTAIL COPY IS DRAFTED FROM SAM’S VERBAL BRIEF ONLY and was NOT reviewed by Katie (she was out of town when this deployed): both drink names, the wine used in the sangria, the exact builds, and whether the lavender lemonade is truly zero-proof all still need her sign-off. COURSE 3 stays route-agnostic on the cuts; the leg method settled 2026-08-02 (roast, rest, hand-slice warm at 1/4 in). Crab: W1 source cleared 2026-08-02, the friend’s catch is at the farm and covers 8/8 and 8/9.",
+  "_pending": "Updated 2026-08-10. SIX WINES. The FOUR ALCOHOLIC pours are all confirmed off the bottles and are all unoaked / stainless (that through-line covers those four only, not the two NA wines, whose vessel is unconfirmed): Bellenda ‘San Fermo’ Valdobbiadene Prosecco Superiore DOCG 2024 Millesimato Brut, Schiopetto Sauvignon ‘del Pompiere’ 2024, La Spinetta ‘Il Rosé di Casanova’ 2025 rosato, Fabrizio Pratesi ‘Locorosso’ 2023. The prosecco and the rosé carry over from the July series but were never written to any surface, so this is their first appearance. TWO NON-ALCOHOLIC POURS RESTORED 2026-08-10, ported verbatim from the May series: Les Marées Non-Alcoholic Sparkling Blanc de Blancs and Cantina Zaccagnini Alcohol-Removed White. Sam confirmed both are poured and have been carried continuously; they simply stopped being written to any surface after May, while the guest-portal FAQ kept promising non-alcoholic wine. Their pour_notes are wine-general, not menu-specific. COCKTAIL COPY UPDATED 2026-08-10 FROM KATIE’S OWN SPEC: Terramar gin, Aperol, Skagit strawberry and Swan House raspberry maceration, lemon, rosé. THERE IS NO RHUBARB IN THE DRINK, so the previous name and copy (invented from Sam’s verbal brief while Katie was out of town) were wrong and have been replaced. Sam confirmed the ‘rose’ in her spec is ROSÉ WINE, which answers the standing question of which wine goes in the sangria; the specific bottle is still unconfirmed, so the copy says only ‘Rosé’ and deliberately does NOT name the La Spinetta off the pairing list. THE DRINK NAME IS STILL A PLACEHOLDER: Katie gave a build, not a name, and ‘Strawberry & Raspberry Sangria’ is descriptive rather than hers. The LAVENDER LEMONADE IS CONFIRMED ZERO-PROOF (Sam, 2026-08-10), closing the only open item here with a guest-expectation consequence; its name is also still Claude’s invention. COURSE 3 stays route-agnostic on the cuts; the leg method settled 2026-08-02 (roast, rest, hand-slice warm at 1/4 in). Crab: W1 source cleared 2026-08-02, the friend’s catch is at the farm and covers 8/8 and 8/9.",
   "header": {
     "title": "Swan House Farm",
     "subtitle": "Peak Summer",
@@ -436,9 +436,9 @@
   ],
   "cocktails": [
     {
-      "name": "Rhubarb & Raspberry Sangria",
-      "tagline": "gin · rhubarb · raspberry",
-      "pour_notes": "Katie’s summer sangria, built on gin instead of brandy: Terramar gin with rhubarb and raspberry, long and fruit-forward, tart at the front and dry at the back. Deep pink in the glass and made to be drunk cold in the early evening while the fire is still coming up.",
+      "name": "Strawberry & Raspberry Sangria",
+      "tagline": "gin · aperol · macerated berries",
+      "pour_notes": "Katie’s summer sangria, built on gin rather than brandy. Terramar gin and Aperol under Skagit strawberries and Swan House raspberries macerated down to their syrup, lengthened with rosé and lifted with lemon. Deep pink in the glass, tart at the front and dry at the back, made to be drunk cold in the early evening while the fire is still coming up.",
       "ingredients": [
         {
           "name": "Terramar gin",
@@ -447,24 +447,25 @@
           "description": "Gin from Terramar Brewstillery in Edison, just down the road — an award-winning brewery and distillery set in a former slaughterhouse on the old Edison Slough oxbow. They distill it grain-to-glass from Washington-grown, craft-malted barley (the same base as their beer) and are growing their own juniper and botanicals on the property. A true neighbor pour."
         },
         {
-          "name": "Rhubarb",
+          "name": "Aperol",
           "amount": "",
-          "description": "Rhubarb for the tart, faintly vegetal backbone the drink is built around, and for the color."
+          "description": "The bittersweet orange spine under the berries, and a good part of where the colour comes from. Low in alcohol, so it lengthens the drink without weighting it."
         },
         {
-          "name": "Raspberry",
+          "name": "Strawberry and raspberry maceration",
           "amount": "",
-          "description": "Summer raspberries for sweetness and depth against the rhubarb."
+          "highlight": "From the farm",
+          "description": "Skagit strawberries and raspberries cut at Swan House, macerated with sugar until they give up their syrup. That syrup is the drink, rather than a sweetener stirred in after."
         },
         {
-          "name": "Wine",
+          "name": "Lemon",
+          "amount": "",
+          "description": "Fresh lemon for lift and acid."
+        },
+        {
+          "name": "Rosé",
           "amount": "",
           "description": "The sangria element, lengthening the drink and carrying the fruit."
-        },
-        {
-          "name": "Citrus",
-          "amount": "",
-          "description": "Fresh citrus for lift and acid."
         }
       ]
     },
