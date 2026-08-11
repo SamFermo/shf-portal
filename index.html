@@ -2413,6 +2413,33 @@
   .hv-item.done .hv-name { text-decoration: line-through; color: var(--text-mute); }
   .hv-item.done .hv-qty, .hv-item.done .hv-note { opacity: 0.55; }
   .hv-footnote { font-size: 12.5px; color: var(--text-soft); font-style: italic; margin: 16px 2px 0; }
+
+/* ---------- guest-reported allergens (2026-08-10) ---------- */
+.badge-guest-reported {
+  background: #fdf0d5; color: #8a5a00; border: 1px dashed #c9922c;
+}
+.badge-guest-confirmed { background: #ffe0e0; color: #8a1f1f; border: 1px solid #d46a6a; }
+.night-flag {
+  background: #fdf0d5; border: 1px solid #c9922c; border-radius: 8px;
+  padding: 10px 12px; margin: 0 0 12px; cursor: pointer;
+}
+.night-flag .nf-title { font-weight: 700; color: #7a4f00; font-size: 14px; }
+.night-flag .nf-body { font-size: 13px; color: #8a5a00; margin-top: 3px; line-height: 1.45; }
+.gr-item {
+  border: 1px solid var(--border, #d8c8a8); border-radius: 8px;
+  padding: 10px 12px; margin-bottom: 8px; background: #fffdf7;
+}
+.gr-item .gr-what { font-weight: 700; font-size: 14px; }
+.gr-item .gr-meta { font-size: 12px; color: #7a6a4a; margin-top: 2px; }
+.gr-actions { display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
+.gr-btn {
+  font-size: 13px; font-weight: 700; padding: 7px 14px; border-radius: 6px;
+  border: none; cursor: pointer;
+}
+.gr-confirm { background: #4a6a3a; color: #fff; }
+.gr-dismiss { background: transparent; color: #7a6a4a; text-decoration: underline; }
+.gr-assign { font-size: 13px; padding: 6px 8px; border-radius: 6px; border: 1px solid #c9b48a; }
+
 </style>
 </head>
 <body>
@@ -2735,8 +2762,8 @@
   // ====================================================================
   // CONFIG + STATE
   // ====================================================================
-  const VERSION = "v1.47";
-  const BUILD = '1785892051'; // stamped by deploy-to-github.command at every deploy
+  const VERSION = "v1.48";
+  const BUILD = '1786406244'; // stamped by deploy-to-github.command at every deploy
   const DATA_PATH = "data";
   const params = new URLSearchParams(window.location.search);
   const REMY_TEST = params.get('test') === '1' || params.has('remytest');  // harvest-feed test mode: sends marked test:true, isolated by ID, skipped by ledger ingest
@@ -2853,6 +2880,184 @@
       if (isEndcap(s) && !state.endcaps[s]) return false;
       return true;
     });
+  }
+
+
+  // ====================================================================
+  // GUEST-REPORTED ALLERGENS  (v1.48)
+  // ====================================================================
+  // Submissions from the public guest portal, matched to parties by
+  // match_guest_reported.py and posted to guestReported/<date>.
+  //
+  // Its own document and its own listener ON PURPOSE. pushState writes
+  // setDoc(ref, state) with no merge and rebuilds state from a fixed key
+  // whitelist, so anything parked in dinners/<date> is wiped the next time
+  // any iPad taps anything. Keeping this separate is what stops guest
+  // allergens vanishing mid-service.
+  let guestReported = {};          // submissionId -> item
+  let unsubGuestReported = null;
+  let grTrayOpen = false;
+
+  function grItems() {
+    return Object.keys(guestReported).map(k => guestReported[k]);
+  }
+
+  // Items the matcher tied to a specific party.
+  function grForParty(guestId) {
+    return grItems().filter(x => x && x.match && x.match.party_id === guestId);
+  }
+
+  function grPending(guestId) {
+    return grForParty(guestId).filter(x => x.status === 'pending');
+  }
+
+  function grConfirmed(guestId) {
+    return grForParty(guestId).filter(x => x.status === 'confirmed');
+  }
+
+  // Items with nobody to attach to: the matcher could not place them, or it
+  // placed them ambiguously and refused to guess. These are the ones that
+  // would otherwise disappear.
+  function grUnassigned() {
+    return grItems().filter(x => x && (x.status === 'unmatched' || x.status === 'ambiguous'));
+  }
+
+  function grAllergensOf(item) {
+    const a = (item && item.allergens) || [];
+    return item && item.other ? a.concat([item.other]) : a;
+  }
+
+  // What service should actually treat as this party allergens: the roster
+  // list plus anything a manager has confirmed. The roster is never mutated.
+  function effectiveAllergens(g) {
+    const base = (g && g.allergens) ? g.allergens.slice() : [];
+    grConfirmed(g.id).forEach(item => {
+      grAllergensOf(item).forEach(a => { if (base.indexOf(a) === -1) base.push(a); });
+    });
+    return base;
+  }
+
+  // Every allergen known to be in the room tonight, including ones with no
+  // seat attached. Drives the night-level flag.
+  function nightAllergens() {
+    const out = [];
+    (dinnerData && dinnerData.guests ? dinnerData.guests : []).forEach(g => {
+      effectiveAllergens(g).forEach(a => { if (out.indexOf(a) === -1) out.push(a); });
+    });
+    grUnassigned().forEach(item => {
+      grAllergensOf(item).forEach(a => { if (out.indexOf(a) === -1) out.push(a); });
+    });
+    return out;
+  }
+
+  async function grWrite(id, patch) {
+    guestReported[id] = Object.assign({}, guestReported[id] || {}, patch);
+    refresh();
+    if (!window._firebase || !window._firebase.ready) return;
+    try {
+      const fb = window._firebase;
+      const payload = { items: {} };
+      payload.items[id] = patch;
+      payload.updated_at = new Date().toISOString();
+      await fb.setDoc(fb.doc(fb.db, 'guestReported', dinnerDate), payload, { merge: true });
+    } catch (e) {
+      console.error('guestReported write failed:', e);
+      showToast('Could not sync that. It is applied here but tell Sam.');
+    }
+  }
+
+  function grConfirm(id) {
+    return grWrite(id, { status: 'confirmed', confirmed_at: new Date().toISOString() });
+  }
+
+  function grDismiss(id) {
+    return grWrite(id, { status: 'dismissed', confirmed_at: new Date().toISOString() });
+  }
+
+  // Assigning from the tray is a manager saying who this belongs to, so it is
+  // confirmed in the same motion. One tap, not two.
+  function grAssign(id, partyId) {
+    const g = partyOf(partyId);
+    if (!g) return;
+    const item = guestReported[id] || {};
+    const match = Object.assign({}, item.match || {}, {
+      party_id: partyId, purchaser: g.purchaser, basis: 'manager', score: 1
+    });
+    return grWrite(id, { match: match, status: 'confirmed', confirmed_at: new Date().toISOString() });
+  }
+
+  function subscribeGuestReported() {
+    if (!window._firebase || !window._firebase.ready) return;
+    const fb = window._firebase;
+    if (unsubGuestReported) { try { unsubGuestReported(); } catch (e) {} }
+    unsubGuestReported = fb.onSnapshot(
+      fb.doc(fb.db, 'guestReported', dinnerDate),
+      snap => { const d = snap.data(); guestReported = (d && d.items) || {}; refresh(); },
+      err => console.error('guestReported listener error:', err)
+    );
+  }
+
+  function nightFlagHTML() {
+    const un = grUnassigned();
+    if (!un.length) return '';
+    const all = [];
+    un.forEach(item => grAllergensOf(item).forEach(a => { if (all.indexOf(a) === -1) all.push(a); }));
+    const n = un.length;
+    return `
+      <div class="night-flag" data-grtray="1">
+        <div class="nf-title">${n} dietary note${n === 1 ? '' : 's'} tonight with no table yet</div>
+        <div class="nf-body"><strong>${escape(all.join(' · '))}</strong> is in the room but we do not know whose it is.
+        Ask before passing trays. Tap to ${grTrayOpen ? 'hide' : 'assign'}.</div>
+      </div>
+      ${grTrayOpen ? `<div style="margin:0 0 12px;">${grTrayHTML()}</div>` : ''}`;
+  }
+
+  // One delegated listener for every guest-reported control, in the list and in
+  // the modal, bound once. Re-binding per render is how handlers get lost.
+  function wireGuestReportedDelegation() {
+    document.addEventListener('click', ev => {
+      const tray = ev.target.closest('[data-grtray]');
+      if (tray) { grTrayOpen = !grTrayOpen; refresh(); return; }
+      const c = ev.target.closest('[data-grconfirm]');
+      if (c) {
+        ev.stopPropagation();
+        grConfirm(c.getAttribute('data-grconfirm'));
+        showToast('Confirmed for service');
+        return;
+      }
+      const d = ev.target.closest('[data-grdismiss]');
+      if (d) {
+        ev.stopPropagation();
+        grDismiss(d.getAttribute('data-grdismiss'));
+        showToast('Dismissed');
+      }
+    });
+    document.addEventListener('change', ev => {
+      const s = ev.target.closest('[data-assign]');
+      if (!s || !s.value) return;
+      ev.stopPropagation();
+      grAssign(s.getAttribute('data-assign'), s.value);
+      showToast('Assigned and confirmed');
+    });
+  }
+
+  function grTrayHTML() {
+    const un = grUnassigned();
+    if (!un.length) return '<div class="body">Nothing unassigned. Every dietary note has a table.</div>';
+    const opts = (dinnerData && dinnerData.guests ? dinnerData.guests : [])
+      .map(g => `<option value="${g.id}">${escape(g.purchaser)}</option>`).join('');
+    return un.map(item => `
+      <div class="gr-item" data-gr="${escape(item.submission_id)}">
+        <div class="gr-what">${escape(grAllergensOf(item).join(' · ') || 'no detail given')}</div>
+        <div class="gr-meta">Typed: ${escape(item.party_name_typed || 'nothing')} ·
+          ${item.status === 'ambiguous' ? 'matched two parties equally' : 'no match found'}</div>
+        <div class="gr-actions">
+          <select class="gr-assign" data-assign="${escape(item.submission_id)}">
+            <option value="">Assign to a party…</option>${opts}
+          </select>
+          <button class="gr-btn gr-dismiss" data-grdismiss="${escape(item.submission_id)}">Dismiss</button>
+        </div>
+      </div>`).join('');
   }
 
   // ====================================================================
@@ -3180,7 +3385,7 @@
     }
 
     if (filtered.length === 0) {
-      list.innerHTML = `<div class="empty-state">${
+      list.innerHTML = nightFlagHTML() + `<div class="empty-state">${
         activeTab === 'arriving' ? 'All guests are checked in.' :
         activeTab === 'checked' ? 'No one checked in yet.' :
         'No guests found.'
@@ -3188,7 +3393,7 @@
       return;
     }
 
-    list.innerHTML = filtered.map(g => guestCardHTML(g)).join('');
+    list.innerHTML = nightFlagHTML() + filtered.map(g => guestCardHTML(g)).join('');
     list.querySelectorAll('.guest-card').forEach(el => {
       if (combineMode) {
         el.classList.add('selectable');
@@ -3239,7 +3444,14 @@
     if (seatedCount > 0) {
       badges.push(`<span class="badge badge-seated">▦ ${seatedCount}/${g.party_size} seated</span>`);
     }
-    g.allergens?.forEach(a => badges.push(`<span class="badge badge-allergen">${escape(a)}</span>`));
+    // Roster allergens plus anything a manager has confirmed from a guest submission.
+    effectiveAllergens(g).forEach(a => badges.push(`<span class="badge badge-allergen">${escape(a)}</span>`));
+    // Not yet confirmed: shown, but visibly distinct, so nobody cooks off an
+    // unverified claim by accident.
+    grPending(g.id).forEach(item => {
+      grAllergensOf(item).forEach(a =>
+        badges.push(`<span class="badge badge-guest-reported">? ${escape(a)} (guest)</span>`));
+    });
     if (g.returning) {
       const r = g.returning;
       const tag = r.is_multi_year
@@ -3515,13 +3727,31 @@
     const isCheckedIn = !!ci.checked_in_at;
     const assigned = seatsAssignedTo(guestId);
 
-    const allergenSection = g.allergens?.length ? `
+    const _eff = effectiveAllergens(g);
+    const allergenSection = _eff.length ? `
       <div class="modal-section">
         <h4>Allergens / restrictions</h4>
         <div class="body allergen">
-          <strong>${g.allergens.join(' · ')}</strong>
+          <strong>${_eff.join(' · ')}</strong>
           ${g.notes ? `<br/><span style="font-style:italic">${escape(g.notes)}</span>` : ''}
         </div>
+      </div>` : '';
+
+    // Guest-submitted and awaiting a manager decision.
+    const _pending = grPending(guestId);
+    const guestReportedSection = _pending.length ? `
+      <div class="modal-section">
+        <h4>Told us themselves &mdash; needs confirming</h4>
+        ${_pending.map(item => `
+          <div class="gr-item" data-gr="${escape(item.submission_id)}">
+            <div class="gr-what">${escape(grAllergensOf(item).join(' · ') || 'no detail given')}</div>
+            <div class="gr-meta">Sent from the guest page${item.match && item.match.basis === 'email'
+              ? ', identified by their booking email' : ', matched on the name they typed'}</div>
+            <div class="gr-actions">
+              <button class="gr-btn gr-confirm" data-grconfirm="${escape(item.submission_id)}">Confirm for service</button>
+              <button class="gr-btn gr-dismiss" data-grdismiss="${escape(item.submission_id)}">Not for this party</button>
+            </div>
+          </div>`).join('')}
       </div>` : '';
 
     const returningSection = g.returning ? (() => {
@@ -3616,7 +3846,8 @@
     document.getElementById('modal').innerHTML = `
       <h2 class="modal-title">${escape(g.purchaser)}</h2>
       <p class="modal-sub">Party of ${g.party_size}${g.email ? ` · ${escape(g.email)}` : ''}</p>
-      ${returningSection}${allergenSection}${notesSection}${seatsSection}${guestNamesSection}${groupSection}${noteAckSection}${lateToggle}${noteInput}
+      ${returningSection}${allergenSection}
+        ${guestReportedSection}${notesSection}${seatsSection}${guestNamesSection}${groupSection}${noteAckSection}${lateToggle}${noteInput}
       <div class="modal-actions">${actions}</div>
     `;
     document.getElementById('modal-backdrop').classList.add('open');
@@ -6088,12 +6319,14 @@
       seedExpandedSetsFromReference();
       updateFreshTalkTabVisibility();
       updateServiceTabVisibility();
+      wireGuestReportedDelegation();
       harvestData = await loadHarvest(dinnerDate);
       updateHarvestTabVisibility();
 
       if (stateBackend === 'firebase') {
         const ok = await initFirebase();
         if (ok) {
+          subscribeGuestReported();
           setSyncStatus('online', `synced via Firebase · dinner ${dinnerDate}`);
         } else {
           stateBackend = 'localStorage';
