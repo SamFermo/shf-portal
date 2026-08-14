@@ -2964,6 +2964,30 @@
       console.error('guestReported write failed:', e);
       showToast('Could not sync that. It is applied here but tell Sam.');
     }
+    await grAck(id, patch.status);
+  }
+
+  // Mirror the status to the guest-facing ack map so the portal can tell the guest the
+  // truth. Separate try/catch from the guestReported write above, and deliberately silent:
+  // the allergen reaching the kitchen is the safety-critical write and it has already
+  // happened by here. A failed ack costs the guest a nicer sentence, nothing more, and a
+  // toast about it mid-service would be noise a manager cannot act on.
+  //
+  // Status words are passed through as the manager set them ('confirmed' / 'dismissed');
+  // the PORTAL decides what a guest is shown for each. Keep presentation out of here.
+  async function grAck(id, status) {
+    if (!status) return;
+    if (!window._firebase || !window._firebase.ready) return;
+    try {
+      const fb = window._firebase;
+      const series = String(dinnerDate || '').slice(0, 7);   // "2026-08-15" -> "2026-08"
+      if (series.length !== 7) return;
+      const payload = { acks: {} };
+      payload.acks[id] = { status: status, updated_at: new Date().toISOString() };
+      await fb.setDoc(fb.doc(fb.db, 'guestContent', series), payload, { merge: true });
+    } catch (e) {
+      console.error('guest ack write failed (non-blocking):', e);
+    }
   }
 
   function grConfirm(id) {
