@@ -2763,7 +2763,7 @@
   // CONFIG + STATE
   // ====================================================================
   const VERSION = "v1.48";
-  const BUILD = '1786406244'; // stamped by deploy-to-github.command at every deploy
+  const BUILD = '1787168029'; // stamped by deploy-to-github.command at every deploy
   const DATA_PATH = "data";
   const params = new URLSearchParams(window.location.search);
   const REMY_TEST = params.get('test') === '1' || params.has('remytest');  // harvest-feed test mode: sends marked test:true, isolated by ID, skipped by ledger ingest
@@ -5881,14 +5881,15 @@
 
     const itemRow = (it) => {
       const s = hvState(it.id);
-      const packedVal = s.done ? (s.qty!=null ? s.qty : (it.qty||'')) : '';
+      const sl = (it.sell && it.sell.item) ? it.sell : null;   // sell-unit block (2026-08-19)
+      const packedVal = s.done ? (s.qty!=null ? s.qty : (sl ? (sl.qty!=null?sl.qty:'') : (it.qty||''))) : '';
       return `
       <div class="hv-item ${s.done ? 'done' : ''}" data-hv-id="${escape(it.id)}" role="checkbox" aria-checked="${s.done ? 'true' : 'false'}" tabindex="0">
         <span class="hv-box">${s.done ? '✓' : ''}</span>
         <span class="hv-text">
           <span class="hv-line"><span class="hv-name">${escape(it.name)}</span>${it.qty ? ` <span class="hv-qty">${escape(it.qty)}</span>` : ''}</span>
           ${it.note ? `<span class="hv-note">${escape(it.note)}</span>` : ''}
-          ${s.done ? `<span class="hv-packed" style="display:inline-flex;align-items:center;gap:6px;margin-top:4px;font-size:12px;color:#5a6b4a">Packed <input class="hv-pq" data-hv-pq="${escape(it.id)}" type="text" value="${escape(packedVal)}" placeholder="${escape(it.qty||'qty')}" style="width:88px;padding:4px 7px;border:1px solid #c2cdb4;border-radius:7px;font-size:13px;font-family:inherit;background:#fff"></span>` : ''}
+          ${s.done ? `<span class="hv-packed" style="display:inline-flex;align-items:center;gap:6px;margin-top:4px;font-size:12px;color:#5a6b4a">Packed <input class="hv-pq" data-hv-pq="${escape(it.id)}" type="text" ${sl?'inputmode="decimal" ':''}value="${escape(packedVal)}" placeholder="${escape(sl?(sl.qty!=null?String(sl.qty):'qty'):(it.qty||'qty'))}" style="width:${sl?'64px':'88px'};padding:4px 7px;border:1px solid #c2cdb4;border-radius:7px;font-size:13px;font-family:inherit;background:#fff">${sl?` <b>${escape(sl.unit)}</b>`:''}</span>` : ''}
         </span>
       </div>`;
     };
@@ -5918,7 +5919,9 @@
         if (!state.harvest) state.harvest = {};
         const cur = hvState(id);
         if (cur.done) { state.harvest[id] = { done:false }; }
-        else { const it = allHv.find(x => x.id === id); state.harvest[id] = { done:true, qty: (cur.qty!=null ? cur.qty : (it && it.qty ? it.qty : '')) }; }
+        else { const it = allHv.find(x => x.id === id);
+               const plan = (it && it.sell && it.sell.item) ? (it.sell.qty!=null ? it.sell.qty : '') : (it && it.qty ? it.qty : '');
+               state.harvest[id] = { done:true, qty: (cur.qty!=null ? cur.qty : plan) }; }
         await pushState();
         if (stateBackend !== 'firebase') refresh();
       };
@@ -5987,11 +5990,14 @@
       const today=new Date().toISOString().slice(0,10);
       const isPast=(dinnerDate||'')<today;
       const prices={};
-      const lines=(w.items||[]).map((it,idx)=>{
+      const srcItems=(w.items||[]).filter(it=>!(it.sell&&it.sell.skip));
+      const lines=srcItems.map((it,idx)=>{
+        const sName=(it.sell&&it.sell.item)||it.name;
+        const low=(sName||'').toLowerCase().trim();
+        const fk=byLower[low]||byLower[low.replace(/s$/,'')]||sName;          // resolve to feed key (market ref column)
+        if(isPast){ const r=_swanHistRate(sName, dinnerDate); if(r!=null) prices[idx]=(+r).toFixed(2); }  // PAST → historical farm rate
+        if(it.sell&&it.sell.item) return {item:fk, qty:(it.sell.qty!=null?it.sell.qty:1), unit:it.sell.unit, farm_note:it.note||''};
         const q=_psParseQty(it.qty);
-        const low=(it.name||'').toLowerCase().trim();
-        const fk=byLower[low]||byLower[low.replace(/s$/,'')]||it.name;        // resolve to feed key (market ref column)
-        if(isPast){ const r=_swanHistRate(it.name, dinnerDate); if(r!=null) prices[idx]=(+r).toFixed(2); }  // PAST → historical farm rate
         return {item:fk, qty:q.qty, unit:q.unit, farm_note:it.note||''};
       });
       _psOrder={ order_id:'farmdinner-'+(dinnerDate||'')+'-'+String(w.label||'').replace(/\s+/g,'-').toLowerCase(),
@@ -6025,9 +6031,18 @@
     const isDone=(id)=>{ const v=(state.harvest||{})[id]; return v===true || (v&&typeof v==='object'&&v.done); };
     const packed=allItems.filter(it=>isDone(it.id));
     if(!packed.length){ alert('Nothing packed yet — check off what went in the box first.'); return; }
-    const lines=packed.map(it=>{
+    // sell:{skip} rows are confirm/logistics lines (crab, bought-ins, already-billed) — never invoiced from here
+    const billable=packed.filter(it=>!(it.sell&&it.sell.skip));
+    if(!billable.length){ alert('Everything checked here is marked not-invoiced-from-harvest — nothing to send.'); return; }
+    const lines=billable.map(it=>{
       const v=(state.harvest||{})[it.id];
       const pqRaw=(v&&typeof v==='object'&&v.qty!=null&&v.qty!=='')?v.qty:(it.qty||'');
+      if(it.sell&&it.sell.item){
+        // sell-unit line (2026-08-19): item + unit come from Kelly's pricing structure, qty is her packed number
+        const n=parseFloat(pqRaw); const qty=isFinite(n)?n:(it.sell.qty!=null?it.sell.qty:1);
+        return { item:it.sell.item, qty:qty, unit:it.sell.unit, packed:true, farm_note:it.note||'',
+                 planned_qty:(it.sell.qty!=null?(it.sell.qty+' '+it.sell.unit):'') };
+      }
       const pq=_psParseQty(pqRaw);
       return { item:it.name, qty:pq.qty, unit:pq.unit, packed:true, farm_note:it.note||'', planned_qty:it.qty||'' };
     });

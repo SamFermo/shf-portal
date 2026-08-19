@@ -1,5 +1,5 @@
 {
-  "$comment": "Per-series harvest lists for the Harvest tab. Checkbox state lives in the per-dinner Firestore doc (state.harvest). Built 2026-07-29 off the 7/24 Kelly call + the August sourcing table. Farm morning-picks: summer squash, sweet peppers, cucumbers, cabbage, tender herbs, edible flowers, squash blossoms, farm berries. Onions for the agrodolce come down to SF ahead (one cook for the whole series). Corn, blackberries and huckleberries are bought-in. Tomatoes are UPSIDE ONLY — the Course 1 plate is complete without them, do not force them.",
+  "$comment": "Per-series harvest lists for the Harvest tab. Checkbox state lives in the per-dinner Firestore doc (state.harvest). Built 2026-07-29 off the 7/24 Kelly call + the August sourcing table. Farm morning-picks: summer squash, sweet peppers, cucumbers, cabbage, tender herbs, edible flowers, squash blossoms, farm berries. Onions for the agrodolce come down to SF ahead (one cook for the whole series). Corn, blackberries and huckleberries are bought-in. Tomatoes are UPSIDE ONLY — the Course 1 plate is complete without them, do not force them. | 2026-08-19: sell blocks added. Every invoiceable item carries sell:{item,qty,unit} — the exact name on Kelly's Remy sheet and HER sell unit, weekend-total qty (null = pick to availability, packed entry fills it). sell:{skip:reason} lines never reach the invoice. Composite rows split per priced item. Validate with validate_harvest.py before publishing a series.",
   "series": "2026-08",
   "weekends": [
     {
@@ -14,72 +14,163 @@
           "id": "summer-squash",
           "name": "Summer squash",
           "qty": "about 25 lb for the weekend",
-          "note": "Course 1 both ways — raw ribbons + charred scapece · pick young and firm, nothing seedy · the panelle squash already went into the trays at SF"
+          "note": "Course 1 both ways — raw ribbons + charred scapece · pick young and firm, nothing seedy · the panelle squash already went into the trays at SF",
+          "sell": {
+            "item": "Zucchini (Farm)",
+            "qty": 25,
+            "unit": "lb"
+          }
         },
         {
           "id": "sweet-peppers",
           "name": "Sweet peppers",
-          "qty": "about 4 lb per night",
-          "note": "Course 1 · charred on the Egg then marinated — replaced the beans, Kelly has these in volume"
+          "qty": "about 4 lb per night — 8 lb for the weekend",
+          "note": "Course 1 · charred on the Egg then marinated — replaced the beans, Kelly has these in volume",
+          "sell": {
+            "item": "Peppers (Farm)",
+            "qty": 8,
+            "unit": "lb"
+          }
         },
         {
           "id": "cucumbers",
           "name": "Cucumbers",
-          "qty": "about 8 per night",
-          "note": "Crab bite vessel · sliced into rounds, pick + chill early, they hold better cold"
+          "qty": "about 8 per night — priced per lb, weigh at pack",
+          "note": "Crab bite vessel · sliced into rounds, pick + chill early, they hold better cold",
+          "sell": {
+            "item": "Cucumber (Farm)",
+            "qty": 12,
+            "unit": "lb"
+          }
         },
         {
           "id": "cabbage",
           "name": "Cabbage",
-          "qty": "about 8 heads per night",
-          "note": "Course 3 contorni · cut into wedges, grilled, finished in the lamb jus · Kelly holding 50 lb, claim 30-40 for the series"
+          "qty": "about 8 heads per night — roughly 20 lb for the weekend",
+          "note": "Course 3 contorni · cut into wedges, grilled, finished in the lamb jus · Kelly holding 50 lb, claim 30-40 for the series",
+          "sell": {
+            "item": "Cabbage (Farm)",
+            "qty": 20,
+            "unit": "lb"
+          }
         },
         {
-          "id": "soft-herbs",
-          "name": "Tender herbs (oregano, mint, basil)",
-          "qty": "handfuls per night",
-          "note": "oregano → salmoriglio · mint → scapece, the crab bite, the dessert · basil → the risotto, pick last and keep it out of the cold"
+          "id": "oregano",
+          "name": "Oregano",
+          "qty": "a few bunches per night",
+          "note": "salmoriglio for the lamb · count the bunches that go in the box",
+          "sell": {
+            "item": "Oregano",
+            "qty": null,
+            "unit": "bunch"
+          }
+        },
+        {
+          "id": "mint",
+          "name": "Mint",
+          "qty": "a few bunches per night",
+          "note": "scapece, the crab bite, the dessert",
+          "sell": {
+            "item": "Mint",
+            "qty": null,
+            "unit": "bunch"
+          }
+        },
+        {
+          "id": "basil",
+          "name": "Basil",
+          "qty": "a few bunches per night",
+          "note": "the risotto · pick last and keep it out of the cold",
+          "sell": {
+            "item": "Basil (Farm)",
+            "qty": null,
+            "unit": "bunch"
+          }
         },
         {
           "id": "edible-flowers",
           "name": "Edible flowers",
-          "qty": "1 pint for the weekend",
-          "note": "garnish — Course 1 and the dessert scatter · nasturtium, calendula, borage all at peak"
+          "qty": "1 pint for the weekend — billed by the quart",
+          "note": "garnish — Course 1 and the dessert scatter · nasturtium, calendula, borage all at peak",
+          "sell": {
+            "item": "Edible Flowers",
+            "qty": 0.5,
+            "unit": "quart"
+          }
         },
         {
           "id": "squash-blossoms",
           "name": "Squash blossoms",
           "qty": "garnish scale, whatever the morning gives",
-          "note": "torn over Course 1 · nice to have, the plate is finished without them"
+          "note": "torn over Course 1 · nice to have, the plate is finished without them",
+          "sell": {
+            "item": "Squash Blossoms",
+            "qty": null,
+            "unit": "dozen",
+            "unpriced": true
+          }
         },
         {
-          "id": "farm-berries",
-          "name": "Loganberries (+ red currants if holding)",
+          "id": "loganberries",
+          "name": "Loganberries",
           "qty": "whatever is ripe",
-          "note": "Course 4 · farm berries lead the maceration, bought-in blackberries are the volume layer underneath"
+          "note": "Course 4 · count the pints picked",
+          "sell": {
+            "item": "Loganberries",
+            "qty": null,
+            "unit": "pint",
+            "unpriced": true
+          }
+        },
+        {
+          "id": "red-currants",
+          "name": "Red currants (if holding)",
+          "qty": "whatever is ripe",
+          "note": "Course 4 scatter · count the pints picked",
+          "sell": {
+            "item": "Currants (Red)",
+            "qty": null,
+            "unit": "pint"
+          }
         },
         {
           "id": "tomatoes",
           "name": "Heirloom tomatoes — UPSIDE ONLY",
           "qty": "only if they have colored up",
-          "note": "Course 1 · marinated, fills in around the edges. Do NOT force it — the plate is complete without them and there is no hedge order."
+          "note": "Course 1 · marinated, fills in around the edges. Do NOT force it — the plate is complete without them and there is no hedge order.",
+          "sell": {
+            "item": "Heirloom Tomatoes (Farm)",
+            "qty": null,
+            "unit": "lb"
+          }
         }
       ],
       "confirm": [
         {
           "id": "lamb",
           "name": "Lamb (at the farm)",
-          "note": "Legs + shoulders for the weekend, defrosted and allocated. CUTS AND METHOD STILL IN TEST — confirm the final spec with Sam before Thursday of prep week."
+          "note": "Legs + shoulders for the weekend, defrosted and allocated. CUTS AND METHOD STILL IN TEST — confirm the final spec with Sam before Thursday of prep week.",
+          "sell": {
+            "item": "Lamb shoulder/leg",
+            "qty": null,
+            "unit": "lb"
+          }
         },
         {
           "id": "crab",
           "name": "Dungeness crab (at the farm)",
-          "note": "3-4 crabs per night. Tim cooks and picks on site Thu/Fri; picked meat goes to the bite, shells get roasted into the risotto brodo. No prior-weekend freeze needed unless the catch runs long."
+          "note": "3-4 crabs per night. Tim cooks and picks on site Thu/Fri; picked meat goes to the bite, shells get roasted into the risotto brodo. No prior-weekend freeze needed unless the catch runs long.",
+          "sell": {
+            "skip": "not farm product — paid direct to the crabber"
+          }
         },
         {
           "id": "agrodolce-onions",
           "name": "Onions — already sent to SF",
-          "note": "Farm onions, agrodolce cooked in one batch at SF for the whole series. Confirm the count went down; nothing to pick this weekend."
+          "note": "Farm onions, agrodolce cooked in one batch at SF for the whole series. Confirm the count went down; nothing to pick this weekend.",
+          "sell": {
+            "skip": "billed on the August SF farm order"
+          }
         }
       ],
       "footnote": "Coming down from the restaurant, do NOT pick fresh: the set panelle trays, the par-cooked rice, the braise and its jus, the olive oil cakes, ricotta salata, mascarpone, honey, chickpea flour, and the agrodolce. Bought-in and arriving with the load: sweet corn, blackberries. No bread this series — there is no Breadfarm order."
@@ -96,72 +187,163 @@
           "id": "summer-squash",
           "name": "Summer squash",
           "qty": "about 25 lb for the weekend",
-          "note": "Course 1 both ways · still picking young and firm — plants are further along, be choosier"
+          "note": "Course 1 both ways · still picking young and firm — plants are further along, be choosier",
+          "sell": {
+            "item": "Zucchini (Farm)",
+            "qty": 25,
+            "unit": "lb"
+          }
         },
         {
           "id": "sweet-peppers",
           "name": "Sweet peppers",
-          "qty": "about 4 lb per night",
-          "note": "Course 1 · charred then marinated · riper peppers this week, expect more sweetness and less time on the fire"
+          "qty": "about 4 lb per night — 8 lb for the weekend",
+          "note": "Course 1 · charred then marinated · riper peppers this week, expect more sweetness and less time on the fire",
+          "sell": {
+            "item": "Peppers (Farm)",
+            "qty": 8,
+            "unit": "lb"
+          }
         },
         {
           "id": "cucumbers",
           "name": "Cucumbers",
-          "qty": "about 8 per night",
-          "note": "Crab bite vessel · rounds, pick + chill early"
+          "qty": "about 8 per night — priced per lb, weigh at pack",
+          "note": "Crab bite vessel · rounds, pick + chill early",
+          "sell": {
+            "item": "Cucumber (Farm)",
+            "qty": 12,
+            "unit": "lb"
+          }
         },
         {
           "id": "cabbage",
           "name": "Cabbage",
-          "qty": "about 8 heads per night",
-          "note": "Course 3 contorni · wedges, grilled, finished in lamb jus"
+          "qty": "about 8 heads per night — roughly 20 lb for the weekend",
+          "note": "Course 3 contorni · wedges, grilled, finished in lamb jus",
+          "sell": {
+            "item": "Cabbage (Farm)",
+            "qty": 20,
+            "unit": "lb"
+          }
         },
         {
-          "id": "soft-herbs",
-          "name": "Tender herbs (oregano, mint, basil)",
-          "qty": "handfuls per night",
-          "note": "oregano → salmoriglio · mint → scapece, crab bite, dessert · basil → risotto, picked last"
+          "id": "oregano",
+          "name": "Oregano",
+          "qty": "a few bunches per night",
+          "note": "salmoriglio for the lamb · count the bunches that go in the box",
+          "sell": {
+            "item": "Oregano",
+            "qty": null,
+            "unit": "bunch"
+          }
+        },
+        {
+          "id": "mint",
+          "name": "Mint",
+          "qty": "a few bunches per night",
+          "note": "scapece, the crab bite, the dessert",
+          "sell": {
+            "item": "Mint",
+            "qty": null,
+            "unit": "bunch"
+          }
+        },
+        {
+          "id": "basil",
+          "name": "Basil",
+          "qty": "a few bunches per night",
+          "note": "the risotto · pick last and keep it out of the cold",
+          "sell": {
+            "item": "Basil (Farm)",
+            "qty": null,
+            "unit": "bunch"
+          }
         },
         {
           "id": "edible-flowers",
           "name": "Edible flowers",
-          "qty": "1 pint for the weekend",
-          "note": "garnish — Course 1 and the dessert scatter"
+          "qty": "1 pint for the weekend — billed by the quart",
+          "note": "garnish — Course 1 and the dessert scatter",
+          "sell": {
+            "item": "Edible Flowers",
+            "qty": 0.5,
+            "unit": "quart"
+          }
         },
         {
           "id": "squash-blossoms",
           "name": "Squash blossoms",
           "qty": "garnish scale, whatever the morning gives",
-          "note": "torn over Course 1 · optional"
+          "note": "torn over Course 1 · optional",
+          "sell": {
+            "item": "Squash Blossoms",
+            "qty": null,
+            "unit": "dozen",
+            "unpriced": true
+          }
         },
         {
-          "id": "farm-berries",
-          "name": "Loganberries (+ red currants if holding)",
+          "id": "loganberries",
+          "name": "Loganberries",
           "qty": "whatever is ripe",
-          "note": "Course 4 · farm berries lead · huckleberries (bought, F&F) join this weekend, blackberries still the base"
+          "note": "Course 4 · count the pints picked",
+          "sell": {
+            "item": "Loganberries",
+            "qty": null,
+            "unit": "pint",
+            "unpriced": true
+          }
+        },
+        {
+          "id": "red-currants",
+          "name": "Red currants (if holding)",
+          "qty": "whatever is ripe",
+          "note": "Course 4 scatter · count the pints picked",
+          "sell": {
+            "item": "Currants (Red)",
+            "qty": null,
+            "unit": "pint"
+          }
         },
         {
           "id": "tomatoes",
           "name": "Heirloom tomatoes — UPSIDE ONLY",
           "qty": "only if they have colored up",
-          "note": "Course 1 · more likely this weekend than W1, but still no hedge order. Marinated, fills in."
+          "note": "Course 1 · more likely this weekend than W1, but still no hedge order. Marinated, fills in.",
+          "sell": {
+            "item": "Heirloom Tomatoes (Farm)",
+            "qty": null,
+            "unit": "lb"
+          }
         }
       ],
       "confirm": [
         {
           "id": "lamb",
           "name": "Lamb (at the farm)",
-          "note": "Second weekend's legs + shoulders defrosted and allocated. Adjust the count off what night 1 of W1 actually yielded."
+          "note": "Second weekend's legs + shoulders defrosted and allocated. Adjust the count off what night 1 of W1 actually yielded.",
+          "sell": {
+            "item": "Lamb shoulder/leg",
+            "qty": null,
+            "unit": "lb"
+          }
         },
         {
           "id": "crab",
           "name": "Dungeness crab (at the farm)",
-          "note": "3-4 crabs per night, this week's catch. Tim cooks, picks, and builds the brodo on site."
+          "note": "3-4 crabs per night, this week's catch. Tim cooks, picks, and builds the brodo on site.",
+          "sell": {
+            "skip": "not farm product — paid direct to the crabber"
+          }
         },
         {
           "id": "huckleberries",
           "name": "Huckleberries — F&F, ordered ahead",
-          "note": "W2 dessert evolution. Fresh, early and limited — confirm the order landed before Friday."
+          "note": "W2 dessert evolution. Fresh, early and limited — confirm the order landed before Friday.",
+          "sell": {
+            "skip": "bought-in F&F, not a farm invoice line"
+          }
         }
       ],
       "footnote": "Coming down from the restaurant, do NOT pick fresh: the set panelle trays, the par-cooked rice, the braise and its jus, the olive oil cakes, ricotta salata, mascarpone, honey, chickpea flour, and the agrodolce. Bought-in and arriving with the load: sweet corn, blackberries, huckleberries. No bread this series."

@@ -103,14 +103,14 @@
       "display_date": "Saturday, August 15, 2026",
       "seated_covers": 26,
       "party_count": 11,
-      "is_past": false
+      "is_past": true
     },
     {
       "date": "2026-08-16",
       "display_date": "Sunday, August 16, 2026",
       "seated_covers": 27,
       "party_count": 11,
-      "is_past": false
+      "is_past": true
     },
     {
       "date": "2026-09-05",
@@ -141,6 +141,6 @@
       "is_past": false
     }
   ],
-  "generated_at": "2026-08-10T16:57:24",
-  "build": "1786406244"
+  "generated_at": "2026-08-19T12:33:49",
+  "build": "1787168029"
 }
