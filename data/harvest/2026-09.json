@@ -1,0 +1,332 @@
+{
+ "$comment": "Per-series harvest lists for the Harvest tab. Checkbox state lives in the per-dinner Firestore doc (state.harvest). Built 2026-08-24 off Tim/Kelly's 8/24 replies + the September series-data sourcing table. GENERATED UNDER THE GARDEN-PICK GUIDELINE (print-pack-standard.md, added 2026-08-24): the garnish-class sweep ran against series-data build/guest_copy fields — basil blossoms, mint, tender herbs, fig leaves caught; no edible-flower plate this menu (checked, not omitted). Farm morning-picks: tomatoes, figs, padron/shishito + sweet peppers, cucumbers, mint, basil, herbs. Salmon, clams, chanterelles, clam stock, crumble, saba and fennel pollen come UP with the load. Fig leaves and King apples go DOWN to SF on Sully's Tuesday run. ⚠ SELL-NAME VALIDATION REQUIRED before publish: 'Figs (Farm)', 'Apples (King)', 'Guanciale' and 'Beef NY/Rib Eye steaks' are NEW names not yet verified against Kelly's Remy sheet — figs/apples/steaks are flagged unpriced:true (Tim prices at finalize); ask Kelly to add Figs and Apples to her Remy sheet — they're real farm income. Fig leaves ARE on her sheet (Peak, 20 lb). Run validate_harvest.py after any edit. sell:{skip:...} lines never reach the invoice.",
+ "series": "2026-09",
+ "weekends": [
+  {
+   "label": "September 5-6",
+   "dates": [
+    "2026-09-05",
+    "2026-09-06"
+   ],
+   "intro": "Only what needs picking fresh at the farm this weekend. Salmon, clams, chanterelles and the cake crumble come up with the load. Fig leaves and King apples already went down to SF for the steep and the apple butter. Steaks were cut frozen ahead — see the confirm list. Sunday repeats Saturday.",
+   "items": [
+    {
+     "id": "tomatoes",
+     "name": "Farm tomatoes",
+     "qty": "about 17 lb for the weekend",
+     "note": "Caprese — thick-cut, the course is built on them at peak · pick ripe day-of, keep out of the fridge",
+     "sell": {
+      "item": "Heirloom Tomatoes (Farm)",
+      "qty": 17,
+      "unit": "lb"
+     }
+    },
+    {
+     "id": "figs",
+     "name": "Desert King figs",
+     "qty": "about 55 for the weekend (one per cover + buffer)",
+     "note": "Grilled fig + guanciale bite · pick ripe, slightly under is fine for the grill · RIPENESS GATE: Tim's test rules; Franks is the backup if the tree runs short",
+     "sell": {
+      "item": "Figs (Farm)",
+      "qty": null,
+      "unit": "lb",
+      "unpriced": true
+     }
+    },
+    {
+     "id": "padrons",
+     "name": "Padrón + shishito peppers",
+     "qty": "about a pound for the weekend",
+     "note": "Crudo bite, served fresh · plus sweet peppers below for the romesco",
+     "sell": {
+      "item": "Peppers (Farm)",
+      "qty": null,
+      "unit": "lb"
+     }
+    },
+    {
+     "id": "sweet-peppers-romesco",
+     "name": "Sweet peppers (romesco)",
+     "qty": "TBD — romesco build locks in R&D",
+     "note": "Green pepper romesco for the beef · quantity follows the locked recipe, fill at pack",
+     "sell": {
+      "item": "Peppers (Farm)",
+      "qty": null,
+      "unit": "lb"
+     }
+    },
+    {
+     "id": "cucumbers",
+     "name": "Cucumbers",
+     "qty": "about 8 lb for the weekend",
+     "note": "Cold cucumber and mint salad with the beef · pick + chill early, they hold better cold",
+     "sell": {
+      "item": "Cucumber (Farm)",
+      "qty": 8,
+      "unit": "lb"
+     }
+    },
+    {
+     "id": "mint",
+     "name": "Mint",
+     "qty": "a few bunches per night",
+     "note": "GARDEN PICK · cucumber salad + garnish · count the bunches that go in the box",
+     "sell": {
+      "item": "Mint",
+      "qty": null,
+      "unit": "bunch"
+     }
+    },
+    {
+     "id": "basil",
+     "name": "Basil + basil blossoms",
+     "qty": "a few bunches per night",
+     "note": "GARDEN PICK · caprese — reserved from restaurant use, all of it stays for the dinners · blossoms ride along as garnish",
+     "sell": {
+      "item": "Basil (Farm)",
+      "qty": null,
+      "unit": "bunch"
+     }
+    },
+    {
+     "id": "herbs",
+     "name": "Tender herbs for the pasta",
+     "qty": "to availability",
+     "note": "GARDEN PICK · 'whatever is available' per Sam — pick what's good, invoice at pack",
+     "sell": {
+      "skip": "free-pick to availability — add per-herb lines at pack if invoiced"
+     }
+    },
+    {
+     "id": "garden-pick-check",
+     "name": "Garden-pick sweep (guideline check)",
+     "qty": "—",
+     "note": "Standing check per print-pack-standard.md (added 8/24): garnish-class picks this series are basil blossoms, mint, tender herbs, fig leaves. NO edible-flower plate on this menu — confirm nothing has been added since this was generated.",
+     "sell": {
+      "skip": "checklist line, not a product"
+     }
+    }
+   ],
+   "confirm": [
+    {
+     "id": "steaks",
+     "name": "Beef steaks (at the farm)",
+     "note": "W1: cut day happens BEFORE this weekend — 16 oz steaks hacksawed FROZEN from the NY primals + rib eye racks, then thawed. Confirm ~24 steaks allocated and thawing on schedule.",
+     "sell": {
+      "item": "Beef NY/Rib Eye steaks",
+      "qty": null,
+      "unit": "lb",
+      "unpriced": true
+     }
+    },
+    {
+     "id": "guanciale",
+     "name": "Guanciale (at the farm)",
+     "note": "First 4 jowls, finished and frozen — weigh, slice thin, ~55+ slices for the weekend.",
+     "sell": {
+      "item": "Guanciale",
+      "qty": null,
+      "unit": "lb"
+     }
+    },
+    {
+     "id": "kimchi",
+     "name": "Red cabbage kimchi",
+     "note": "Started 8/22 with Kelly's cabbage. Tim checks it isn't turning; Sam tasted ~8/30. Minced fine at prep.",
+     "sell": {
+      "skip": "made at the farm from farm cabbage — settle invoicing with Tim if at all"
+     }
+    },
+    {
+     "id": "fig-leaves",
+     "name": "Fig leaves — DOWN TO SF ahead",
+     "note": "NOT a farm-morning pick: leaves ride Sully's Tuesday run to SF for the 24-hr steep (Tuesday) and Wednesday churn. Confirm they went down. On Kelly's Remy sheet at Peak (20 lb) — invoice by the lb.",
+     "sell": {
+      "item": "Fig leaves",
+      "qty": null,
+      "unit": "1/4 lb"
+     }
+    },
+    {
+     "id": "king-apples",
+     "name": "King apples — DOWN TO SF ahead",
+     "note": "Apple butter cooks at SF during prep week; apples ride the same Tuesday run. Gravensteins are the fallback as Kings run out.",
+     "sell": {
+      "item": "Apples (King)",
+      "qty": null,
+      "unit": "lb",
+      "unpriced": true
+     }
+    },
+    {
+     "id": "covers",
+     "name": "Cover check 9/5",
+     "note": "Index says 22 — confirm against Tim's current xlsx; steak and fig counts float until it settles.",
+     "sell": {
+      "skip": "checklist line"
+     }
+    }
+   ],
+   "footnote": "Fig ripeness is the open gate this weekend — count the tree for W2 while picking, the second weekend is the tail of the Desert King season."
+  },
+  {
+   "label": "September 12-13",
+   "dates": [
+    "2026-09-12",
+    "2026-09-13"
+   ],
+   "intro": "Same picture as last weekend. Labor Day compressed the vendor week — W2 orders went in Tuesday. Watch the figs: this is the tail of the season, Franks backup decision was due Tuesday 9/8 off last weekend's tree count.",
+   "items": [
+    {
+     "id": "tomatoes",
+     "name": "Farm tomatoes",
+     "qty": "about 18 lb for the weekend",
+     "note": "Caprese — thick-cut, the course is built on them at peak · pick ripe day-of, keep out of the fridge",
+     "sell": {
+      "item": "Heirloom Tomatoes (Farm)",
+      "qty": 18,
+      "unit": "lb"
+     }
+    },
+    {
+     "id": "figs",
+     "name": "Desert King figs",
+     "qty": "about 60 for the weekend (one per cover + buffer)",
+     "note": "Grilled fig + guanciale bite · pick ripe, slightly under is fine for the grill · RIPENESS GATE: Tim's test rules; Franks is the backup if the tree runs short",
+     "sell": {
+      "item": "Figs (Farm)",
+      "qty": null,
+      "unit": "lb",
+      "unpriced": true
+     }
+    },
+    {
+     "id": "padrons",
+     "name": "Padrón + shishito peppers",
+     "qty": "about a pound for the weekend",
+     "note": "Crudo bite, served fresh · plus sweet peppers below for the romesco",
+     "sell": {
+      "item": "Peppers (Farm)",
+      "qty": null,
+      "unit": "lb"
+     }
+    },
+    {
+     "id": "sweet-peppers-romesco",
+     "name": "Sweet peppers (romesco)",
+     "qty": "TBD — romesco build locks in R&D",
+     "note": "Green pepper romesco for the beef · quantity follows the locked recipe, fill at pack",
+     "sell": {
+      "item": "Peppers (Farm)",
+      "qty": null,
+      "unit": "lb"
+     }
+    },
+    {
+     "id": "cucumbers",
+     "name": "Cucumbers",
+     "qty": "about 8 lb for the weekend",
+     "note": "Cold cucumber and mint salad with the beef · pick + chill early, they hold better cold",
+     "sell": {
+      "item": "Cucumber (Farm)",
+      "qty": 8,
+      "unit": "lb"
+     }
+    },
+    {
+     "id": "mint",
+     "name": "Mint",
+     "qty": "a few bunches per night",
+     "note": "GARDEN PICK · cucumber salad + garnish · count the bunches that go in the box",
+     "sell": {
+      "item": "Mint",
+      "qty": null,
+      "unit": "bunch"
+     }
+    },
+    {
+     "id": "basil",
+     "name": "Basil + basil blossoms",
+     "qty": "a few bunches per night",
+     "note": "GARDEN PICK · caprese — reserved from restaurant use, all of it stays for the dinners · blossoms ride along as garnish",
+     "sell": {
+      "item": "Basil (Farm)",
+      "qty": null,
+      "unit": "bunch"
+     }
+    },
+    {
+     "id": "herbs",
+     "name": "Tender herbs for the pasta",
+     "qty": "to availability",
+     "note": "GARDEN PICK · 'whatever is available' per Sam — pick what's good, invoice at pack",
+     "sell": {
+      "skip": "free-pick to availability — add per-herb lines at pack if invoiced"
+     }
+    },
+    {
+     "id": "garden-pick-check",
+     "name": "Garden-pick sweep (guideline check)",
+     "qty": "—",
+     "note": "Standing check per print-pack-standard.md (added 8/24): garnish-class picks this series are basil blossoms, mint, tender herbs, fig leaves. NO edible-flower plate on this menu — confirm nothing has been added since this was generated.",
+     "sell": {
+      "skip": "checklist line, not a product"
+     }
+    }
+   ],
+   "confirm": [
+    {
+     "id": "steaks",
+     "name": "Beef steaks (at the farm)",
+     "note": "Confirm ~26 steaks thawed and allocated; tenderloin + bavette stay frozen as the reserve.",
+     "sell": {
+      "item": "Beef NY/Rib Eye steaks",
+      "qty": null,
+      "unit": "lb",
+      "unpriced": true
+     }
+    },
+    {
+     "id": "guanciale",
+     "name": "Guanciale (at the farm)",
+     "note": "Second batch of 4 out of the cure this week — confirm ready, slice thin, ~55+ slices.",
+     "sell": {
+      "item": "Guanciale",
+      "qty": null,
+      "unit": "lb"
+     }
+    },
+    {
+     "id": "kimchi",
+     "name": "Red cabbage kimchi",
+     "note": "Second weekend of service on the same batch — taste before prep, it will be sharper.",
+     "sell": {
+      "skip": "made at the farm from farm cabbage — settle invoicing with Tim if at all"
+     }
+    },
+    {
+     "id": "fig-leaves",
+     "name": "Fig leaves — DOWN TO SF ahead",
+     "note": "NOT a farm-morning pick: leaves ride Sully's Tuesday run to SF for the 24-hr steep (Tuesday) and Wednesday churn. Confirm they went down. On Kelly's Remy sheet at Peak (20 lb) — invoice by the lb.",
+     "sell": {
+      "item": "Fig leaves",
+      "qty": null,
+      "unit": "1/4 lb"
+     }
+    },
+    {
+     "id": "king-apples",
+     "name": "King apples — DOWN TO SF ahead",
+     "note": "Apple butter cooks at SF during prep week; apples ride the same Tuesday run. Gravensteins are the fallback as Kings run out.",
+     "sell": {
+      "item": "Apples (King)",
+      "qty": null,
+      "unit": "lb",
+      "unpriced": true
+     }
+    }
+   ],
+   "footnote": "Second service on the kimchi batch — taste it, it will have moved."
+  }
+ ]
+}
