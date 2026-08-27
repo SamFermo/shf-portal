@@ -2762,8 +2762,8 @@
   // ====================================================================
   // CONFIG + STATE
   // ====================================================================
-  const VERSION = "v1.48";
-  const BUILD = '1787168029'; // stamped by deploy-to-github.command at every deploy
+  const VERSION = "v1.49";
+  const BUILD = '1787869953'; // stamped by deploy-to-github.command at every deploy
   const DATA_PATH = "data";
   const params = new URLSearchParams(window.location.search);
   const REMY_TEST = params.get('test') === '1' || params.has('remytest');  // harvest-feed test mode: sends marked test:true, isolated by ID, skipped by ledger ingest
@@ -3557,7 +3557,7 @@
       const gi = grp ? gmap[grp] : 0;
       const pills = [];
       if (grp) pills.push(`<span class="pill pill-group g-${gi}">${escape(groupShort(grp))}</span>`);
-      if (g.allergens?.length) pills.push(`<span class="pill pill-allergen">${escape(g.allergens.join('·'))}</span>`);
+      if (effectiveAllergens(g).length) pills.push(`<span class="pill pill-allergen">${escape(effectiveAllergens(g).join('·'))}</span>`);
       if (g.returning) pills.push(`<span class="pill pill-returning">★ ${g.returning.prior_count}×</span>`);
       return `
         <div class="picker-card ${full ? 'fully-seated' : ''} ${isSelected ? 'selected' : ''} ${grp ? `has-group g-${gi}` : ''}" data-id="${g.id}">
@@ -3623,7 +3623,7 @@
       classes.push('occupied', `party-${partyColor(occGuestId)}`);
       const grp = groupOf(occ);
       if (grp) classes.push(`grp-${groupColorMap()[grp]}`);
-      if (occ.allergens?.length) classes.push('allergen-here');
+      if (effectiveAllergens(occ).length) classes.push('allergen-here');
       if (occ.returning) classes.push('returning-here');
     }
     const inner = occ
@@ -5240,7 +5240,10 @@
     }
     const d = dinnerData;
     const guests = d.guests || [];
-    const allergenParties = guests.filter(g => g.is_allergen_party || (g.allergens && g.allergens.length));
+    // v1.49 (2026-08-27): effectiveAllergens, not g.allergens. A manager-confirmed
+    // guest-reported allergen showed in the party modal but was invisible here — the
+    // one surface that briefs the room. Same source the modal uses; roster untouched.
+    const allergenParties = guests.filter(g => g.is_allergen_party || effectiveAllergens(g).length);
     const returningGuests = guests.filter(g => g.returning).sort((a, b) => (b.returning.prior_count || 0) - (a.returning.prior_count || 0));
     const multiYearCount = returningGuests.filter(g => g.returning.is_multi_year).length;
 
@@ -5267,15 +5270,25 @@
         <p class="ft-section-label">Allergen parties (${allergenParties.length})</p>
         ${allergenParties.length === 0
           ? `<div class="ft-empty">No allergen or restriction flags tonight.</div>`
-          : allergenParties.map(g => `
+          : allergenParties.map(g => {
+            const _eff = effectiveAllergens(g);
+            const _fromGuest = grConfirmed(g.id).length;
+            return `
             <div class="ft-party allergen">
               <span class="ft-party-name">${escape(g.purchaser)}</span>
               <span class="ft-party-meta">party of ${g.party_size}${g.email ? ' · ' + escape(g.email) : ''}</span>
-              ${g.allergens && g.allergens.length ? `<div class="ft-party-flags"><strong>${escape(g.allergens.join(' · '))}</strong></div>` : ''}
+              ${_eff.length ? `<div class="ft-party-flags"><strong>${escape(_eff.join(' · '))}</strong></div>` : ''}
               ${g.notes ? `<div class="ft-party-note">${escape(g.notes)}</div>` : ''}
+              ${_fromGuest ? `<div class="ft-party-note">Includes what they told us themselves on the guest page — manager-confirmed.</div>` : ''}
             </div>
-          `).join('')
+          `; }).join('')
         }
+        ${grUnassigned().length ? `
+            <div class="ft-party allergen">
+              <span class="ft-party-name">No table yet</span>
+              <div class="ft-party-flags"><strong>${escape(grUnassigned().map(i => grAllergensOf(i).join(' · ')).join(' · '))}</strong></div>
+              <div class="ft-party-note">Sent from the guest page but not matched to a booking. Assign it in Check-in before service — until then, ask before passing trays.</div>
+            </div>` : ''}
       </section>`;
 
     const returningHTML = `
