@@ -139,18 +139,15 @@
     {
      "id": "king-apples",
      "name": "King apples — DOWN TO SF ahead",
-     "note": "20 lb (Sam, 8/30). Apple butter cooks at SF during prep week; apples ride the same Tuesday run. Gravensteins are the fallback as Kings run out.",
+     "note": "20 lb (Sam, 8/30 — ordering extra to absorb worm-hole loss like the last delivery). Apple butter cooks at SF during prep week; apples ride the Tuesday run. OFF THE INVOICE per Sam's 8/30 email to Tim/Kelly.",
      "sell": {
-      "item": "Apples (King)",
-      "qty": 20,
-      "unit": "lb",
-      "unpriced": true
+      "skip": "Sam's call 8/30: leave off the invoice — extra ordered to absorb worm-hole loss"
      }
     },
     {
      "id": "romesco-produce",
      "name": "Romesco produce — DOWN TO SF ahead",
-     "note": "Recipe LOCKED 8/30 (Chris). 4-qt weekend batch made at SF. Sam's quantities (8/30): 10 lb green peppers (sweet mixed with padrón/shishito), plus zucchini and parsley below, serranos to taste. Rides Sully's Tuesday run. MOVED off the farm-morning pick list 8/30 — the sauce is SF prep now.",
+     "note": "Recipe LOCKED 8/30 (Chris). 4-qt weekend batch made at SF. Sam's quantities (final, per 8/30 email): 10 lb green peppers, sweet ones primarily. Rides Sully's Tuesday run.",
      "sell": {
       "item": "Peppers (Farm)",
       "qty": 10,
@@ -170,11 +167,21 @@
     {
      "id": "romesco-parsley",
      "name": "Parsley (romesco) — DOWN TO SF ahead",
-     "note": "About 1/2 lb per weekend for the romesco batch — 3 bunches in Kelly's unit. Same Tuesday run.",
+     "note": "6 bunches per Sam's 8/30 email (upped from 3). Same Tuesday run.",
      "sell": {
       "item": "Parsley (Farm)",
-      "qty": 3,
+      "qty": 6,
       "unit": "bunch"
+     }
+    },
+    {
+     "id": "romesco-serranos",
+     "name": "Serranos (romesco) — DOWN TO SF ahead",
+     "note": "Half a pound per Sam's 8/30 email. Raw, for the romesco heat. Same Tuesday run.",
+     "sell": {
+      "item": "Peppers (Farm)",
+      "qty": 0.5,
+      "unit": "lb"
      }
     },
     {
@@ -344,7 +351,7 @@
     {
      "id": "romesco-produce",
      "name": "Romesco produce — DOWN TO SF ahead",
-     "note": "Recipe LOCKED 8/30 (Chris). 4-qt weekend batch made at SF. Sam's quantities (8/30): 10 lb green peppers (sweet mixed with padrón/shishito), plus zucchini and parsley below, serranos to taste. Rides Sully's Tuesday run. MOVED off the farm-morning pick list 8/30 — the sauce is SF prep now.",
+     "note": "Recipe LOCKED 8/30 (Chris). 4-qt weekend batch made at SF. Same as W1: 10 lb green peppers, sweet ones primarily. Rides Sully's Tuesday run.",
      "sell": {
       "item": "Peppers (Farm)",
       "qty": 10,
@@ -364,11 +371,21 @@
     {
      "id": "romesco-parsley",
      "name": "Parsley (romesco) — DOWN TO SF ahead",
-     "note": "About 1/2 lb per weekend for the romesco batch — 3 bunches in Kelly's unit. Same Tuesday run.",
+     "note": "6 bunches, matching W1 (Sam's 8/30 email). Same Tuesday run.",
      "sell": {
       "item": "Parsley (Farm)",
-      "qty": 3,
+      "qty": 6,
       "unit": "bunch"
+     }
+    },
+    {
+     "id": "romesco-serranos",
+     "name": "Serranos (romesco) — DOWN TO SF ahead",
+     "note": "Half a pound per Sam's 8/30 email. Raw, for the romesco heat. Same Tuesday run.",
+     "sell": {
+      "item": "Peppers (Farm)",
+      "qty": 0.5,
+      "unit": "lb"
      }
     },
     {
