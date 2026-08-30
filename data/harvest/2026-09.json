@@ -178,6 +178,17 @@
      }
     },
     {
+     "id": "tomato-leaves",
+     "name": "Tomato leaves — DOWN TO SF ahead",
+     "note": "~1 lb for the tomato leaf oil (Course 1 finisher, made fresh at SF). Same Tuesday run. Confirmed needed by Sam 8/30 — no July holdover.",
+     "sell": {
+      "item": "Tomato leaves",
+      "qty": 1,
+      "unit": "lb",
+      "unpriced": true
+     }
+    },
+    {
      "id": "covers",
      "name": "Cover check 9/5",
      "note": "Index says 22 — confirm against Tim's current xlsx; steak and fig counts float until it settles.",
@@ -358,6 +369,14 @@
       "item": "Parsley (Farm)",
       "qty": 3,
       "unit": "bunch"
+     }
+    },
+    {
+     "id": "tomato-leaves",
+     "name": "Tomato leaves — holdover check",
+     "note": "Oil made at SF off the W1 leaves — confirm holdover covers W2 before asking for more.",
+     "sell": {
+      "skip": "oil batch from W1 covers the series unless it ran short"
      }
     }
    ],
