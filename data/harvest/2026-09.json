@@ -1,5 +1,5 @@
 {
- "$comment": "Per-series harvest lists for the Harvest tab. Checkbox state lives in the per-dinner Firestore doc (state.harvest). Built 2026-08-24 off Tim/Kelly's 8/24 replies + the September series-data sourcing table. GENERATED UNDER THE GARDEN-PICK GUIDELINE (print-pack-standard.md, added 2026-08-24): the garnish-class sweep ran against series-data build/guest_copy fields — basil blossoms, mint, tender herbs, fig leaves caught; no edible-flower plate this menu (checked, not omitted). Farm morning-picks: tomatoes, figs, padron/shishito + sweet peppers, cucumbers, mint, basil, herbs. Salmon, clams, chanterelles, clam stock, crumble, saba and fennel pollen come UP with the load. Fig leaves and King apples go DOWN to SF on Sully's Tuesday run. ⚠ SELL-NAME VALIDATION REQUIRED before publish: 'Figs (Farm)', 'Apples (King)', 'Guanciale' and 'Beef NY/Rib Eye steaks' are NEW names not yet verified against Kelly's Remy sheet — figs/apples/steaks are flagged unpriced:true (Tim prices at finalize); ask Kelly to add Figs and Apples to her Remy sheet — they're real farm income. Fig leaves ARE on her sheet (Peak, 20 lb). Run validate_harvest.py after any edit. sell:{skip:...} lines never reach the invoice.",
+ "$comment": "Per-series harvest lists for the Harvest tab. Checkbox state lives in the per-dinner Firestore doc (state.harvest). Built 2026-08-24 off Tim/Kelly's 8/24 replies + the September series-data sourcing table. GENERATED UNDER THE GARDEN-PICK GUIDELINE (print-pack-standard.md, added 2026-08-24): the garnish-class sweep ran against series-data build/guest_copy fields — basil blossoms, mint, tender herbs, fig leaves caught; no edible-flower plate this menu (checked, not omitted). Farm morning-picks: tomatoes, figs, padron/shishito + sweet peppers, cucumbers, mint, basil, herbs. Salmon, clams, chanterelles, clam stock, crumble, saba and fennel pollen come UP with the load. Fig leaves and King apples go DOWN to SF on Sully's Tuesday run. ⚠ SELL-NAME VALIDATION REQUIRED before publish: 'Figs (Farm)', 'Apples (King)', 'Guanciale' and 'Beef NY/Rib Eye steaks' are NEW names not yet verified against Kelly's Remy sheet — figs/apples/steaks are flagged unpriced:true (Tim prices at finalize); ask Kelly to add Figs and Apples to her Remy sheet — they're real farm income. Fig leaves ARE on her sheet (Peak, 20 lb). Run validate_harvest.py after any edit. sell:{skip:...} lines never reach the invoice. UPDATED 2026-08-30: romesco recipe locked (Chris) — sweet-peppers-romesco removed from farm-morning picks and re-added as DOWN-TO-SF confirm rows per Sam's quantities: peppers 10 lb, zucchini 5 lb, parsley 1/2 lb. ALL CORN IS CHRIS-SOURCED (Sam, 8/30) — no farm corn rows; grilled corn for the pasta comes UP with the load. 'Zucchini (Farm)' IS on Kelly's live sheet (Trickling, 8/19); 'Parsley (Farm)' is NOT — flagged unpriced.",
  "series": "2026-09",
  "weekends": [
   {
@@ -38,17 +38,6 @@
      "name": "Padrón + shishito peppers",
      "qty": "about a pound for the weekend",
      "note": "Crudo bite, served fresh · plus sweet peppers below for the romesco",
-     "sell": {
-      "item": "Peppers (Farm)",
-      "qty": null,
-      "unit": "lb"
-     }
-    },
-    {
-     "id": "sweet-peppers-romesco",
-     "name": "Sweet peppers (romesco)",
-     "qty": "TBD — romesco build locks in R&D",
-     "note": "Green pepper romesco for the beef · quantity follows the locked recipe, fill at pack",
      "sell": {
       "item": "Peppers (Farm)",
       "qty": null,
@@ -150,12 +139,42 @@
     {
      "id": "king-apples",
      "name": "King apples — DOWN TO SF ahead",
-     "note": "Apple butter cooks at SF during prep week; apples ride the same Tuesday run. Gravensteins are the fallback as Kings run out.",
+     "note": "20 lb (Sam, 8/30). Apple butter cooks at SF during prep week; apples ride the same Tuesday run. Gravensteins are the fallback as Kings run out.",
      "sell": {
       "item": "Apples (King)",
-      "qty": null,
+      "qty": 20,
       "unit": "lb",
       "unpriced": true
+     }
+    },
+    {
+     "id": "romesco-produce",
+     "name": "Romesco produce — DOWN TO SF ahead",
+     "note": "Recipe LOCKED 8/30 (Chris). 4-qt weekend batch made at SF. Sam's quantities (8/30): 10 lb green peppers (sweet mixed with padrón/shishito), plus zucchini and parsley below, serranos to taste. Rides Sully's Tuesday run. MOVED off the farm-morning pick list 8/30 — the sauce is SF prep now.",
+     "sell": {
+      "item": "Peppers (Farm)",
+      "qty": 10,
+      "unit": "lb"
+     }
+    },
+    {
+     "id": "romesco-zucchini",
+     "name": "Zucchini (romesco) — DOWN TO SF ahead",
+     "note": "5 lb per weekend for the romesco batch. Same Tuesday run. Kelly's sheet had zucchini at 'Trickling' 8/19 — confirm 5 lb is there.",
+     "sell": {
+      "item": "Zucchini (Farm)",
+      "qty": 5,
+      "unit": "lb"
+     }
+    },
+    {
+     "id": "romesco-parsley",
+     "name": "Parsley (romesco) — DOWN TO SF ahead",
+     "note": "About 1/2 lb per weekend for the romesco batch — 3 bunches in Kelly's unit. Same Tuesday run.",
+     "sell": {
+      "item": "Parsley (Farm)",
+      "qty": 3,
+      "unit": "bunch"
      }
     },
     {
@@ -205,17 +224,6 @@
      "name": "Padrón + shishito peppers",
      "qty": "about a pound for the weekend",
      "note": "Crudo bite, served fresh · plus sweet peppers below for the romesco",
-     "sell": {
-      "item": "Peppers (Farm)",
-      "qty": null,
-      "unit": "lb"
-     }
-    },
-    {
-     "id": "sweet-peppers-romesco",
-     "name": "Sweet peppers (romesco)",
-     "qty": "TBD — romesco build locks in R&D",
-     "note": "Green pepper romesco for the beef · quantity follows the locked recipe, fill at pack",
      "sell": {
       "item": "Peppers (Farm)",
       "qty": null,
@@ -317,12 +325,39 @@
     {
      "id": "king-apples",
      "name": "King apples — DOWN TO SF ahead",
-     "note": "Apple butter cooks at SF during prep week; apples ride the same Tuesday run. Gravensteins are the fallback as Kings run out.",
+     "note": "Apple butter made at SF off the W1 20 lb — confirm holdover covers W2 before asking for more apples.",
      "sell": {
-      "item": "Apples (King)",
-      "qty": null,
-      "unit": "lb",
-      "unpriced": true
+      "skip": "20 lb went down W1 — one apple-butter batch covers the series; only re-pick if volume ran short"
+     }
+    },
+    {
+     "id": "romesco-produce",
+     "name": "Romesco produce — DOWN TO SF ahead",
+     "note": "Recipe LOCKED 8/30 (Chris). 4-qt weekend batch made at SF. Sam's quantities (8/30): 10 lb green peppers (sweet mixed with padrón/shishito), plus zucchini and parsley below, serranos to taste. Rides Sully's Tuesday run. MOVED off the farm-morning pick list 8/30 — the sauce is SF prep now.",
+     "sell": {
+      "item": "Peppers (Farm)",
+      "qty": 10,
+      "unit": "lb"
+     }
+    },
+    {
+     "id": "romesco-zucchini",
+     "name": "Zucchini (romesco) — DOWN TO SF ahead",
+     "note": "5 lb per weekend for the romesco batch. Same Tuesday run. Kelly's sheet had zucchini at 'Trickling' 8/19 — confirm 5 lb is there.",
+     "sell": {
+      "item": "Zucchini (Farm)",
+      "qty": 5,
+      "unit": "lb"
+     }
+    },
+    {
+     "id": "romesco-parsley",
+     "name": "Parsley (romesco) — DOWN TO SF ahead",
+     "note": "About 1/2 lb per weekend for the romesco batch — 3 bunches in Kelly's unit. Same Tuesday run.",
+     "sell": {
+      "item": "Parsley (Farm)",
+      "qty": 3,
+      "unit": "bunch"
      }
     }
    ],
