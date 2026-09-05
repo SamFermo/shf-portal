@@ -1,7 +1,7 @@
 {
   "series_id": "2026-09",
   "series_label": "September 2026 series",
-  "_pending": "Created 2026-08-24, published ahead of full lock per the August precedent. PENDING: (1) WINES — LOCKED 2026-09-05: Bellenda San Fermo Prosecco, La Spinetta Casanova Vermentino 2025 (replaces the Schiopetto Sauvignon), Fabrizio Pratesi Locorosso, plus the two NA pours. NO rosé this series. (2) COCKTAIL — Katie is building the September drink; Lavender Lemonade confirmed staying. (3) Salmon run confirmation from Key City outstanding — crudo copy stands on Sam's call. (4) Fig ripeness test at the tree outstanding (Kelly bets ripe, Tim testing; Franks is the named backup). (5) Green pepper romesco final build not locked; keep its composition vague in guest answers until it locks and the allergen sheet is updated. NOTE: this field is served in a PUBLIC JSON — keep operational, no personal provenance.",
+  "_pending": "Created 2026-08-24, published ahead of full lock per the August precedent. PENDING: (1) WINES — LOCKED 2026-09-05: Bellenda San Fermo Prosecco, La Spinetta Casanova Vermentino 2025 (replaces the Schiopetto Sauvignon), Fabrizio Pratesi Locorosso, plus the two NA pours. NO rosé this series. (2) COCKTAIL — LOCKED 2026-09-05 (Katie's build, name is Sam's working title): Nectarine & Raspberry Gin Spritz. Lavender Lemonade stays as the zero-proof. ⚠ NECTARINE IS A STONE FRUIT: Marie Umetsu (9/5, peach allergy) gets the lemonade, not the cocktail. (3) Salmon run confirmation from Key City outstanding — crudo copy stands on Sam's call. (4) Fig ripeness test at the tree outstanding (Kelly bets ripe, Tim testing; Franks is the named backup). (5) Green pepper romesco final build not locked; keep its composition vague in guest answers until it locks and the allergen sheet is updated. NOTE: this field is served in a PUBLIC JSON — keep operational, no personal provenance.",
   "header": {
     "title": "Swan House Farm",
     "subtitle": "Early Fall",
@@ -409,6 +409,45 @@
     }
   ],
   "cocktails": [
+    {
+      "name": "Nectarine & Raspberry Gin Spritz",
+      "tagline": "gin · bianco vermouth · gran classico · soda",
+      "pour_notes": "Katie’s September drink. Terramar gin over nectarines and Swan House raspberries macerated down to their syrup, with bianco vermouth for a soft floral middle and a measure of Gran Classico for bitterness at the back. Lemon for lift, then topped with soda, so it drinks long and cold and slightly bitter while the fire comes up. Pale coral in the glass.",
+      "ingredients": [
+        {
+          "name": "Terramar gin",
+          "amount": "",
+          "highlight": "Skagit local",
+          "description": "Gin from Terramar Brewstillery in Edison, just down the road — an award-winning brewery and distillery set in a former slaughterhouse on the old Edison Slough oxbow. They distill it grain-to-glass from Washington-grown, craft-malted barley (the same base as their beer) and are growing their own juniper and botanicals on the property. A true neighbor pour."
+        },
+        {
+          "name": "Nectarine and raspberry maceration",
+          "amount": "",
+          "highlight": "From the farm",
+          "description": "Ripe nectarines and raspberries cut at Swan House, macerated with sugar until they give up their syrup. The syrup is the drink, not a sweetener added after."
+        },
+        {
+          "name": "Bianco vermouth",
+          "amount": "",
+          "description": "White vermouth, lightly sweet and floral, which rounds the fruit and softens the gin."
+        },
+        {
+          "name": "Gran Classico",
+          "amount": "",
+          "description": "A Swiss bitter in the old Turin style, built on gentian and wormwood with a bright orange edge. Where the bitterness and the colour come from; drier and more herbal than Aperol."
+        },
+        {
+          "name": "Lemon",
+          "amount": "",
+          "description": "Fresh lemon for acid and lift."
+        },
+        {
+          "name": "Soda water",
+          "amount": "",
+          "description": "Topped to length, so it stays light and cold through the welcome hour."
+        }
+      ]
+    },
     {
       "name": "Lavender Lemonade",
       "tagline": "zero-proof · the farm mocktail",
