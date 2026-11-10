@@ -8,6 +8,8 @@
 <meta name="apple-mobile-web-app-title" content="SHF Portal">
 <title>SHF Portal · v2 test</title>
 <meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Newsreader:opsz,wght@6..72,400;6..72,500&display=swap">
+<meta name="theme-color" content="#18241b">
 <style>
   :root {
     /* Palette pulled from the pergola: candle-cream paper, wood-stained beams,
@@ -2494,6 +2496,249 @@ table.v2-t td{padding:10px 12px;border-top:1px solid var(--border-soft);vertical
 #portal-view{min-height:calc(100vh - 180px)}
 .portal-card.v2-office{transform:translate(-50%,-50%)}
 .portal-card.v2-office:active{transform:translate(-50%,-50%) scale(.96)}
+
+/* =====================================================================
+   NX DESIGN (2026-11-09 night): Sam's full restyle. Quiet paper, forest
+   green, one clay accent for allergies; the farm comes from the photos.
+   Sidebar on iPad landscape and laptop, bottom tabs on phone and iPad
+   portrait. Overrides the v1.49 tokens, then the components.
+   ===================================================================== */
+:root{
+  --ui:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;
+  --serif:"Newsreader",Georgia,"Times New Roman",serif;
+  --bg:#f4f1ea; --bg-deeper:#ebe7dd; --card:#ffffff; --card-edge:#e4dfd3; --border:#e4dfd3; --border-soft:#eeeae1;
+  --text:#1c1f1a; --text-soft:#5b6056; --text-mute:#7d8277;
+  --accent:#2f4a36; --accent-dark:#1f3326; --accent-soft:#e2e9df;
+  --rust:#a9502a; --rust-soft:#f7e7de; --allergen-bg:#f7e7de; --allergen-border:#a9502a;
+  --gold:#8f7136; --gold-soft:#f2ecdf; --wood:#24261f; --wood-soft:#5b6056;
+  --returning-bg:#f2ecdf; --returning-border:#8f7136; --selected-bg:#eef3eb; --selected-border:#2f4a36;
+  --cancel-bg:#efede7; --cancel-border:#a9a597;
+  --shadow:0 1px 2px rgba(24,28,20,.05); --shadow-lift:0 8px 28px rgba(24,28,20,.14); --radius:10px;
+  --nx-side:252px; --nx-forest:#18241b; --nx-forest-2:#22332a; --nx-line:rgba(255,255,255,.09);
+}
+html{background:var(--bg)}
+body{font-family:var(--ui)!important;background:var(--bg)!important;color:var(--text);-webkit-font-smoothing:antialiased;letter-spacing:-.003em}
+body *:not(svg):not(svg *){font-family:inherit}
+body.in-dinner-view{background:var(--bg)!important;background-image:none!important}
+/* hide the v1 chrome the shell replaces */
+body.nx header:not(.nx-keep),body.nx #view-toggle-wrap,body.nx #home-button,body.nx .portal,body.nx .status-footer,body.nx #date-switcher-container{display:none!important}
+/* ---------- test bar ---------- */
+.v2-demobar{background:#0f1611;color:#c9d2c4;font-size:12px;letter-spacing:0;padding:6px 14px;gap:8px;position:relative;z-index:60}
+.v2-demobar button,.v2-demobar a{border-color:rgba(255,255,255,.22);color:#e8ede4;border-radius:7px;min-height:28px}
+.v2-demobar .v2-bug{background:#e8ede4;color:#13201a;border-color:#e8ede4}
+body.nx .v2-demobar{margin-left:0}
+@media (min-width:1024px){body.nx .v2-demobar{margin-left:var(--nx-side)}}
+/* ---------- sidebar (≥1024) ---------- */
+.nx-side{position:fixed;left:0;top:0;bottom:0;width:var(--nx-side);background:var(--nx-forest);color:#e9eee6;display:none;flex-direction:column;z-index:70;padding:20px 14px 14px;gap:16px;overflow-y:auto}
+@media (min-width:1024px){body.nx .nx-side{display:flex} body.nx{padding-left:var(--nx-side)}}
+.nx-logo{display:block;width:148px;height:auto;opacity:.95;margin:2px 6px 0}
+.nx-dinner{background:var(--nx-forest-2);border:1px solid var(--nx-line);border-radius:12px;padding:10px 10px 12px;display:flex;flex-direction:column;gap:8px}
+.nx-dinner .nx-k{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#93a08f}
+.nx-dinner .dinner-switcher{display:flex!important;gap:6px;align-items:center;margin:0}
+.nx-dinner .dinner-select{flex:1;min-width:0;font-family:var(--ui)!important;font-style:normal!important;font-size:13.5px!important;color:#f1f4ef!important;border:1px solid var(--nx-line)!important;border-radius:8px!important;padding:8px 26px 8px 10px!important;max-width:none!important;background-color:rgba(255,255,255,.04)!important;background-image:linear-gradient(45deg,transparent 50%,#c9d2c4 50%),linear-gradient(135deg,#c9d2c4 50%,transparent 50%)!important}
+.nx-dinner .dinner-select option{color:#1c1f1a}
+.nx-dinner .dinner-nav{width:32px!important;height:32px!important;border-radius:8px!important;border:1px solid var(--nx-line)!important;background:transparent!important;color:#e9eee6!important}
+.nx-nav{display:flex;flex-direction:column;gap:2px}
+.nx-nav button{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:transparent;border:0;color:#c9d2c4;font-size:14.5px;font-weight:500;padding:10px 10px;border-radius:9px;cursor:pointer;min-height:44px}
+.nx-nav button svg{width:19px;height:19px;flex:0 0 19px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;opacity:.9}
+.nx-nav button:hover{background:rgba(255,255,255,.05);color:#fff}
+.nx-nav button.on{background:#e9eee6;color:#14201a}
+.nx-nav button .nx-badge{margin-left:auto;font-size:11px;font-weight:600;background:var(--rust);color:#fff;border-radius:999px;padding:2px 7px}
+.nx-nav .nx-sep{height:1px;background:var(--nx-line);margin:8px 6px}
+.nx-me{margin-top:auto;display:flex;align-items:center;gap:10px;padding:10px 6px 2px;border-top:1px solid var(--nx-line)}
+.nx-me .v2-av{width:34px;height:34px;font-family:var(--ui)!important;font-size:13px;font-weight:600}
+.nx-me .nx-who{display:flex;flex-direction:column;line-height:1.25;min-width:0}
+.nx-me .nx-who b{font-size:14px;color:#fff;font-weight:600}
+.nx-me .nx-who span{font-size:12px;color:#93a08f}
+.nx-me button{margin-left:auto;background:transparent;border:1px solid var(--nx-line);color:#e9eee6;border-radius:8px;min-height:36px;padding:0 12px;font-size:13px;cursor:pointer}
+/* ---------- top bar + tab bar (<1024) ---------- */
+.nx-top{display:none;position:sticky;top:0;z-index:55;background:rgba(244,241,234,.92);backdrop-filter:saturate(1.4) blur(14px);-webkit-backdrop-filter:saturate(1.4) blur(14px);border-bottom:1px solid var(--border);padding:8px max(14px,env(safe-area-inset-right,0px)) 8px max(14px,env(safe-area-inset-left,0px));align-items:center;gap:10px}
+@media (max-width:1023px){body.nx .nx-top{display:flex}}
+.nx-top .dinner-switcher{display:flex!important;gap:6px;align-items:center;flex:1;min-width:0;margin:0;justify-content:flex-start}
+.nx-top .dinner-select{flex:1;min-width:0;max-width:none!important;font-family:var(--ui)!important;font-style:normal!important;font-size:14px!important;font-weight:600;color:var(--text)!important;border:1px solid var(--border)!important;border-radius:9px!important;padding:8px 26px 8px 10px!important;background-color:var(--card)!important}
+.nx-top .dinner-nav{width:36px!important;height:36px!important;border-radius:9px!important;border:1px solid var(--border)!important;background:var(--card)!important;color:var(--text)!important}
+.nx-top .v2-av{width:34px;height:34px;font-family:var(--ui)!important;font-size:13px;font-weight:600;border:0;cursor:pointer}
+.nx-tabbar{display:none;position:fixed;left:0;right:0;bottom:0;z-index:80;background:rgba(255,255,255,.94);backdrop-filter:saturate(1.4) blur(16px);-webkit-backdrop-filter:saturate(1.4) blur(16px);border-top:1px solid var(--border);padding:4px max(6px,env(safe-area-inset-right,0px)) calc(4px + env(safe-area-inset-bottom,0px)) max(6px,env(safe-area-inset-left,0px));justify-content:space-around}
+@media (max-width:1023px){body.nx .nx-tabbar{display:flex} body.nx{padding-bottom:calc(70px + env(safe-area-inset-bottom,0px))}}
+.nx-tabbar button{flex:1;max-width:120px;background:transparent;border:0;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11px;font-weight:500;color:var(--text-mute);padding:7px 2px;min-height:52px;cursor:pointer;border-radius:10px}
+.nx-tabbar button svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.nx-tabbar button.on{color:var(--accent)}
+.nx-sheet-bg{position:fixed;inset:0;background:rgba(15,20,14,.4);z-index:90;display:flex;align-items:flex-end;justify-content:center}
+.nx-sheet{background:var(--card);border-radius:18px 18px 0 0;width:min(560px,100%);padding:10px 14px calc(16px + env(safe-area-inset-bottom,0px));box-shadow:0 -10px 40px rgba(0,0,0,.2)}
+.nx-sheet .nx-grab{width:40px;height:5px;border-radius:3px;background:var(--border);margin:2px auto 10px}
+.nx-sheet .nx-nav button{color:var(--text)}
+.nx-sheet .nx-nav button:hover{background:var(--bg)}
+.nx-sheet .nx-nav button.on{background:var(--accent);color:#fff}
+.nx-sheet .nx-nav .nx-sep{background:var(--border)}
+.nx-sheet .nx-me{border-top-color:var(--border)}
+.nx-sheet .nx-me .nx-who b{color:var(--text)} .nx-sheet .nx-me .nx-who span{color:var(--text-soft)}
+.nx-sheet .nx-me button{color:var(--text);border-color:var(--border)}
+/* ---------- section hero ---------- */
+.nx-hero{position:relative;margin:16px auto 18px;max-width:1120px;border-radius:16px;overflow:hidden;min-height:150px;color:#fff;display:flex;align-items:flex-end;background:#26332a center/cover no-repeat}
+.nx-hero::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,14,10,.05) 0%,rgba(10,14,10,.35) 45%,rgba(10,14,10,.78) 100%)}
+.nx-hero .nx-hin{position:relative;padding:20px 22px 18px;display:flex;flex-wrap:wrap;align-items:flex-end;gap:12px 28px;width:100%}
+.nx-hero .nx-eb{font-size:12.5px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;opacity:.85}
+.nx-hero h1{margin:4px 0 0;font-family:var(--serif)!important;font-weight:500;font-size:clamp(28px,4.2vw,40px);line-height:1.05;letter-spacing:-.01em}
+.nx-hero .nx-stats{margin-left:auto;display:flex;gap:22px;flex-wrap:wrap}
+.nx-hero .nx-stat b{display:block;font-size:24px;font-weight:600;font-variant-numeric:tabular-nums;line-height:1.1}
+.nx-hero .nx-stat span{font-size:12px;opacity:.82}
+body.nx #list-view,body.nx #seating-view,body.nx #freshtalk-view,body.nx #service-view,body.nx #setup-breakdown-view,body.nx #harvest-view,body.nx #standards-view,body.nx #office-view,body.nx #orders-view{background:transparent!important;box-shadow:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;max-width:1120px!important;margin:0 auto 32px!important;padding:0 16px!important;border-radius:0!important}
+body.nx .nx-hero{margin-left:16px;margin-right:16px}
+@media (min-width:1152px){body.nx .nx-hero{margin-left:auto;margin-right:auto;width:calc(100% - 32px)}}
+@media (max-width:640px){.nx-hero{border-radius:0;margin:0 0 14px!important;width:100%!important;min-height:132px}.nx-hero .nx-hin{padding:16px 16px 14px}.nx-hero .nx-stats{margin-left:0;gap:18px}.nx-hero .nx-stat b{font-size:20px}}
+/* ---------- home ---------- */
+body.nx #portal-view{background:none!important;padding:0!important;min-height:0!important}
+.nx-home{max-width:1120px;margin:0 auto;padding:0 16px 32px}
+.nx-home .nx-hero{min-height:min(46vh,380px);margin:16px 0 18px!important;width:auto!important}
+.nx-home .nx-hero h1{font-size:clamp(32px,5vw,52px)}
+@media (max-width:640px){.nx-home{padding:0 0 24px}.nx-home .nx-hero{min-height:300px;margin:0 0 14px!important}.nx-grid,.nx-home .nx-alerts,.nx-home #portal-orders{margin-left:14px!important;margin-right:14px!important}}
+.nx-alerts{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
+.nx-alert{display:flex;gap:12px;align-items:center;background:var(--rust-soft);border:1px solid #ecc9b6;color:#5f2a12;border-radius:12px;padding:12px 14px;font-size:14px;line-height:1.4;cursor:pointer;text-align:left;width:100%}
+.nx-alert b{font-weight:600}
+.nx-alert .nx-go{margin-left:auto;font-weight:600;white-space:nowrap}
+.nx-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}
+.nx-card{position:relative;display:flex;flex-direction:column;background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;text-align:left;cursor:pointer;padding:0;min-height:0;transition:transform .15s ease,box-shadow .15s ease}
+.nx-card:hover{box-shadow:var(--shadow-lift);transform:translateY(-1px)}
+.nx-card:active{transform:scale(.99)}
+.nx-card .nx-ph{height:96px;background:#2a3a2f center/cover no-repeat}
+.nx-card .nx-cb{padding:12px 14px 14px;display:flex;flex-direction:column;gap:3px}
+.nx-card .nx-ct{display:flex;align-items:center;gap:8px;font-size:16px;font-weight:600;color:var(--text)}
+.nx-card .nx-ct svg{width:18px;height:18px;stroke:var(--accent);fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.nx-card .nx-cs{font-size:13.5px;color:var(--text-soft)}
+.nx-card .nx-cs.warn{color:var(--rust);font-weight:500}
+.nx-card.dim{opacity:.55}
+@media (max-width:640px){.nx-grid{grid-template-columns:1fr 1fr;gap:10px}.nx-card .nx-ph{height:70px}.nx-card .nx-ct{font-size:15px}.nx-card .nx-cs{font-size:12.5px}}
+body.nx #portal-orders{max-width:none!important;margin:14px 0 0!important;border-radius:12px!important;font-family:var(--ui)!important;box-shadow:none!important;border:1px solid var(--border)!important;background:var(--card)!important}
+body.nx #portal-orders.alert{border-color:#ecc9b6!important;background:var(--rust-soft)!important}
+body.nx #portal-orders .po-title{font-family:var(--ui)!important;font-weight:600}
+body.nx #portal-orders .po-badge{animation:none!important}
+/* ---------- type: serif only for display ---------- */
+body.nx .ft-title,body.nx .hv-title,body.nx .tp-title,body.nx .ref-title,body.nx .modal-title,body.nx .greeting-headline,body.nx .v2-nm,body.nx .v2-modal h2,body.nx .ref-course-label,body.nx .sv-course-name{font-family:var(--serif)!important;font-weight:500!important;letter-spacing:-.005em}
+body.nx .ft-eyebrow,body.nx .hv-eyebrow,body.nx .sv-eyebrow,body.nx .ft-section-label,body.nx .modal-section h4,body.nx .tp-phase-name,body.nx .ref-ingredients-label,body.nx .ref-plateware-label,body.nx .sv-timeline-label,body.nx .v2-eyebrow,body.nx .gn-label{font-family:var(--ui)!important;font-size:11.5px!important;font-weight:600!important;letter-spacing:.08em!important;text-transform:uppercase;color:var(--text-mute)!important}
+body.nx .ft-header,body.nx .hv-header,body.nx .sv-header,body.nx .ref-header{text-align:left!important}
+/* ---------- shared components ---------- */
+body.nx .btn{font-family:var(--ui)!important;text-transform:none!important;letter-spacing:0!important;font-weight:600!important;font-size:15px!important;border-radius:10px!important;min-height:46px;box-shadow:none!important}
+body.nx .btn-primary{background:var(--accent)!important;border-color:var(--accent)!important;color:#fff!important}
+body.nx .btn-secondary{background:var(--card)!important;border:1px solid var(--border)!important;color:var(--text)!important}
+body.nx .btn-late-on{background:#fff6e6!important;border-color:#e2c48a!important;color:#6b4a10!important}
+body.nx .badge,body.nx .pill-allergen,body.nx .pill-returning,body.nx .pill-group,body.nx .party-badge{font-family:var(--ui)!important;text-transform:none!important;letter-spacing:0!important;font-size:12px!important;font-weight:500!important;border-radius:6px!important;padding:2px 8px!important}
+body.nx .badge-allergen,body.nx .pill-allergen{background:var(--rust-soft)!important;color:#7e3416!important;border:1px solid #ecc9b6!important}
+body.nx .badge-returning,body.nx .pill-returning{background:var(--gold-soft)!important;color:#5c4718!important;border:1px solid #e3d6b8!important}
+body.nx .badge-checked-in{background:var(--accent-soft)!important;color:var(--accent-dark)!important;border:1px solid #c9d6c3!important}
+body.nx .badge-late{background:#fff3dc!important;color:#6b4a10!important;border:1px solid #ecd6a6!important}
+body.nx .toast{font-family:var(--ui)!important;font-style:normal!important;background:#1c241e!important;color:#fff!important;border-radius:10px!important;bottom:calc(84px + env(safe-area-inset-bottom,0px))!important}
+@media (min-width:1024px){body.nx .toast{bottom:24px!important}}
+/* ---------- check-in ---------- */
+body.nx .tabs{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:4px;display:flex;gap:4px;margin:0 0 12px!important;border-bottom:1px solid var(--border)!important}
+body.nx .tab{flex:1;font-family:var(--ui)!important;font-size:14px!important;font-weight:500!important;border:0!important;border-radius:9px!important;padding:9px 8px!important;color:var(--text-soft)!important;background:transparent!important;text-transform:none!important;letter-spacing:0!important;min-height:40px}
+body.nx .tab.active{background:var(--accent)!important;color:#fff!important}
+body.nx .tab .count{background:rgba(0,0,0,.07)!important;color:inherit!important;border-radius:6px!important;font-weight:600;padding:1px 7px!important}
+body.nx .tab.active .count{background:rgba(255,255,255,.18)!important}
+body.nx .filter-bar,body.nx .combine-bar{background:transparent!important;padding:0!important;margin:0 0 10px!important;border:0!important}
+body.nx .filter-input{font-family:var(--ui)!important;font-style:normal!important;font-size:15px!important;border:1px solid var(--border)!important;border-radius:10px!important;background:var(--card)!important;min-height:46px;padding:10px 14px!important}
+body.nx .combine-btn{font-family:var(--ui)!important;font-size:13.5px!important;border-radius:9px!important;border:1px solid var(--border)!important;background:var(--card)!important;color:var(--text)!important;padding:8px 12px!important;min-height:38px}
+body.nx .list{display:flex;flex-direction:column;gap:8px}
+body.nx .guest-card{background:var(--card)!important;border:1px solid var(--border)!important;border-radius:12px!important;box-shadow:none!important;padding:14px 16px!important;margin:0!important;transition:border-color .15s,box-shadow .15s}
+body.nx .guest-card:hover{border-color:#cfd6c9!important;box-shadow:var(--shadow-lift)!important}
+body.nx .guest-card .guest-name{font-family:var(--ui)!important;font-size:17px!important;font-weight:600!important;letter-spacing:-.01em}
+body.nx .guest-card .guest-notes{font-family:var(--ui)!important;font-style:normal!important;color:var(--text-soft)!important;font-size:13.5px!important}
+body.nx .guest-card.allergen,body.nx .guest-card.is-allergen{border-left:3px solid var(--rust)!important}
+body.nx .night-flag{background:var(--rust-soft)!important;border:1px solid #ecc9b6!important;border-radius:12px!important;color:#5f2a12!important;font-family:var(--ui)!important}
+body.nx .night-flag .nf-title{font-family:var(--ui)!important;font-weight:600!important}
+/* party panel / modal */
+body.nx .modal-backdrop{background:rgba(15,20,14,.42)!important;backdrop-filter:blur(2px)}
+body.nx .modal{border-radius:16px!important;border:1px solid var(--border)!important;box-shadow:var(--shadow-lift)!important;padding:22px!important}
+body.nx .modal-title{font-size:28px!important}
+body.nx .modal-sub{font-family:var(--ui)!important;font-style:normal!important;color:var(--text-soft)!important;font-size:14px!important}
+body.nx .modal-section .body.allergen{background:var(--rust-soft)!important;border-left:3px solid var(--rust)!important;border-radius:8px!important}
+body.nx .modal-section .body.returning{background:var(--gold-soft)!important;border-left:3px solid var(--gold)!important;border-radius:8px!important}
+body.nx .gn-input,body.nx .modal-note-input{font-family:var(--ui)!important;font-size:15px!important;border:1px solid var(--border)!important;border-radius:9px!important;background:#fff!important;min-height:44px}
+body.nx .modal-actions .btn{flex:1}
+@media (max-width:640px){body.nx .modal-backdrop.open{align-items:flex-end!important;padding:0!important}body.nx .modal{border-radius:18px 18px 0 0!important;max-height:88vh!important;padding-bottom:calc(22px + env(safe-area-inset-bottom,0px))!important}}
+@media (min-width:1024px){body.v2-dock #modal-backdrop.open .modal{right:16px;top:16px!important;bottom:16px;width:400px;max-width:400px}body.nx.v2-dock.v2-panel-open #list-view{margin-right:432px!important;margin-left:16px!important}body.nx.v2-dock.v2-panel-open .nx-hero{margin-right:432px!important;margin-left:16px!important;width:auto!important}}
+/* ---------- seating ---------- */
+body.nx .seating-help{background:var(--card)!important;border:1px solid var(--border)!important;border-radius:12px!important;font-family:var(--ui)!important;font-style:normal!important;color:var(--text-soft)!important;font-size:13.5px!important}
+body.nx .endcap-controls{background:transparent!important;border:0!important;font-family:var(--ui)!important;font-size:14px!important;padding:4px 2px!important}
+body.nx .guest-picker{background:var(--card)!important;border:1px solid var(--border)!important;border-radius:14px!important;box-shadow:none!important}
+body.nx .guest-picker h3{font-family:var(--ui)!important;font-size:12px!important;font-weight:600!important;letter-spacing:.08em!important;text-transform:uppercase;color:var(--text-mute)!important}
+body.nx .picker-card{background:var(--bg)!important;border:1px solid var(--border)!important;border-radius:10px!important;font-family:var(--ui)!important;box-shadow:none!important}
+body.nx .picker-card.selected{background:var(--selected-bg)!important;border:2px solid var(--accent)!important}
+body.nx .tables-canvas{border-radius:16px!important;border:0!important;box-shadow:none!important;background:linear-gradient(180deg,rgba(18,26,20,.62),rgba(18,26,20,.78)),url('v2img/seating.jpg') center/cover!important;padding:22px 16px!important}
+body.nx .tables-canvas .row-label,body.nx .canvas-row-labels{color:#d9e1d4!important;font-family:var(--ui)!important;letter-spacing:.1em!important}
+body.nx .table-rect{background:linear-gradient(180deg,#5b4330,#3c2b1d)!important;border-radius:6px!important;box-shadow:0 6px 18px rgba(0,0,0,.35)!important;font-family:var(--serif)!important}
+body.nx .seat{background:rgba(255,255,255,.1)!important;border:1px solid rgba(255,255,255,.22)!important;color:#e9eee6!important;border-radius:8px!important;box-shadow:none!important;font-family:var(--ui)!important}
+body.nx .seat.occupied,body.nx .seat.filled,body.nx .seat[class*="party-"]{background:#f6f3ec!important;color:var(--text)!important;border-color:#f6f3ec!important}
+body.nx .seat.allergen,body.nx .seat.has-allergen{background:#f7e7de!important;border:2px solid #d27a52!important;color:#5f2a12!important}
+body.nx .seat-name{font-weight:600!important}
+/* ---------- fresh talk + reference ---------- */
+body.nx .ft-glance{gap:10px!important}
+body.nx .ft-stat{background:var(--card)!important;border:1px solid var(--border)!important;border-radius:12px!important;box-shadow:none!important}
+body.nx .ft-stat-num{font-family:var(--ui)!important;font-weight:600!important;color:var(--text)!important}
+body.nx .ft-party{background:var(--card)!important;border:1px solid var(--border)!important;border-left:3px solid var(--rust)!important;border-radius:12px!important;box-shadow:none!important}
+body.nx .ft-party-name{font-family:var(--ui)!important;font-weight:600!important}
+body.nx .ft-party-note{font-family:var(--ui)!important}
+body.nx .ref-course,body.nx .ref-wine,body.nx .ref-cocktail,body.nx .ref-dish{background:var(--card)!important;border:1px solid var(--border)!important;border-radius:12px!important;box-shadow:none!important}
+body.nx .ref-dish-name,body.nx .ref-wine-name,body.nx .ref-cocktail-name{font-family:var(--ui)!important;font-weight:600!important}
+body.nx .ref-dish-story,body.nx .ref-wine-pour,body.nx .ref-cocktail-pour,body.nx .ref-tagline,body.nx .ref-subtitle,body.nx .ft-sub{font-family:var(--ui)!important;font-style:normal!important;color:var(--text-soft)!important;line-height:1.55!important}
+body.nx .ref-plateware{background:var(--bg)!important;border-radius:10px!important;border:0!important}
+body.nx .sb-tabs-bar,body.nx .ft-tabs-bar{background:var(--card)!important;border:1px solid var(--border)!important;border-radius:12px!important;box-shadow:none!important}
+body.nx .sb-pill{background:var(--accent)!important;border-radius:9px!important;box-shadow:none!important}
+body.nx .sb-tab{font-family:var(--ui)!important;font-weight:500!important;text-transform:none!important;letter-spacing:0!important}
+/* ---------- service ---------- */
+body.nx .sv-current-card{background:var(--card)!important;border:1px solid var(--border)!important;border-radius:14px!important;box-shadow:none!important}
+body.nx .sv-btn{font-family:var(--ui)!important;font-weight:600!important;border-radius:12px!important;text-transform:none!important;letter-spacing:0!important;box-shadow:none!important;min-height:52px}
+body.nx .sv-tl-course{background:var(--card)!important;border:1px solid var(--border)!important;border-radius:10px!important}
+body.nx .sv-tl-name{font-family:var(--ui)!important;font-weight:600!important}
+/* ---------- harvest, training ---------- */
+body.nx .hv-item{background:var(--card)!important;border:1px solid var(--border)!important;border-radius:12px!important;box-shadow:none!important}
+body.nx .hv-name{font-family:var(--ui)!important;font-weight:600!important}
+body.nx .hv-note,body.nx .hv-intro,body.nx .tp-subtitle,body.nx .tp-phase-sub{font-family:var(--ui)!important;font-style:normal!important;color:var(--text-soft)!important}
+body.nx .hv-box{border-radius:7px!important}
+body.nx .training-page{background:transparent!important;box-shadow:none!important;border:0!important;padding:0!important;max-width:none!important}
+body.nx .tp-phase{background:var(--card)!important;border:1px solid var(--border)!important;border-radius:12px!important;padding:14px 16px!important;margin-bottom:10px!important}
+body.nx .tp-item{font-family:var(--ui)!important;font-size:15px!important;line-height:1.5!important}
+/* hide the in-view titles the hero now carries */
+body.nx #setup-breakdown-view .tp-title,body.nx #standards-view .tp-title{display:none}
+/* ---------- office + sign in ---------- */
+body.nx .v2-otabs button{font-family:var(--ui)!important;font-size:14.5px!important;font-weight:500}
+body.nx .v2-otabs button.on{font-weight:600;border-bottom-color:var(--accent)!important}
+body.nx .v2-kpi,body.nx .v2-tw,body.nx .v2-card{border-radius:12px!important;box-shadow:none!important}
+body.nx .v2-kpi .v{font-family:var(--ui)!important;font-weight:600!important}
+body.nx .v2-btn{font-family:var(--ui)!important;font-weight:600;border-radius:10px}
+body.nx .v2-btn.wood{background:var(--accent)!important;border-color:var(--accent)!important}
+body.nx .v2-pill.out{background:#1c241e!important}
+#v2-signin{background-image:linear-gradient(180deg,rgba(9,13,9,.35),rgba(9,13,9,.72)),url('v2img/signin.jpg')!important;background-size:cover!important;background-position:center!important}
+#v2-signin .v2-si-head{background:transparent!important;border:0!important;padding:28px 16px 4px!important;color:#fff}
+#v2-signin .v2-si-head .farm-name{display:none}
+#v2-signin .v2-si-head h1{font-family:var(--ui)!important;font-weight:500!important;font-size:15px!important;letter-spacing:.08em;text-transform:uppercase;opacity:.85;margin-top:10px!important}
+#v2-signin .v2-si-head::before{content:"";display:block;width:min(300px,66vw);aspect-ratio:1440/346;margin:0 auto;background:url('v2img/logo-white.png') center/contain no-repeat}
+#v2-signin .v2-card{background:rgba(255,255,255,.96);border:0;border-radius:18px;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+#v2-signin .v2-si-side{background:rgba(16,22,17,.55)!important;color:#e9eee6;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+#v2-signin .v2-si-side .v2-eyebrow{color:#b9c5b4!important}
+#v2-signin .v2-si-side div{color:#e9eee6!important}
+#v2-signin .v2-step i{background:rgba(255,255,255,.14)!important;color:#fff!important}
+#v2-signin .v2-keys button{font-family:var(--ui)!important;font-size:24px;font-weight:500;border-radius:14px;background:var(--bg);border:0;box-shadow:none;color:var(--text)}
+#v2-signin .v2-keys button:active{background:var(--accent-soft)}
+#v2-signin .v2-dots span{border-color:var(--accent)} #v2-signin .v2-dots span.f{background:var(--accent);border-color:var(--accent)}
+#v2-signin .v2-people button{background:var(--bg);border:0;border-radius:12px}
+#v2-signin .v2-av{font-family:var(--ui)!important;font-weight:600}
+@media (max-width:640px){#v2-signin .v2-si-side{display:none}}
+@media (prefers-reduced-motion:reduce){.nx-card,.guest-card{transition:none!important}}
+/* ---------- pass 2 fixes ---------- */
+body.nx *:not(svg):not(svg *){font-family:var(--ui)!important}
+body.nx .v2-demobar{margin-left:0!important}
+@media (max-width:640px){.v2-demobar .nx-long{display:none}}
+body.nx.v2-dock #modal-backdrop.open{background:transparent!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+@media (min-width:1024px){body.v2-dock #modal-backdrop.open .modal{top:16px!important}}
+/* the hero carries these titles now */
+body.nx .ft-header .ft-eyebrow,body.nx .ft-header .ft-title,body.nx .sv-header,body.nx #harvest-view .hv-eyebrow,body.nx #harvest-view .hv-title{display:none!important}
+body.nx .hv-intro,body.nx .hv-header,body.nx .ft-header{text-align:left!important}
+body.nx .sv-btn.fire,body.nx .sv-btn.primary{background:var(--accent)!important;border-color:var(--accent)!important;color:#fff!important}
+body.nx .sv-btn.ghost{background:var(--card)!important;border:1px solid var(--border)!important;color:var(--text)!important}
+body.nx .tables-canvas .seat-name,body.nx .tables-canvas .seat-num{color:inherit!important}
+body.nx .seat.allergen-here{background:#f7e7de!important;border:2px solid #d27a52!important;color:#5f2a12!important}
+body.nx .tables-canvas{min-height:0!important;padding:26px 18px 30px!important}
+body.nx .tables-canvas::before{display:none!important}
 </style>
 </head>
 <body>
@@ -6118,7 +6363,7 @@ window.DEMO = true;
   const bar = document.createElement('div');
   bar.className = 'v2-demobar';
   bar.setAttribute('role', 'note');
-  bar.innerHTML = '<span>v2 TEST · sample guests · nothing here touches the real dinners</span>' +
+  bar.innerHTML = '<span>v2 TEST<span class="nx-long"> · sample guests · nothing here touches the real dinners</span></span>' +
     '<button type="button" class="v2-bug" id="v2-bug">Report a bug</button>' +
     '<button type="button" id="v2-reset">Reset demo</button>' +
     '<a href="v1/">Current portal</a>';
@@ -6463,6 +6708,7 @@ window.DEMO = true;
     };
   };
 
+  window.V2 = { me, isOwner, applySession };
   // ---------------- start ----------------
   applySession();
   const back = ss.get('shf-v2-view', null);
@@ -6470,6 +6716,159 @@ window.DEMO = true;
     const go = () => { if (!dinnerData) return setTimeout(go, 150); otab = ss.get('shf-v2-otab', otab); ss.del('shf-v2-otab'); if (back !== 'office' || isOwner()) window.switchView(back); };
     setTimeout(go, 200);
   }
+})();
+</script>
+<script>
+// =====================================================================
+// NX SHELL (2026-11-09 night). Replaces the v1 header, ring and pill bar
+// with: a sidebar (iPad landscape, laptop), a top bar + bottom tabs
+// (phone, iPad portrait), a photo hero on every section, and a home
+// screen of section cards. The v1 views and the v2 layer run unchanged
+// underneath; this file only moves and dresses them.
+// =====================================================================
+(function () {
+  const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const I = {
+    portal: '<path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M10 21v-6h4v6"/>',
+    list: '<path d="M20 6 9 17l-5-5"/>',
+    seating: '<rect x="3" y="9.5" width="18" height="5" rx="1.2"/><path d="M6 5.5v2.5M10 5.5v2.5M14 5.5v2.5M18 5.5v2.5M6 16v2.5M10 16v2.5M14 16v2.5M18 16v2.5"/>',
+    freshtalk: '<path d="M4 5h16v11H9l-5 4z"/><path d="M8 9.5h8M8 12.5h5"/>',
+    service: '<path d="M3 18h18"/><path d="M5 18a7 7 0 0 1 14 0"/><path d="M12 9V7"/><path d="M10.5 7h3"/>',
+    harvest: '<path d="M6 20c-1-9 4-15 14-16-.5 10-6 15-14 16z"/><path d="M6 20 14 11"/>',
+    'setup-breakdown': '<rect x="4" y="3.5" width="16" height="17" rx="2"/><path d="M8 8.5h8M8 12h8M8 15.5h5"/>',
+    standards: '<path d="M5 4.5A1.5 1.5 0 0 1 6.5 3H19v15H6.5A1.5 1.5 0 0 0 5 19.5z"/><path d="M5 19.5A1.5 1.5 0 0 0 6.5 21H19"/>',
+    office: '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M9 9v11"/>',
+    orders: '<path d="M4 8h16l-1.5 11h-13z"/><path d="M8.5 8V6.5a3.5 3.5 0 0 1 7 0V8"/>',
+    more: '<circle cx="5" cy="12" r="1.2"/><circle cx="12" cy="12" r="1.2"/><circle cx="19" cy="12" r="1.2"/>',
+  };
+  const svg = (k) => `<svg viewBox="0 0 24 24" aria-hidden="true">${I[k] || ''}</svg>`;
+  const NAV = [
+    ['portal', 'Tonight'], ['list', 'Check-in'], ['seating', 'Seating'], ['freshtalk', 'Fresh Talk'], ['service', 'Service'],
+    ['-'], ['harvest', 'Harvest', 'owner'], ['setup-breakdown', 'Setup & Breakdown'], ['standards', 'Standards'], ['-'], ['office', 'Office', 'owner'],
+  ];
+  const PHOTO = { list: 'checkin', seating: 'seating', freshtalk: 'fresh', service: 'service', harvest: 'harvest', 'setup-breakdown': 'setup', standards: 'standards', office: 'office', orders: 'harvest' };
+  const TITLE = Object.fromEntries(NAV.filter((n) => n[1]).map((n) => [n[0], n[1]]));
+  const owner = () => !!(window.V2 && V2.isOwner());
+  const visibleNav = () => NAV.filter((n) => n[0] === '-' || !n[2] || owner());
+
+  document.body.classList.add('nx');
+
+  // ---------- sidebar ----------
+  const side = document.createElement('aside');
+  side.className = 'nx-side';
+  side.setAttribute('aria-label', 'Sections');
+  side.innerHTML = '<img class="nx-logo" src="v2img/logo-white.png" alt="Swan House Farm"><div class="nx-dinner"><div class="nx-k">Dinner</div><div class="nx-dslot"></div></div><nav class="nx-nav" data-nav-host></nav><div class="nx-me" data-me-host></div>';
+  document.body.appendChild(side);
+  // ---------- top bar + tabs (narrow) ----------
+  const top = document.createElement('div');
+  top.className = 'nx-top';
+  top.innerHTML = '<div class="nx-dslot" style="flex:1;min-width:0;display:flex"></div><button type="button" class="v2-av" data-sheet aria-label="Menu and account"></button>';
+  document.body.insertBefore(top, document.body.children[1] || null);
+  const tabs = document.createElement('nav');
+  tabs.className = 'nx-tabbar';
+  tabs.setAttribute('aria-label', 'Sections');
+  document.body.appendChild(tabs);
+
+  // the v1 dinner switcher lives in whichever bar is showing
+  const sw = document.getElementById('dinner-switcher');
+  const mq = matchMedia('(min-width:1024px)');
+  const placeSwitcher = () => { const host = (mq.matches ? side : top).querySelector('.nx-dslot'); if (sw && sw.parentNode !== host) host.appendChild(sw); };
+  mq.addEventListener ? mq.addEventListener('change', placeSwitcher) : mq.addListener(placeSwitcher);
+  placeSwitcher();
+
+  // ---------- hero (sections) ----------
+  const hero = document.createElement('section');
+  hero.className = 'nx-hero';
+  hero.innerHTML = '<div class="nx-hin"><div><div class="nx-eb"></div><h1></h1></div><div class="nx-stats"></div></div>';
+  document.getElementById('portal-view').before(hero);
+
+  // ---------- home ----------
+  const home = document.createElement('div');
+  home.className = 'nx-home';
+  home.innerHTML = '<section class="nx-hero" data-home-hero><div class="nx-hin"><div><div class="nx-eb"></div><h1></h1></div><div class="nx-stats"></div></div></section><div class="nx-alerts"></div><div class="nx-grid"></div>';
+  const pv = document.getElementById('portal-view');
+  pv.prepend(home);
+  const orders = document.getElementById('portal-orders');
+  if (orders) home.appendChild(orders);
+  home.querySelector('[data-home-hero]').style.backgroundImage = `url('v2img/${matchMedia('(max-width:640px)').matches ? 'home-phone' : 'home'}.jpg')`;
+
+  function stats() {
+    const d = dinnerData; if (!d || !d.guests) return [];
+    const gs = d.guests, tot = gs.length, covers = gs.reduce((s, g) => s + (g.party_size || 0), 0);
+    const inN = gs.filter((g) => state.checkins && state.checkins[g.id] && (state.checkins[g.id].checked_in || state.checkins[g.id].checked_in_at)).length;
+    const seated = gs.filter((g) => Object.values(state.seats || {}).includes(g.id)).length;
+    let al = 0; try { al = gs.filter((g) => effectiveAllergens(g).length).length; } catch (e) {}
+    return [[covers, 'covers'], [`${inN}/${tot}`, 'checked in'], [`${seated}/${tot}`, 'seated'], [al, 'allergy parties']];
+  }
+  const statHTML = (arr) => arr.map(([v, l]) => `<div class="nx-stat"><b>${esc(v)}</b><span>${esc(l)}</span></div>`).join('');
+  const ringStatus = (t) => { const s = document.querySelector(`.portal-card[data-target="${t}"] .pcd-status`); return s ? [s.textContent, s.classList.contains('warn')] : ['', false]; };
+
+  function navHTML() {
+    return visibleNav().map((n) => n[0] === '-' ? '<div class="nx-sep" role="presentation"></div>' :
+      `<button type="button" data-go="${n[0]}" class="${activeView === n[0] ? 'on' : ''}" ${activeView === n[0] ? 'aria-current="page"' : ''}>${svg(n[0])}<span>${esc(n[1])}</span>${n[0] === 'freshtalk' && ringStatus('freshtalk')[1] ? '<span class="nx-badge">!</span>' : ''}</button>`).join('');
+  }
+  function meHTML() {
+    const p = window.V2 && V2.me(); if (!p) return '';
+    return `<span class="v2-av" style="background:${p.color}">${esc(p.name.split(' ').map((s) => s[0]).join('').slice(0, 2))}</span><span class="nx-who"><b>${esc(p.name)}</b><span>${p.role === 'owner' ? 'Owner' : 'Service'} · until 3 am</span></span><button type="button" data-lock>Lock</button>`;
+  }
+  function render() {
+    const d = dinnerData;
+    const dateLine = d && d.display_date ? d.display_date : '';
+    side.querySelector('[data-nav-host]').innerHTML = navHTML();
+    side.querySelector('[data-me-host]').innerHTML = meHTML();
+    const p = window.V2 && V2.me();
+    const av = top.querySelector('[data-sheet]');
+    if (p) { av.textContent = p.name.split(' ').map((s) => s[0]).join('').slice(0, 2); av.style.background = p.color; }
+    const T = [['portal', 'Tonight'], ['list', 'Check-in'], ['seating', 'Seating'], ['service', 'Service']];
+    const inMore = !T.some((t) => t[0] === activeView);
+    tabs.innerHTML = T.map(([k, l]) => `<button type="button" data-go="${k}" class="${activeView === k ? 'on' : ''}">${svg(k)}<span>${l}</span></button>`).join('') +
+      `<button type="button" data-more class="${inMore ? 'on' : ''}">${svg('more')}<span>${inMore && TITLE[activeView] ? esc(TITLE[activeView]) : 'More'}</span></button>`;
+    // section hero
+    const onHome = activeView === 'portal';
+    hero.style.display = onHome ? 'none' : '';
+    if (!onHome) {
+      hero.style.backgroundImage = `url('v2img/${PHOTO[activeView] || 'path'}.jpg')`;
+      hero.querySelector('.nx-eb').textContent = activeView === 'office' ? '2027 season' : dateLine;
+      hero.querySelector('h1').textContent = TITLE[activeView] || (activeView === 'orders' ? 'Farm Orders' : '');
+      hero.querySelector('.nx-stats').innerHTML = ['list', 'seating', 'freshtalk', 'service'].includes(activeView) ? statHTML(stats()) : '';
+    }
+    // home
+    const hh = home.querySelector('[data-home-hero]');
+    hh.querySelector('.nx-eb').textContent = 'Swan House Farm · Tonight';
+    hh.querySelector('h1').textContent = dateLine.replace(/, \d{4}$/, '');
+    hh.querySelector('.nx-stats').innerHTML = statHTML(stats());
+    const al = [];
+    const [ft, ftw] = ringStatus('freshtalk');
+    if (ftw) al.push(`<button type="button" class="nx-alert" data-go="list"><span><b>${esc(ft)}.</b> Guests told us about allergies on their guest page. Confirm them before service.</span><span class="nx-go">Review</span></button>`);
+    home.querySelector('.nx-alerts').innerHTML = al.join('');
+    const cards = visibleNav().filter((n) => n[0] !== '-' && n[0] !== 'portal');
+    home.querySelector('.nx-grid').innerHTML = cards.map((n) => { const [s, w] = ringStatus(n[0]); return `<button type="button" class="nx-card" data-go="${n[0]}"><span class="nx-ph" style="background-image:url('v2img/${PHOTO[n[0]]}.jpg')"></span><span class="nx-cb"><span class="nx-ct">${svg(n[0])}${esc(n[1])}</span><span class="nx-cs ${w ? 'warn' : ''}">${esc(s)}</span></span></button>`; }).join('');
+  }
+
+  // ---------- events ----------
+  let sheet = null;
+  function openSheet() {
+    sheet = document.createElement('div');
+    sheet.className = 'nx-sheet-bg';
+    sheet.innerHTML = `<div class="nx-sheet" role="dialog" aria-modal="true" aria-label="All sections"><div class="nx-grab"></div><nav class="nx-nav">${navHTML()}</nav><div class="nx-me">${meHTML()}</div></div>`;
+    document.body.appendChild(sheet);
+    sheet.addEventListener('click', (e) => { if (e.target === sheet) closeSheet(); });
+  }
+  const closeSheet = () => { if (sheet) { sheet.remove(); sheet = null; } };
+  document.addEventListener('click', (e) => {
+    const go = e.target.closest('[data-go]');
+    if (go && (go.closest('.nx-side,.nx-tabbar,.nx-sheet,.nx-home'))) { closeSheet(); switchView(go.dataset.go); window.scrollTo(0, 0); return; }
+    if (e.target.closest('[data-more]') || e.target.closest('[data-sheet]')) { openSheet(); return; }
+    if (e.target.closest('[data-lock]')) { closeSheet(); const l = document.getElementById('v2-lock'); if (l) l.click(); }
+  });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeSheet(); });
+
+  // re-render after every refresh / view change
+  const _refresh = window.refresh;
+  window.refresh = function () { _refresh.apply(this, arguments); try { render(); } catch (e) { console.error(e); } };
+  const _switch = window.switchView;
+  window.switchView = function (v) { _switch(v); try { render(); } catch (e) { console.error(e); } };
+  setTimeout(render, 0);
 })();
 </script>
 </body>
